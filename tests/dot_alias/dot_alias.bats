@@ -19,13 +19,10 @@ load ../test_helper
 
 @test "It should create alias" {
   require dot_alias
-  mv "$DOTFILE_DIR/aliases" "$DOTFILE_DIR/_aliases"
+  export DOTFILE_DIR="$HOME"
 
   run dot_alias "aliases" "alias"
   run dot_alias
-
-  rm -rf "$DOTFILE_DIR/aliases"
-  mv "$DOTFILE_DIR/_aliases" "$DOTFILE_DIR/aliases"
 
   [ "$(echo $output | grep 'alias')" ]
 }
