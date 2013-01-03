@@ -1,0 +1,21 @@
+root = true
+
+[**.js]
+;This section describe common
+;javascript settings
+
+;vim:path=~/.vim/bundle/js-beautify/beautify.js
+;vim:bin=node
+indent_style = space
+indent_size = 4
+
+[**.css]
+;vim:path=~/.vim/bundle/js-beautify/beautify-css.js
+indent_style = space
+indent_size = 4
+
+[**.html]
+;vim:path=~/.vim/bundle/js-beautify/beautify-html.js
+;vim:max_char=78:brace_style=expand
+indent_style = space
+indent_size = 4

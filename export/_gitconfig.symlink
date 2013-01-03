@@ -1,0 +1,13 @@
+[user]
+	name = Maksim Ryzhikov
+	email = rv.maksim@gmail.com
+[alias]
+	st = status
+	ci = commit
+	co = checkout
+	br = branch
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto

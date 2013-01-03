@@ -1,0 +1,92 @@
+" vimrcps
+"
+" @description Настройки для плагинов
+" @type plugins settings
+" 2012-04-22
+
+
+" Snipmate переопределение основной клавиши
+" <esc> - Alt
+let g:snips_trigger_key='<esc>l'
+
+" Ack заменяем команду с ack на ack-grep
+let g:ackprg="ack-grep -H --nocolor --nogroup --column"
+set grepprg=ack-grep\ -a
+nnoremap <leader>s :Ack! <c-r>=expand("<cword>")<cr><cr>
+
+" Tagbar
+nnoremap <leader>i :TagbarToggle<cr>
+nnoremap <leader>t :TlistToggle<cr>
+
+" LycosaBufferExplorer
+nnoremap <S-b> :LycosaBufferExplorer<cr>
+set hidden
+
+" Powerline
+let g:Powerline_symbols = 'unicode'
+set encoding=utf-8
+
+autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
+autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
+autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+
+" vim-translator
+" Настройка переводчика
+" Устанавливаем язык для переводчика (vim-gtranslate)
+" Устанавливаем кнопку для перевода в визуальном режиме (vim-gtranslate)
+let g:goog_user_conf = {'langpair' : 'en|ru', 'v_key': 'T'}
+
+" zencoding-vim
+let g:user_zen_settings = { 'php' : { 'extends' : 'html', 'filters' : 'c', }, 'xml' : { 'extends' : 'html', }, 'haml' : { 'extends' : 'html', 'filters' : 'haml' } }
+let g:user_zen_leader_key = '<c-y>' " Устанавливаем основную комбинацию клавиш (zencoding-vim)
+
+" auto-pairs
+let g:AutoPairsFlyMode = 1
+let g:AutoPairsShortcutToggle = '<esc>p'
+"let g:AutoPairsShortcutFastWrap = '<C-l>'
+let g:AutoPairsShortcutBackInsert = '<Leader>b'
+
+" Syntastic
+" Открываем и закрываем список с ошибками
+" автоматически.
+let g:syntastic_auto_loc_list = 1
+" Выключаем красные метки на линиях
+let g:syntastic_enable_signs = 1
+" Добавляем свои метки для ошибок и предупреждений
+let g:syntastic_error_symbol='✗'
+let g:syntastic_warning_symbol='⚠'
+" Не перескакиваем на ошибку автоматически
+let g:syntastic_auto_jump=0
+" И выключаем показ ошибки при наведении на линию
+" может сильно тормозить
+let g:syntastic_enable_balloons = 0
+" Добавляем информацию об ошибках в statusline
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+let g:syntastic_javascript_checker="jshint"
+" Настройка jshint
+let g:syntastic_javascript_jshint_conf = expand("~/.hintrc")
+" syntastic dart
+let g:syntastic_dart_analyzer_conf='-out /tmp/'
+
+"vim-notes
+let g:notes_directory = '~/Documents/Notes'
+
+" w3m
+let g:w3m#search_engine = 'http://duckduckgo.com/html/?q='
+let g:w3m#homepage = "http://www.google.com/"
+
+nmap <silent> <LEADER>a :call XikiLaunch()<CR>
+imap <silent> <C-a> <C-c>:call XikiLaunch()<CR>i
+" Error with flush
+if has('ruby')
+ruby << EOF
+class Object
+  def flush; end unless Object.new.respond_to?(:flush)
+end
+EOF
+endif
+
+autocmd FileType w3m nnoremap <buffer> L :call w3m#Forward()<CR>
+autocmd FileType w3m nnoremap <buffer> H :call w3m#Back()<CR>

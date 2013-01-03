@@ -1,0 +1,93 @@
+" vimrcm
+"
+" @description Различное, настройки привязок к клавишам, расширение и т.д.
+" @type misc
+" 2012-04-22
+
+" открываем .vimrc
+nnoremap <leader>ev :vsplit ~/.vim/.vimrc<cr>
+" загружаем .vimrc в текущую сессию
+nnoremap <leader>sv :so ~/.vimrc<cr>
+
+" открываем фаил по пути который под курсором
+nnoremap <leader>eo BvEy:exe "vs ".@<cr>
+
+" spell checker
+fun! SpellCheckerToggle()
+  if &spell
+    set nospell
+    return
+  endif
+
+  set spelllang=ru,en
+  set spell
+endfun
+
+nnoremap <leader>c :call SpellCheckerToggle()<cr>
+
+" Удаляем пробелы в конце строк
+fun! DeleteTrailingWhiteSpace()
+  silent exec "%s/\\s\\+$//e"
+endfun
+
+" В javascript файлах удаляем пробелы в конце строк при сохранении файла
+au BufWritePost *.js call DeleteTrailingWhiteSpace()
+
+" ↪ Символ, который будет показан перед перенесенной строкой
+let &sbr = nr2char(8618).' '
+
+" Увеличивает и уменьшает ширину окна
+" <esc> - ALT, потому что ALT или META клавиши не всегда поддерживаются
+nnoremap <esc>. :vertical res +10<cr>
+nnoremap <esc>, :vertical res -10<cr>
+
+" Поиск и замена слова под курсором
+nnoremap \ff :vim /\<<c-r>=expand("<cword>")<cr>\>/ **/*.
+nnoremap \s :%s/\<<c-r>=expand("<cword>")<cr>\>/
+
+" clipboard (копирование для во внешний буфер, позволяет использовать дальше
+" везде не только в виме)
+vnoremap <C-c> "+yy
+
+" автодополнение из словоря
+inoremap <c-l> <c-x><c-o>
+
+"CSS
+"map <leader>o ?{<CR>jV/^\s*\}\=$<CR>k:sort<CR>:let @/=''<CR>
+
+" открывает окно с текущей директорией
+noremap <C-E> :Explore<CR>
+
+" обозреватели открытых файлов
+nnoremap <S-e> :BufExplorer<cr>
+
+" vim-translator
+" переводчик
+noremap g; :Translate<space>
+
+" command-t
+noremap <leader>, :CommandT<cr>
+
+" vim-w3m
+nnoremap <leader>bb :W3m<space>
+nnoremap <leader>bw :W3m<space>http://search.yandex-team.ru/search?text=
+
+nnoremap <s-f> mngg=G`n
+
+"fs brousing navigation
+augroup RubyTests
+  au!
+  autocmd BufRead,BufNewFile *.rb,*.rb
+        \ :compiler ruby
+  autocmd BufRead,BufNewFile *_test.rb,test_*.rb
+        \ :compiler rubyunit
+  autocmd BufRead,BufNewFile *.rb,*.rb
+        \ :noremap <buffer> <F5> :make %<cr>
+augroup END
+noremap <F10> :cal VimCommanderToggle()<cr>
+
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+autocmd FileType ruby,eruby set omnifunc=rubycomplete

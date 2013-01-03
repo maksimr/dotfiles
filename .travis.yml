@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - 0.8
+notifications:
+  email:
+    - rv.maksim@gmail.com
+before_script:
+  - npm install grunt
+  - sleep 5
+script: grunt test

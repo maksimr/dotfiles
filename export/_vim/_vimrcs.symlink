@@ -1,0 +1,80 @@
+" vimrc
+"
+" @description Базовые настройки
+" @type settings
+" 2012-04-22
+
+
+set nocp                 " Отключить режим совместимость с редактором VI
+set noeb                 " Отключить звонок об ошибке
+set novb                 " Отключить визуальный звонок об ошибке
+set mouse=a              " Включение мышки
+set bs=2                 " Чтобы работал backspace
+
+set guifont=Terminus\ 14 " Установить шрифт (sudo apt-get install xfonts-terminus)
+set t_Co=256             " Расширить поддержку цветов
+
+set cursorline           " подсветка текущей строки
+
+set nu                   " Нумерация строк
+set numberwidth=3        " Ширина колонки нумерации строк
+
+set lz                   " Ленивая перерисовка экрана при выполнении скриптов
+"set complete+=kspell     " Добавляем в автокомплит слова из словарей
+set guioptions=a
+set guioptions-=T        " Скрыть панель в gui
+set guioptions-=r        " Убрать правый скролбар
+
+"set spell                " Включить проверку арфографии
+
+
+set nowrap               " Не переносить длинные строки ( set wrap - переносить )
+
+set scrolloff=5          " Минимальное количество строк остающихся выше/ниже курсора. Помогает не терять контекст.
+set scrolljump=5         " Минимальное количество строк при скроле
+set incsearch            " Поиск по ходу набора
+set ignorecase           " Игнорирует регистр при поиске
+set smartcase            " Переписывает ignorecase когда осуществляется поиск включающий заглавные буквы
+
+set laststatus=2         " Включение строки состояния внизу редактора
+set statusline=%<%f%h%m%r%{fugitive#statusline()}\ %b\ %{&encoding}\ 0x\ \ %l,%c%V\ %P " Формат строки состояния ( использует расширение git-fugitive )
+
+
+set smartindent          " Умный автоматический отступ (ai - обычный автоматичексий отступ)
+set smarttab             " При нажатии в начале строки TAB добавляет отступ равный shiftwidth
+set et                   " Включить автозамену таба на пробелы
+set shiftwidth=2         " Устоновить ширину сдвига >
+set listchars=tab:··     " Показываем табы в начале строки точками
+set listchars+=trail:␣   " Показываем пробел в конце строки как ␣
+set list
+set formatoptions-=o     " dont continue comments when pushing o/O
+
+"set backup               " Создавать резервные копии файлов в том же каталоге ~ (set backupdir=$HOME/.vim/backups - для задания определенной папки backup-ов)
+
+set wildmode=list:longest,full " Автодополнение на манер zsh в командной строке
+set wildmenu
+set wildignore+=.hg,.git,.svn  " Version control
+set wildignore+=*.DS_Store     " OSX bullshit
+set wildignore+=*.pyc          " Python byte code
+
+" Аббревиатура: Вызвав vimrc в командной строке исполнить команду e ~/.vim/.vimrc
+cabbr vimrc e ~/.vim/.vimrc<cr>
+
+" Конфигурация расширений
+let g:netrw_list_hide='\~$,\~\*$,\.swp$,\.svn'
+
+" устанавливаем <Leader>-клавишу
+let mapleader=','
+
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+set rtp+=~/.vim/bundle/vundle/             " Необходимо для vundle
+call pathogen#runtime_append_all_bundles() " Включаем pathogen
+
+colorscheme lucius         " Устанавливаем цветовую схему
+
+syn on                     " Включаем синтаксис
+filetype off               " Требуется установить в off для vundle
+filetype plugin indent on  " Для некоторых типов файлов настройки отступов были перенесены из plugin в indent. Поэтому не забываем включить его
+
+" Менеджер пакетов для vim (vundle [запускается :BundleInstall])
+call vundle#rc()

@@ -1,0 +1,86 @@
+" vimrcp
+"
+" @description Плагины для vim-а
+" @type plugins
+" 2012-04-22
+
+
+" Vim utilites
+  Bundle 'tpope/vim-pathogen'
+  Bundle 'gmarik/vundle'
+  Bundle 'benmills/vimux'
+  Bundle 'LycosaExplorer'
+  " Терминал внутри vim-а
+  Bundle 'Conque-Shell'
+  " Необходимо дополнительно установить C-расширение
+  "   cd ~/.vim/bundle/Command-T/ruby/command-t
+  "   ruby extconf.rb
+  "   make
+  Bundle 'wincent/Command-T'
+
+" Themes
+  Bundle 'Lokaltog/vim-powerline'
+
+" Interface
+  Bundle 'tpope/vim-fugitive'
+  Bundle 'mileszs/ack.vim'
+
+  Bundle 'jiangmiao/auto-pairs'
+  Bundle 'ervandew/supertab'
+  Bundle 'mattn/zencoding-vim'
+  Bundle 'tpope/vim-eunuch'
+  " Позволяет обрамлять текстовые объекты кавычкаи,
+  " тегами, скобками
+  Bundle 'tpope/vim-surround'
+
+  " зависимости для vim-snipmate
+  Bundle "MarcWeber/vim-addon-mw-utils"
+  Bundle "tomtom/tlib_vim"
+  " шаблоны от honza, так как сам vim-snipmate не содержит шаблонов
+  Bundle "honza/snipmate-snippets"
+  " сам vim-snipmate
+  Bundle "garbas/vim-snipmate"
+
+" HTML/HAML
+  Bundle 'tpope/vim-haml'
+  Bundle 'hokaccha/vim-html5validator'
+
+" CSS/SASS
+  Bundle 'vim-scripts/SAS-Syntax-File'
+  Bundle "miripiruni/CSScomb-for-Vim"
+
+" Ruby/Rails
+  Bundle 'vim-ruby/vim-ruby'
+  Bundle "tpope/vim-rails"
+
+" Javascript
+  Bundle 'kchmck/vim-coffee-script.git'
+  Bundle 'maksimr/vim-jsbeautify'
+  Bundle 'einars/js-beautify'
+  " Необходимо дополнительно установить в системе ctags
+  " sudo apt-get install exuberant-ctags
+  " для javascript можно установить jsctags (https://github.com/mozilla/doctorjs)
+  Bundle 'majutsushi/tagbar'
+  Bundle 'douglascrockford/JSLint'
+  " расширенный taglist.vim с улучшенной поддрежкой javascript
+  " также зависит от jsctags
+  Bundle 'int3/vim-taglist-plus'
+  "Bundle 'malclocke/vim-buster'
+  " проверка синтаксиса и не только для javascript-а
+  Bundle 'scrooloose/syntastic'
+
+" Other
+  Bundle 'vim-scripts/TwitVim'
+  Bundle 'maksimr/vim-translator'
+  " need vim with +python feature
+  " define indent for different files
+  " http://editorconfig.org/
+  Bundle 'editorconfig/editorconfig-vim'
+  " подсветка для dart-а
+  Bundle 'bartekd/vim-dart'
+  " встроенный в vim browser
+  " sudo apt-get install w3m
+  Bundle 'yuratomo/w3m.vim'
+  " Добавляет возможность оставлять заметки
+  " в vim-е
+  Bundle 'xolox/vim-notes'

@@ -1,0 +1,7 @@
+" 2012-04-23
+" maksimr .vimrc
+
+so ~/.vim/.vimrcs
+so ~/.vim/.vimrcp
+so ~/.vim/.vimrcps
+so ~/.vim/.vimrcm
