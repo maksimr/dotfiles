@@ -1,4 +1,4 @@
-• Dotfile
+###• Dotfile
 
 A file that is not visible by default to normal
 directory-browsing tools (on Unix, files named with a leading dot are,
@@ -34,67 +34,67 @@ Load and run.
 
 
 
-• Installation (Doesn't work now)
+###• Installation (Doesn't work now)
 
 To install you could use the install script (requires Git) using cURL:
 
-  curl curl https://raw.github.com/maksimr/dotfiles/master/install.sh | sh
+  ```curl curl https://raw.github.com/maksimr/dotfiles/master/install.sh | sh```
 
 or Wget:
 
-  wget -qO- https://raw.github.com/maksimr/dotfiles/master/install.sh | sh
+  ```wget -qO- https://raw.github.com/maksimr/dotfiles/master/install.sh | sh```
 
 
 
-• Manual install
+###• Manual install
 
 If you have git installed, then just clone it:
 
-git clone git://github.com/maksimr/dotfiles.git ~/.dotfiles
+  ```git clone git://github.com/maksimr/dotfiles.git ~/.dotfiles```
 
 To activate dotfile, you need to source it from your bash shell
 
-  . ~/.dotfiles/dot.sh
+  ```. ~/.dotfiles/dot.sh```
 
 You can add this line to your '.bashrc' or '.zshrc' file to have it automatically sourced upon login.
 
 
 
-• Usage
+###• Usage
 
 Add symlink to home folder from dotfiles directory:
 
-  dot ln
+  ```dot ln```
 
 Show list of created symlinks(aliases):
 
-  dot alias
+  ```dot alias```
 
 Remove all created symlinks:
 
-  dot destroy
+  ```dot destroy```
 
 Remove specific symlink:
 
-  dot destroy .zshrc
+  ```dot destroy .zshrc```
 
 Upgrade dotfiles:
 
-  dot upgrade
+  ```dot upgrade```
 
 Save and add changes to remote server:
 
-  dot save
+  ```dot save```
 
 Create custom symlink and add it to alias list.
 It create symlink '_zshrc' on '.zshrc' to home directory, and add
 it to alias list where you can delete it using command 'dot destroy _zshrc':
 
-  dot alias .zshrc _zshrc
+  ```dot alias .zshrc _zshrc```
 
 
 
-• Test
+###• Test
 
 Tests writing on 'bats'. You may install 'grunt' and run 'grunt test' for
 running tests.
