@@ -34,7 +34,7 @@ Load and run.
 
 
 
-• Installation
+• Installation (Doesn't work now)
 
 To install you could use the install script (requires Git) using cURL:
 

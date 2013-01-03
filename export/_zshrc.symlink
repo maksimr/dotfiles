@@ -77,6 +77,6 @@ if [ $SHLVL = 1  ]; then
   tmux -2 && exit # exit from shell after exit tmux
 fi
 
-# Init nvm
+. ~/.dotfiles/dot.bash 2>/dev/null
 . ~/.nvm/nvm.sh 2>/dev/null
 . ~/.dvm/dvm.sh 2>/dev/null
