@@ -14,17 +14,17 @@ git clone git://github.com/maksimr/dotfiles.git $DOTFILE_TARGET
 
 if [ -s "$DOTFILE_TARGET/dot.bash"  ]
 then
-  echo -e "   Load dotfile script..."
+  echo "   Load dotfile script..."
   echo
 
   . "$DOTFILE_TARGET/dot.bash"
-  dot upgrade
-  dot ln
+  dot init
 
   echo
   echo "   Dotfiles was installed successfully."
   echo "   You can add $DOTFILE_TARGET/dot.bash to your .bashrc or .zshrc. If it is not already"
   echo "   In order to use the command 'dot'"
+  echo
 else
   echo -e "   Sorry something went wrong. Dotfiles doesn't installed"
 fi

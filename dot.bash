@@ -9,7 +9,9 @@ fi
 
 function require() {
   local EXT="$2"
-  [[ "$EXT" ]] || EXT="bash"
+  if [ ! "$EXT" ];then
+    EXT="bash"
+  fi
   source "$DOTFILE_DIR/lib/$1.$EXT"
 }
 
@@ -29,26 +31,57 @@ function dot() {
         echo "Usage:"
         echo "    dot help         Show this message"
         echo "    dot upgrade      Upgrade dotfiles"
-        echo
         echo "    dot linking      Create symlinks"
+        echo "    dot ln"
+        echo "    dot lns          Soft linking. Doesn't replace existing files"
         echo "    dot destroy      Remove created symlinks"
+        echo "    dot rm"
         echo "    dot save         Save changes in dotfile and push on remote server"
+        echo "    dot ci"
         echo "    dot alias        Show list of created symlinks"
+        echo "    dot ls"
         echo
         ;;
+    "init" )
+          local CURRENT_DIR="$(pwd)"
+          cd "$DOTFILE_DIR"
+          git submodule update --init --recursive 2>/dev/null
+          cd $CURRENT_DIR
+
+          dot upgrade
+        ;;
     "upgrade" )
+        local DIST="$2"
+        if [ ! "$DIST" ]; then
+          DIST="$DOTFILE_DIR/export"
+        fi
+
         dot_upgrade
+        local alias="$(dot_linking_soft $DIST $3)"
+        echo "$alias" >> "$ALIASES"
+        dot alias
       ;;
     "linking" | "ln" )
         local DIST="$2"
-        [[ "$DIST" ]] || DIST="$DOTFILE_DIR/export"
+        if [ ! "$DIST" ]; then
+          DIST="$DOTFILE_DIR/export"
+        fi
 
-        local alias=$(dot_linking $DIST $3)
+        local alias="$(dot_linking $DIST $3)"
 
         echo "$alias" >> "$ALIASES"
         dot alias
       ;;
-    "destroy" )
+    "lns" )
+      # soft linking
+        local DIST="$2"
+        if [ ! "$DIST" ]; then
+          DIST="$DOTFILE_DIR/export"
+        fi
+        local alias="$(dot_linking_soft $DIST $3)"
+        echo "$alias" >> "$ALIASES"
+      ;;
+    "destroy" | "rm" )
         local CURRENT_DIR="$(pwd)"
         local ALIASES_TMP="$DOTFILE_DIR/~aliases"
 
@@ -57,7 +90,9 @@ function dot() {
         if [ -f "$ALIASES" ]
         then
           local PATTERN="$2"
-          [[ "$PATTERN" ]] || PATTERN=".*"
+          if [ ! "$PATTERN" ]; then
+             PATTERN=".*"
+          fi
 
           for al in $(cat "$ALIASES" | sort -t. -u | grep -w "$PATTERN"); do
             rm -rf $al
@@ -70,10 +105,10 @@ function dot() {
 
         cd "$CURRENT_DIR"
       ;;
-     "save" | "commit" )
+     "save" | "ci" )
         dot_commit
       ;;
-    "alias" )
+    "alias" | "ls" )
         dot_alias $2 $3
       ;;
     * )

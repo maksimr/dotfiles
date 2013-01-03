@@ -16,7 +16,9 @@ function dot_alias() {
     fi
 
     local PATTERN="$1"
-    [[ "$PATTERN" ]] || PATTERN=".*"
+    if [ ! "$PATTERN" ]; then
+      PATTERN=".*"
+    fi
 
     for al in $(cat "$ALIASES" | sort -u | grep "$PATTERN"); do
       echo -e "    \\033[1;32m • \\033[0m $al"

@@ -7,18 +7,31 @@
 function dot_upgrade() {
   local DIR="$1"
   local CURRENT_DIR="$(pwd)"
-  [[ "$DIR" ]] || DIR="$DOTFILE_DIR"
+  if [ ! "$DIR" ];then
+    DIR="$DOTFILE_DIR"
+  fi
 
   cd "$DIR"
 
   echo 'Upgrading Dotfiles directory....'
+  local CHANGES="$(git pull origin master 2>/dev/null)"
 
-  if [ "$(git pull origin master 2>/dev/null)" ]
+
+  if [ "$CHANGES" ]
   then
-      echo '....updating submodules....'
-      git submodule update --init --recursive 2>/dev/null
+      echo
 
-      echo 'Dotfiles has been updated and/or is at the current version.'
+      if [ "$CHANGES" = 'Already up-to-date.' ]; then
+        echo -e '\033[1;32mYou are already up-to-date.\033[0m'
+      else
+
+        git submodule update --init --recursive 2>/dev/null
+
+        echo
+        echo -e '\033[1;32mDotfiles has been updated.\033[0m'
+      fi
+
+      echo
   else
       echo -e '\033[0;31m There was an error updating. Try again later? \033[0m\n'
   fi

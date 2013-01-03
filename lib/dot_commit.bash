@@ -7,7 +7,9 @@ function dot_commit() {
   local DIR="$1"
   local CURRENT_DIR="$(pwd)"
   local changes=$(git status --porcelain)
-  [[ "$DIR"  ]] || DIR="$DOTFILE_DIR"
+  if [ ! "$DIR"  ]; then
+    DIR="$DOTFILE_DIR"
+  fi
   local message="${USER} "
 
   cd "$DIST"

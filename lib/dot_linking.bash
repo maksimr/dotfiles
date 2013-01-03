@@ -15,8 +15,12 @@ function dot_linking() {
 
   # if some arguments not passed then set
   # default value
-  [[ "$DIR" ]] || DIR="$DOTFILE_DIR"
-  [[ "$DIST" ]] || DIST="$HOME"
+  if [ ! "$DIR" ];then
+    DIR="$DOTFILE_DIR"
+  fi
+  if [ ! "$DIST" ];then
+    DIST="$HOME"
+  fi
 
   # change current directory
   cd "$DIST"
@@ -46,20 +50,25 @@ function dot_linking() {
     # if file exist then prompt message
     if [ -e "$lfile" ]
     then
+      if [ "$DOT_LINKING_SOFT" ]
+      then
+        continue
+      fi
+
       echo "" 1>&0
       echo "linking: replace $lfile?" 1>&0
-      read -p "" -n 1
+      read REPLY
 
-      if [[ $REPLY =~ ^[Yy]$  ]]
+      if [[ "$REPLY" =~ ^[Yy]$  ]]
       then
         rm -rf "$lfile"
         echo "$lfile"
-        ln -s -i $file $lfile
+        ln -s $file $lfile
       fi
 
     else
       echo "$lfile"
-      ln -s -i $file $lfile
+      ln -s $file $lfile
     fi
   done
 
@@ -67,4 +76,12 @@ function dot_linking() {
   cd "$CURRENT_DIR"
 
   return 0
+}
+
+function dot_linking_soft() {
+  export DOT_LINKING_SOFT='true'
+
+  dot_linking $1 $2
+
+  unset DOT_LINKING_SOFT
 }
