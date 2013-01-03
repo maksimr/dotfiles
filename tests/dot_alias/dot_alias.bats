@@ -6,15 +6,15 @@ load ../test_helper
   require dot_alias
   run dot_alias
 
-  [ "$(echo $output | grep 'config/bash')" ]
+  [[ "$output" == *config/bash* ]]
 }
 
 @test "It should print aliases matching passed patter" {
   require dot_alias
   run dot_alias 'file'
 
-  [ "$(echo $output | grep 'file')" ]
-  [ ! "$(echo $output | grep 'config')" ]
+  [[ "$output" == *file* ]]
+  [[ "$output" != *config* ]]
 }
 
 @test "It should create alias" {
@@ -24,7 +24,7 @@ load ../test_helper
   run dot_alias "aliases" "alias"
   run dot_alias
 
-  [ "$(echo $output | grep 'alias')" ]
+  [[ "$output" == *alias* ]]
 }
 
 #vim: set ft=sh
