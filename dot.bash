@@ -7,6 +7,9 @@ then
   export DOTFILE_DIR="$(cd $(dirname ${BASH_SOURCE[0]:-$0}); pwd)"
 fi
 
+# add bin dotfiles to PATH
+export PATH="$DOTFILE_DIR/bin:$PATH"
+
 function require() {
   local EXT="$2"
   if [ ! "$EXT" ];then
@@ -29,17 +32,16 @@ function dot() {
         echo "Dotfiles Manager"
         echo
         echo "Usage:"
-        echo "    dot help         Show this message"
-        echo "    dot upgrade      Upgrade dotfiles"
-        echo "    dot linking      Create symlinks"
-        echo "    dot ln"
-        echo "    dot lns          Soft linking. Doesn't replace existing files"
-        echo "    dot destroy      Remove created symlinks"
-        echo "    dot rm"
-        echo "    dot save         Save changes in dotfile and push on remote server"
-        echo "    dot ci"
-        echo "    dot alias        Show list of created symlinks"
-        echo "    dot ls"
+        echo "    dot help                  Show this message"
+        echo "    dot upgrade               Upgrade dotfiles"
+        echo "    dot [linking | ln]        Create symlinks"
+        echo "    dot lns                   Soft linking. Doesn't replace existing files"
+        echo "    dot [destroy | rm]        Remove all created symlinks"
+        echo "    dot destroy <alias>       Remove symlink with name <alias>"
+        echo "    dot [save | ci]           Save changes in dotfile and push to remote server"
+        echo "    dot [alias | ls]          Show list of created symlinks"
+        echo "    dot alias <pattern>       Show all aliases beginning with <pattern>"
+        echo "    dot alias <file> <alias>  Create symlink <alias> on file/directory <file>"
         echo
         ;;
     "init" )
