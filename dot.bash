@@ -42,6 +42,7 @@ function dot() {
         echo "    dot [alias | ls]          Show list of created symlinks"
         echo "    dot alias <pattern>       Show all aliases beginning with <pattern>"
         echo "    dot alias <file> <alias>  Create symlink <alias> on file/directory <file>"
+        echo "    dot test                  Run tests for dotfiles manager"
         echo
         ;;
     "init" )
@@ -112,6 +113,12 @@ function dot() {
       ;;
     "alias" | "ls" )
         dot_alias $2 $3
+      ;;
+    "test" )
+        local CURRENT_DIR="$(pwd)"
+        cd "$DOTFILE_DIR"
+        $DOTFILE_DIR/lib/bats/bin/bats $DOTFILE_DIR/tests/tests.bats
+        cd "$CURRENT_DIR"
       ;;
     * )
         dot help
