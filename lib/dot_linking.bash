@@ -9,18 +9,9 @@
 # @param {[Dir]} DIST The destination directory where will be created links
 # by default $HOME
 function dot_linking() {
-  local DIR="$1"
-  local DIST="$2"
+  local DIR="${1:-$DOTFILE_DIR}"
+  local DIST="${2:-$HOME}"
   local CURRENT_DIR="$(pwd)"
-
-  # if some arguments not passed then set
-  # default value
-  if [ ! "$DIR" ];then
-    DIR="$DOTFILE_DIR"
-  fi
-  if [ ! "$DIST" ];then
-    DIST="$HOME"
-  fi
 
   # change current directory
   cd "$DIST"

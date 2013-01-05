@@ -5,11 +5,8 @@
 # @param {[Dir]} DIR The dotfiles directory
 # by default $DOTFILE_DIR
 function dot_upgrade() {
-  local DIR="$1"
+  local DIR="${1:-$DOTFILE_DIR}"
   local CURRENT_DIR="$(pwd)"
-  if [ ! "$DIR" ];then
-    DIR="$DOTFILE_DIR"
-  fi
 
   cd "$DIR"
 

@@ -11,10 +11,7 @@ fi
 export PATH="$DOTFILE_DIR/bin:$PATH"
 
 function require() {
-  local EXT="$2"
-  if [ ! "$EXT" ];then
-    EXT="bash"
-  fi
+  local EXT="${2:-bash}"
   source "$DOTFILE_DIR/lib/$1.$EXT"
 }
 
@@ -25,6 +22,8 @@ require dot_update
 
 function dot() {
   local ALIASES="$DOTFILE_DIR/aliases"
+  local CURRENT_DIR="$(pwd)"
+  local DIST="${2:-$DOTFILE_DIR/export}"
 
   case "$1" in
     "help" | "--help" )
@@ -46,7 +45,6 @@ function dot() {
         echo
         ;;
     "init" )
-          local CURRENT_DIR="$(pwd)"
           cd "$DOTFILE_DIR"
           git submodule update --init --recursive 2>/dev/null
           cd $CURRENT_DIR
@@ -54,38 +52,23 @@ function dot() {
           dot upgrade
         ;;
     "upgrade" )
-        local DIST="$2"
-        if [ ! "$DIST" ]; then
-          DIST="$DOTFILE_DIR/export"
-        fi
-
         dot_upgrade
         local alias="$(dot_linking_soft $DIST $3)"
         echo "$alias" >> "$ALIASES"
         dot alias
       ;;
     "linking" | "ln" )
-        local DIST="$2"
-        if [ ! "$DIST" ]; then
-          DIST="$DOTFILE_DIR/export"
-        fi
-
         local alias="$(dot_linking $DIST $3)"
 
         echo "$alias" >> "$ALIASES"
         dot alias
       ;;
     "lns" )
-      # soft linking
-        local DIST="$2"
-        if [ ! "$DIST" ]; then
-          DIST="$DOTFILE_DIR/export"
-        fi
+        # soft linking
         local alias="$(dot_linking_soft $DIST $3)"
         echo "$alias" >> "$ALIASES"
       ;;
     "destroy" | "rm" )
-        local CURRENT_DIR="$(pwd)"
         local ALIASES_TMP="$DOTFILE_DIR/~aliases"
 
         cd "$HOME"
@@ -115,7 +98,6 @@ function dot() {
         dot_alias $2 $3
       ;;
     "test" )
-        local CURRENT_DIR="$(pwd)"
         cd "$DOTFILE_DIR"
         $DOTFILE_DIR/lib/bats/bin/bats $DOTFILE_DIR/tests/tests.bats
         cd "$CURRENT_DIR"
