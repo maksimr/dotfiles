@@ -1,0 +1,28 @@
+# Global alias for zsh
+# vim: ft=zsh
+
+alias zshrc="vim ~/.zshrc"
+alias up="sudo apt-get update && sudo apt-get upgrade"
+alias i="sudo apt-get install "
+alias mk="mkdir -p"
+alias t="touch"
+alias q="exit"
+
+# change some aliases if grc installed
+if [ $(which grc)  ]
+then
+  alias ll='grc ls -lFh --color=yes'
+  alias ping="grc ping"
+  alias traceroute="grc traceroute"
+  alias make="grc make"
+  alias diff="grc diff"
+  alias cvs="grc cvs"
+  alias netstat="grc netstat"
+  alias logc="grc cat"
+  alias logt="grc tail"
+  alias logh="grc head"
+fi
+
+# load local aliases
+# it can be rewrited aliases from .local/zsh
+. .local/alias 2>/dev/null

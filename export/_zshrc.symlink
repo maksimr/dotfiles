@@ -1,82 +1,19 @@
-# Path to your oh-my-zsh configuration.
-ZSH=$HOME/.oh-my-zsh
-
-ZSH_THEME="robbyrussell"
-
-# Устанавливаем размер истории команд и файл в котором
-# история будет хранится
-HISTSIZE=1000
-SAVEHIST=1000
-
-plugins=(git vundle svn vi-mode history-substring-search zsh-syntax-highlighting)
-
-#zsh-syntax-highlighting plugin
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-
-source $ZSH/oh-my-zsh.sh
-
-export NODE_PATH=/usr/local/lib/jsctags/:$NODE_PATH
-
-PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n:%~ %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
-
-if [ -f "$HOME/.zshrc.local" ]
-then
-  source $HOME/.zshrc.local
+# zshrc
+# load dotfiles zsh files
+if [ -d "$HOME/.zsh" ]; then
+  for dzsh in $(ls "$HOME/.zsh"); do
+    . $HOME/.zsh/$dzsh
+  done
 fi
 
-# Настройка alias-ов
-alias zshrc="vim ~/.zshrc"
-alias up="sudo apt-get update && sudo apt-get upgrade"
-alias i="sudo apt-get install "
-alias mk="mkdir -p"
-alias t="touch"
-alias q="exit"
-
-if [ $(which grc) ]
-then
-  alias ll='grc ls -lFh --color=yes'
-  alias ping="grc ping"
-  alias traceroute="grc traceroute"
-  alias make="grc make"
-  alias diff="grc diff"
-  alias cvs="grc cvs"
-  alias netstat="grc netstat"
-  alias logc="grc cat"
-  alias logt="grc tail"
-  alias logh="grc head"
+# load .zshrc.local
+if [ -f "$HOME/.zshrc.local" ]; then
+  . $HOME/.zshrc.local
 fi
 
-# vi-mode plugin
-# add to vim mode some emacs key bindings
-bindkey '\C-r' history-incremental-search-backward
-bindkey '\C-s' history-incremental-search-forward
-bindkey '\C-w' backward-delete-word
-bindkey '\C-a' beginning-of-line
-bindkey '\C-e' end-of-line
-bindkey ' ' magic-space  # [Space]o] - do history expansion
-bindkey -M vicmd '\C-r' history-incremental-search-backward
-bindkey -M vicmd '\C-a' beginning-of-line
-bindkey -M vicmd '\C-e' end-of-line
-bindkey -M vicmd '?' history-incremental-search-forward
-
-# zsh-syntax-highlighting plugin
-# Redifine colors
-ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[command]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[alias]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[builtin]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[function]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[command]='fg=green,bold'
-
-# Запускаем tmux сразу при заходе в терминал
-# $SHLVL - увеличивается на единицу каждый раз когда стартует новый bash
-# -2 для поддержки цветов (256)
-# I Don't use patched font in terminal
-export USE_PATCHED_FONT="false"
-if [ $SHLVL = 1  ]; then
-  tmux -2 && exit # exit from shell after exit tmux
+# load local zsh files
+if [ -d "$HOME/.local/zsh" ]; then
+  for lzsh in $(ls "$HOME/.local/zsh"); do
+    . $HOME/.local/zsh/$lzsh
+  done
 fi
-
-. ~/.dotfiles/dot.bash 2>/dev/null
-. ~/.nvm/nvm.sh 2>/dev/null
-. ~/.dvm/dvm.sh 2>/dev/null

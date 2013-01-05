@@ -1,0 +1,11 @@
+# Different configuration for oh-my-zsh plugins
+# vim: ft=zsh
+
+# zsh-syntax-highlighting plugin
+# Redifine colors
+ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[command]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[function]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[command]='fg=green,bold'

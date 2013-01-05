@@ -1,0 +1,6 @@
+# Load scripts
+# vim: ft=zsh
+
+. ~/.dotfiles/dot.bash 2>/dev/null
+. ~/.nvm/nvm.sh 2>/dev/null
+. ~/.dvm/dvm.sh 2>/dev/null
