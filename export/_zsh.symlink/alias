@@ -25,4 +25,4 @@ fi
 
 # load local aliases
 # it can be rewrited aliases from .local/zsh
-. .local/alias 2>/dev/null
+. $HOME/.local/alias 2>/dev/null
