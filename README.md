@@ -86,14 +86,15 @@ Save and add changes to remote server:
 
   ```dot save```
 
-Run tests for dotfiles manager:
-  ```dot test```
-
 Create custom symlink and add it to alias list.
 It create symlink '_zshrc' on '.zshrc' to home directory, and add
 it to alias list where you can delete it using command 'dot destroy _zshrc':
 
   ```dot alias .zshrc _zshrc```
+
+Run tests for dotfiles manager:
+
+  ```dot test```
 
 
 
