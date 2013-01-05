@@ -17,4 +17,4 @@ bindkey -M vicmd '?' history-incremental-search-forward
 
 # load local bindkey
 # it can be rewrited bindkey from .local/zsh
-. .local/bindkey 2>/dev/null
+. $HOME/.local/bindkey 2>/dev/null
