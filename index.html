@@ -16,7 +16,7 @@
     <div class="wrapper">
       <header>
         <h1>Dotfiles</h1>
-        <p>❤</p>
+        <p>❤ This is not only dotfiles, but it also provide dotfiles manager command 'dot'</p>
 
         <p class="view"><a href="https://github.com/maksimr/dotfiles">View the Project on GitHub <small>maksimr/dotfiles</small></a></p>
 
@@ -62,15 +62,11 @@ In order to solve this problem for myself and I wrote the dotfile script.
 That should solve the problem with the synchronization and organization of system files.
 Load and run.</p>
 
-<h3>• Installation (Doesn't work now)</h3>
+<h3>• Installation</h3>
 
-<p>To install you could use the install script (requires Git) using cURL:</p>
+<p>To install you could use the install script (requires Git) using Wget:</p>
 
-<p>`<code>curl curl https://raw.github.com/maksimr/dotfiles/master/install.sh | sh</code></p>
-
-<p>or Wget:</p>
-
-<p><code>wget -qO- https://raw.github.com/maksimr/dotfiles/master/install.sh | sh</code></p>
+<p><code>wget -qO- https://raw.github.com/maksimr/dotfiles/master/install.sh | bash</code></p>
 
 <h3>• Manual install</h3>
 
@@ -115,6 +111,10 @@ It create symlink '_zshrc' on '.zshrc' to home directory, and add
 it to alias list where you can delete it using command 'dot destroy _zshrc':</p>
 
 <p><code>dot alias .zshrc _zshrc</code></p>
+
+<p>Run tests for dotfiles manager:</p>
+
+<p><code>dot test</code></p>
 
 <h3>• Test</h3>
 
