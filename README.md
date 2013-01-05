@@ -34,16 +34,11 @@ Load and run.
 
 
 
-###• Installation (Doesn't work now)
+###• Installation
 
-To install you could use the install script (requires Git) using cURL:
+To install you could use the install script (requires Git) using Wget:
 
-  ```curl curl https://raw.github.com/maksimr/dotfiles/master/install.sh | sh```
-
-or Wget:
-
-  ```wget -qO- https://raw.github.com/maksimr/dotfiles/master/install.sh | sh```
-
+  ```wget -qO- https://raw.github.com/maksimr/dotfiles/master/install.sh | bash```
 
 
 ###• Manual install
