@@ -49,7 +49,7 @@ If you have git installed, then just clone it:
 
 To activate dotfile, you need to source it from your bash shell
 
-  ```. ~/.dotfiles/dot.sh```
+  ```. ~/.dotfiles/dot.bash```
 
 You can add this line to your '.bashrc' or '.zshrc' file to have it automatically sourced upon login.
 
