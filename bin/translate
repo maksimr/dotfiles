@@ -1,0 +1,28 @@
+#!/bin/bash
+# Maksim Ryzhikov
+#
+# Translate words using google translator
+# LANGPAIR='en|ru' by default
+# for changing LANGPAIR use 'export LANGPAIR="en|fr"'
+
+function _translate(){
+  local url="http://www.translate.google.com/translate_a/t"
+  local langpair="${LANGPAIR:-en|ru}"
+
+  local text="$@"
+  local hl="${langpair%%|*}"
+  local tl="${langpair##*|}"
+  local sl="$hl"
+
+  local query="client=t&hl=$hl&sl=$sl&tl=$tl&multires=1&otf=1&ssel=0&tsel=0&sc=1"
+
+  # make request
+  local result=$(curl -s  --data-urlencode "text=$text" "$url?$query" -H "User-Agent: Mozilla/5.0 (X11; Linux i686; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")
+  # simple stupid parsing
+  result="${result#*\"}"
+  result="${result%%\"*}"
+  echo "$result"
+
+}
+
+_translate $@
