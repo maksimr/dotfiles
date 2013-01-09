@@ -8,6 +8,21 @@ alias mk="mkdir -p"
 alias t="touch"
 alias q="exit"
 
+alias l="ls"
+
+alias gg="git grep"
+
+alias c="cd"
+alias f="find"
+alias e="echo"
+alias s="sudo"
+alias sa="sudo apt-get"
+alias k9="kill -9"
+alias dus='df -h'
+
+alias v="vim"
+alias vl='vim "$(ls -t | head -1)"' # open last modified file in vim
+
 # change some aliases if grc installed
 if [ $(which grc)  ]
 then
