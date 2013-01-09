@@ -1,0 +1,48 @@
+# autojump
+# vim: ft=zsh
+if [[ -s "/usr/share/autojump/autojump.sh" || -s "$HOME/.autojump/etc/profile.d/autojump.sh" ]]
+then
+  source /usr/share/autojump/autojump.sh 2>/dev/null
+  source ~/.autojump/etc/profile.d/autojump.sh 2>/dev/null
+
+  autoload -U compinit; compinit
+  export AUTOJUMP_IGNORE_CASE=1
+  export AUTOJUMP_KEEP_ALL_ENTRIES=1
+  export AUTOJUMP_KEEP_SYMLINKS=1
+  export AUTOJUMP_AUTOCOMPLETE_CMDS='cp vim'
+
+  # more coolest autojump
+  function j(){
+    # if we pass directory path
+    # then call 'cd'
+    if [ -d "$1" ]
+    then
+      cd "$1"
+    fi
+
+    if [ $# -le 1 ]
+    then
+      # split by '/'
+      # 'foo/bar' -> 'foo bar'
+      local ARGUMENTS="${1//\// }"
+      jj ${(s/ /)ARGUMENTS}
+      return
+    fi
+
+    jj $@
+  }
+
+  # source of j command form autojump.sh `which j`
+  function jj () {
+    local new_path="$(autojump $@)"
+    if [ -d "${new_path}" ]
+    then
+      echo -e "\\033[31m${new_path}\\033[0m"
+      cd "${new_path}"
+    else
+      echo "autojump: directory '${@}' not found"
+      echo "Try \`autojump --help\` for more information."
+      false
+    fi
+  }
+fi
