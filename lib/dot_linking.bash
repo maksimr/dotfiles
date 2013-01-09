@@ -50,7 +50,8 @@ function dot_linking() {
       echo "linking: replace $lfile?" 1>&0
       read REPLY
 
-      if [[ "$REPLY" =~ ^[Yy]$  ]]
+      # failed to load module: zsh/regex
+      if [ "$REPLY" = "Y" -o "$REPLY" = "y" ]
       then
         rm -rf "$lfile"
         echo "$lfile"

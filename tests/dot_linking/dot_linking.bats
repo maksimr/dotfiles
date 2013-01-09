@@ -33,4 +33,11 @@ load ../test_helper
   [ -L "$HOME/custom_file" ]
 }
 
+@test "It should create symlink on directory" {
+  require dot_linking
+  run dot_linking
+
+  [ -L "$HOME/.dir" ]
+}
+
 #vim: set ft=sh
