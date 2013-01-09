@@ -41,7 +41,7 @@
     "supernew"     : false,
     "trailing"     : true,
     "white"        : false,
-    "wsh"          : false
+    "wsh"          : false,
 
     "predef"     : [
     "jasmine",
