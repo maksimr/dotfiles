@@ -1,0 +1,38 @@
+# fasd
+# vim: ft=zsh
+if [ "$(command -v fasd)" ]
+then
+
+  eval "$(fasd --init auto)"
+
+  function ff(){
+    local ARGUMENTS
+
+    if [ -d "$1" ]
+    then
+      cd "$1"
+      return
+    fi
+
+    if [ $# -eq 1 ]
+    then
+      ARGUMENTS="${1//\// }"
+      cd "$(fasd -a ${(s/ /)ARGUMENTS})"
+      return
+    fi
+
+    if [ $# -eq 2 ]
+    then
+      # first argument command
+      # second path
+      ARGUMENTS="${2//\// }"
+      fasd -e "$1" -a ${(s/ /)ARGUMENTS}
+      return
+    fi
+
+    cd "$(fasd -a $@)"
+  }
+
+  # aliases
+  alias fv='ff vim'
+fi

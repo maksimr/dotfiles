@@ -18,6 +18,7 @@ then
     if [ -d "$1" ]
     then
       cd "$1"
+      return
     fi
 
     if [ $# -le 1 ]
