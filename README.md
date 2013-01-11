@@ -94,16 +94,16 @@ Run tests for dotfiles manager:
 
 ###• What I use
 
-  - [x] vim
-  - [x] zsh
-  - [x] oh-my-zsh
-  - [x] autojump
-  - [x] fasd
-  - [x] tmux
-  - [x] awesome
-  - [x] pentadactyl
-  - [x] git
-  - [x] editorconfig
+  - ✗ vim
+  - ✗ zsh
+  - ✗ oh-my-zsh
+  - ✗ autojump
+  - ✗ fasd
+  - ✗ tmux
+  - ✗ awesome
+  - ✗ pentadactyl
+  - ✗ git
+  - ✗ editorconfig
 
 For more information see `export` directory
 
