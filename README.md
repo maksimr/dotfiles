@@ -92,6 +92,20 @@ Run tests for dotfiles manager:
   ```dot test```
 
 
+###• What I use
+
+  - [x] vim
+  - [x] zsh
+  - [x] oh-my-zsh
+  - [x] autojump
+  - [x] fasd
+  - [x] tmux
+  - [x] awesome
+  - [x] pentadactyl
+  - [x] git
+  - [x] editorconfig
+
+For more information see `export` directory
 
 ###• Test
 
