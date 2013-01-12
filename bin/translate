@@ -24,7 +24,7 @@ function _translate(){
 
   if [ "$(command -v notify-send)" ]
   then
-    notify-send "$result" -i /usr/share/pixmaps/chromium-browser.png
+    notify-send "$result"
   fi
 
   echo "$result"
