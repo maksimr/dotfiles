@@ -5,7 +5,7 @@
 " 2012-04-22
 
 " открываем .vimrc
-nnoremap <leader>ev :vsplit ~/.vim/.vimrc<cr>
+nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 " загружаем .vimrc в текущую сессию
 nnoremap <leader>sv :so ~/.vimrc<cr>
 
