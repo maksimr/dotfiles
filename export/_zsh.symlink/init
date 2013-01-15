@@ -4,7 +4,6 @@
 function {
   local scripts
   scripts=(
-    ~/.dotfiles/dot.bash
     ~/.nvm/nvm.sh
     ~/.dvm/dvm.sh
   )
