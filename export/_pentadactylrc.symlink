@@ -39,6 +39,7 @@ set strictfocus=*:laissez-faire
 set  passkeys+='^http?://music\.google\.com/music/':-=<Space>/
 set  passkeys+='^https?://mail\.google\.com/mail/':jknpo#
 set  passkeys+='^https?://www\.google\.com/reader/':jknpostuvNPT
+set  passkeys+='^https?://class\.coursera\.org/':pc<Left><Right><Up><Down>
 set hintkeys=absdfglkjhoperqnmit
 
 Bundle maksimr/pundle
