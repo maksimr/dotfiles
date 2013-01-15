@@ -5,8 +5,14 @@ then
 
   eval "$(fasd --init auto)"
 
+  # more coolest fasd
   function ff(){
     local ARGUMENTS
+
+    if [ ! "$1" ]
+    then
+      return
+    fi
 
     if [ -d "$1" ]
     then
@@ -33,6 +39,7 @@ then
     cd "$(fasd -a $@)"
   }
 
+  alias f="ff"
   # aliases
   alias fv='ff vim'
 fi
