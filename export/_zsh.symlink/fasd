@@ -11,6 +11,7 @@ then
 
     if [ ! "$1" ]
     then
+      cd "$(fasd -Rl | head -1)"
       return
     fi
 
