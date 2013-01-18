@@ -26,7 +26,7 @@ alias vl='vim "$(ls -t | head -1)"' # open last modified file in vim
 alias vll='vim "$(find . ! \( -path "./.*" -o  -path "*/.*" \) -type f -printf "%T@ %p\n" | sort -n | tail -1 | cut -f2- -d" " )"'
 
 # change some aliases if grc installed
-if [ $(which grc)  ]
+if [ "$(command -v grc)"  ]
 then
   alias ll='grc ls -lFh --color=yes'
   alias ping="grc ping"
