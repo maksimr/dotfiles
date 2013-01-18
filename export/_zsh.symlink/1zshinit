@@ -16,6 +16,13 @@ plugins=(git vundle svn vi-mode history-substring-search zsh-syntax-highlighting
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
+# Добавляем домашнюю директорию bin
+# если ее еще нет в переменной $PATH
+case ":$PATH:" in
+  *:"$HOME/bin":*) ;;
+  *) PATH="$HOME/bin:$PATH" ;;
+esac
+
 source $ZSH/oh-my-zsh.sh
 export NODE_PATH=/usr/local/lib/jsctags/:$NODE_PATH
 
