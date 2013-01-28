@@ -44,6 +44,11 @@
     "wsh"          : false,
 
     "predef"     : [
+
+    "dactyl",
+    "group",
+    "io",
+
     "jasmine",
     "define",
     "require",
