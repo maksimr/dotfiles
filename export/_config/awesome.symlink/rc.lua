@@ -360,10 +360,11 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 
 -- show cleint on focus
 -- need for correct work gnome-pie
-client.add_signal("focus", function(c)
-  c:raise()
-  awful.screen(c.screen)
-end)
+--client.add_signal("focus", function(c)
+  --c:raise()
+  --awful.screen(c.screen)
+--end)
+
 -- }}}
 -- {{{ Autorun
 -- Run process only once
@@ -380,7 +381,7 @@ run_once("gnome-screensaver")
 run_once("gnome-settings-daemon")
 run_once("pidgin")
 run_once("gnome-do")
-run_once("gnome-pie")
+--run_once("gnome-pie")
 run_once("google-musicmanager")
 
 --run_once("unity-2d-panel")

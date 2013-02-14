@@ -1,0 +1,7 @@
+#!/bin/sh
+# Google scratchpad. Need install chromium browser.
+
+if [ "$(command -v chromium-browser)" ]
+then
+  chromium-browser --app-id="kjebfhglflhjjjiceimfkgicifkhjlnm"
+fi
