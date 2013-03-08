@@ -50,6 +50,12 @@
     "io",
 
     "jasmine",
+
+    "i18n",
+    "Jane",
+    "Daria",
+    "jpath",
+
     "define",
     "require",
     "describe",
