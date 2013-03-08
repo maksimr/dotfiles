@@ -29,6 +29,8 @@
 
 " Themes
   Bundle 'Lokaltog/vim-powerline'
+  " Подсвечивает отступы
+  Bundle 'nathanaelkane/vim-indent-guides'
 
 " Interface
   Bundle 'tpope/vim-fugitive'
@@ -38,7 +40,7 @@
   Bundle 'ervandew/supertab'
   Bundle 'mattn/zencoding-vim'
   Bundle 'tpope/vim-eunuch'
-  " Позволяет обрамлять текстовые объекты кавычкаи,
+  " Позволяет обрамлять текстовые объекты кавычками,
   " тегами, скобками
   Bundle 'tpope/vim-surround'
 
