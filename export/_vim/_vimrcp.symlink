@@ -73,7 +73,7 @@
   " для javascript можно установить jsctags (https://github.com/mozilla/doctorjs)
   Bundle 'majutsushi/tagbar'
   Bundle 'douglascrockford/JSLint'
-  " расширенный taglist.vim с улучшенной поддрежкой javascript
+  " расширенный taglist.vim с улучшенной поддержкой javascript
   " также зависит от jsctags
   Bundle 'int3/vim-taglist-plus'
   "Bundle 'malclocke/vim-buster'
@@ -95,3 +95,5 @@
   " Добавляет возможность оставлять заметки
   " в vim-е
   Bundle 'xolox/vim-notes'
+  " Замена аббревиатурам
+  Bundle 'tpope/vim-abolish'
