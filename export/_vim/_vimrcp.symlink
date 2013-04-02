@@ -27,6 +27,13 @@
   " make ycm_core
   "Bundle 'Valloric/YouCompleteMe'
 
+  "Leverage the power of Vim's compiler plugins without being bound by
+  "synchronicity. Kick off builds and test suites using one of several
+  "asynchronous adapters (including tmux, screen, iTerm, Windows, and a
+  "headless mode), and when the job completes, errors will be loaded and
+  "parsed automatically.
+  Bundle 'tpope/vim-dispatch'
+
 " Themes
   Bundle 'Lokaltog/vim-powerline'
   " Подсвечивает отступы
