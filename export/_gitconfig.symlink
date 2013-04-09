@@ -11,5 +11,7 @@
 	diff = auto
 	interactive = auto
 	status = auto
+# Search a Git Repo Like a Ninja
 [grep]
 	extendRegexp = true
+        lineNumber = true
