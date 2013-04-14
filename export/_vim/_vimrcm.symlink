@@ -75,6 +75,11 @@ noremap <leader>, :CommandT<cr>
 nnoremap <leader>bb :W3m<space>
 nnoremap <leader>bw :W3m<space>http://search.yandex-team.ru/search?text=
 
+" ctrlp.vim
+" Open goto symbol on all buffers
+nmap <D-R> :CtrlPBufTagAll<cr>
+imap <D-R> <esc>:CtrlPBufTagAll<cr>
+
 nnoremap <s-f> mngg=G`n
 
 "fs brousing navigation
