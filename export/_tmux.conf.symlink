@@ -13,6 +13,14 @@ setw -g aggressive-resize on
 # another TMUX session
 bind-key b send-prefix
 
+# Перезагружаем конфигурационный файл
+unbind r
+bind r source-file ~/.tmux.conf
+
+# Быстрое переключение панелей
+unbind ^A
+bind ^A select-pane -t :.+
+
 # Навигация по командной строке и списку окон в режиме vi
 set -g status-keys vi
 setw -g mode-keys vi
@@ -59,3 +67,6 @@ set-option -g status-left-length 60
 set-option -g status-right-length 90
 set-option -g status-left "#(~/.tmux/tmux-powerline/powerline.sh left)"
 set-option -g status-right "#(~/.tmux/tmux-powerline/powerline.sh right)"
+
+# загружаем локальные настройки
+source-file ~/.tmux.local.conf
