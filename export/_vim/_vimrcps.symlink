@@ -76,6 +76,9 @@ let g:notes_directory = '~/Documents/Notes'
 " w3m
 let g:w3m#search_engine = 'http://duckduckgo.com/html/?q='
 let g:w3m#homepage = "http://www.google.com/"
+nmap <silent> <LEADER>w :W3mTab jquery! <c-r>=expand("<cword>")<CR><CR>
+nmap <LEADER>ws :W3mTab<space>
+nmap <LEADER>wj :W3mTab js!<space>
 
 " ctrlp.vim
 " Open goto symbol on all buffers

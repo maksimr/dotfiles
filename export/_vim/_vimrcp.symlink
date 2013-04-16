@@ -60,6 +60,10 @@
   " тегами, скобками
   Bundle 'tpope/vim-surround'
 
+  " Множественный выбор и изменение как в
+  " sublime
+  Bundle 'terryma/vim-multiple-cursors'
+
   " зависимости для vim-snipmate
   Bundle "MarcWeber/vim-addon-mw-utils"
   Bundle "tomtom/tlib_vim"
