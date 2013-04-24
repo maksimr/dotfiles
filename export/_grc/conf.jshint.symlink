@@ -2,8 +2,23 @@
 
 # file name
 regexp=^[\w.]{1,}:
-colours=bold magenta
+colours=bold blue
 count=once
+-
+# line
+regexp=\s+line\s+(\d+)
+colours=bold
+count=once
+-
+# line
+regexp=\s+col\s+(\d+)
+colours=bold
+count=once
+-
+# everything in quotes
+regexp=[\"\'].+?[\'\"]
+colours=bold yellow
+count=more'
 -
 # errors count
 regexp=^(\d+)\s*\w+$
