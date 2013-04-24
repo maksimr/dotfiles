@@ -6,5 +6,6 @@ notifications:
     - rv.maksim@gmail.com
 before_script:
   - npm install grunt-cli
+  - npm install grunt
   - sleep 5
 script: grunt test
