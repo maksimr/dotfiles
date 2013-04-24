@@ -42,6 +42,6 @@ module.exports = function(grunt) {
     });
 
     // Alias the `test` task to run the `mocha` task instead
-    grunt.registerTask('test', 'bats');
-    grunt.registerTask('default', 'watch');
+    grunt.registerTask('test', ['bats']);
+    grunt.registerTask('default', ['watch']);
 };
