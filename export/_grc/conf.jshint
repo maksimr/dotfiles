@@ -1,0 +1,11 @@
+# Highlight jshint errors
+
+# file name
+regexp=^[\w.]{1,}:
+colours=bold magenta
+count=once
+-
+# errors count
+regexp=^(\d+)\s*\w+$
+colours=bold red
+count=once

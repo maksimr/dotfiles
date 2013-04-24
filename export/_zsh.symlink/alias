@@ -38,6 +38,7 @@ then
   alias logc="grc cat"
   alias logt="grc tail"
   alias logh="grc head"
+  alias jshint="grc jshint"
 fi
 
 # load local aliases
