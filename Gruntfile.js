@@ -15,11 +15,11 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('bats', 'Bats is a test framework for shell', function(options) {
+    grunt.registerTask('bats', 'Bats is a test framework for shell', function() {
         var data = grunt.config('bats');
-        var utils = grunt.utils;
+        var utils = grunt.util;
         var verbose = grunt.verbose;
-        var args = grunt.file.expandFiles(data.args);
+        var args = grunt.file.expand(data.args);
         var log = grunt.log;
         var done = this.async();
 

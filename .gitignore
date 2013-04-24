@@ -4,3 +4,4 @@
 *.swn
 *.swm
 /aliases
+node_modules
