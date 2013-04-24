@@ -6,7 +6,7 @@
     "couch"        : true,
     "curly"        : false,
     "debug"        : false,
-    "devel"        : true,
+    "devel"        : false,
     "eqeqeq"       : true,
     "eqnull"       : false,
     "es5"          : false,
