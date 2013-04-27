@@ -7,7 +7,9 @@
 
 " Snipmate переопределение основной клавиши
 " <esc> - Alt
-let g:snips_trigger_key='<esc>l'
+"let g:snips_trigger_key='<esc>l'
+imap <esc>l <Plug>snipMateNextOrTrigger
+smap <esc>l <Plug>snipMateNextOrTrigger
 
 " Ack заменяем команду с ack на ack-grep
 let g:ackprg="ack-grep -H --nocolor --nogroup --column"
