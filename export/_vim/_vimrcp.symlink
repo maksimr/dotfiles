@@ -40,6 +40,9 @@
   "and the files they contain.
   Bundle 'xolox/vim-session'
 
+  " Метки
+  Bundle 'kshenoy/vim-signature'
+
 " Themes
   Bundle 'Lokaltog/vim-powerline'
   " Подсвечивает отступы
@@ -51,7 +54,7 @@
 
   "automatic closing of quotes, parenthesis, brackets, etc.
   "Bundle 'jiangmiao/auto-pairs'
-  Bundle "Raimondi/delimitMate"
+  Bundle 'Raimondi/delimitMate'
 
   Bundle 'ervandew/supertab'
   Bundle 'mattn/zencoding-vim'
@@ -65,12 +68,12 @@
   Bundle 'terryma/vim-multiple-cursors'
 
   " зависимости для vim-snipmate
-  Bundle "MarcWeber/vim-addon-mw-utils"
-  Bundle "tomtom/tlib_vim"
+  Bundle 'MarcWeber/vim-addon-mw-utils'
+  Bundle 'tomtom/tlib_vim'
   " шаблоны от honza, так как сам vim-snipmate не содержит шаблонов
-  Bundle "honza/vim-snippets"
+  Bundle 'honza/vim-snippets'
   " сам vim-snipmate
-  Bundle "garbas/vim-snipmate"
+  Bundle 'garbas/vim-snipmate'
 
 " HTML/HAML
   Bundle 'tpope/vim-haml'
@@ -78,11 +81,10 @@
 
 " CSS/SASS
   Bundle 'vim-scripts/SAS-Syntax-File'
-  "Bundle 'miripiruni/CSScomb-for-Vim'
 
 " Ruby/Rails
   Bundle 'vim-ruby/vim-ruby'
-  Bundle "tpope/vim-rails"
+  Bundle 'tpope/vim-rails'
 
 " Javascript
   Bundle 'kchmck/vim-coffee-script.git'

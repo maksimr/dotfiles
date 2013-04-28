@@ -4,12 +4,61 @@
 " @type plugins settings
 " 2012-04-22
 
-
-" Snipmate переопределение основной клавиши
+" XXX То что использую
+"  Bundle 'garbas/vim-snipmate'
+" переопределение основной клавиши
 " <esc> - Alt
-"let g:snips_trigger_key='<esc>l'
 imap <esc>l <Plug>snipMateNextOrTrigger
 smap <esc>l <Plug>snipMateNextOrTrigger
+
+"  Bundle 'kien/ctrlp.vim'
+" ctrlp_cmd - Команда которая будет вызвана по умолчанию
+" 'CtrlPMixed' - искать все (внутри файлов, буферов и MRU файлах существующих
+" в этот момент)
+let g:ctrlp_cmd = 'CtrlPMixed'
+let ctrlp_regexp = 1 "Включаем по умолчанию RegExp режим
+let g:ctrlp_match_window_bottom = 1  " показывать окно совпадений внизу
+let g:ctrlp_match_window_reversed = 0 " показывать максимальное совпадение сверху
+let g:ctrlp_max_height = 10    " высота окна совпадений
+
+let g:ctrlp_working_path_mode = 'ra' " search for nearest ancestor like .git, .hg, and the directory of the current file
+let g:ctrlp_swDtch_buffer = 'ET'  " Переходим в файл если он уже открыт в любом окне
+let g:ctrlp_use_caching = 1    " включаем cache
+let g:ctrlp_clear_cache_on_exit = 0    " Не чистим cache после выхода из vim-а
+let g:ctrlp_show_hidden = 1    " показываем скрытые (dotfiles) файлы
+let g:ctrlp_mruf_max = 250     " number of recently opened files
+"let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
+"let g:ctrlp_user_command = 'find %s -type f'
+nnoremap <c-l> :CtrlPLine<CR>
+nnoremap <LEADER>u :CtrlPUndo<CR>
+
+"  Bundle 'scrooloose/syntastic'
+let g:syntastic_auto_loc_list = 1   " Открываем и закрываем список с ошибками автоматически.
+let g:syntastic_enable_signs = 1    " красные метки на линиях
+let g:syntastic_error_symbol='✗'
+let g:syntastic_warning_symbol='⚠'
+let g:syntastic_auto_jump=0         " Не перескакиваем на ошибку автоматически
+let g:syntastic_javascript_checker="jshint"
+let g:syntastic_javascript_jshint_conf = expand("~/.hintrc")
+let g:syntastic_dart_analyzer_conf='-out /tmp/'
+
+
+" 2013-04-28
+" XXX то что использую редко или
+" не использую вообще но выкинуть жалко
+"
+" TODO
+" vimux, Conque-Shell, vim-dispatch надо оставить только
+" один, или удалить все если не буду
+" ими пользоваться
+
+"  Bundle 'benmills/vimux'
+nnoremap <Leader>vp :VimuxPromptCommand<CR>
+"  Bundle 'Conque-Shell'
+nnoremap <Leader>;; :ConqueTermTab<CR>
+"  Bundle 'tpope/vim-dispatch'
+nnoremap <Leader>vd :Dispatch<space>
+nnoremap <Leader>vs :Start<space>
 
 " Ack заменяем команду с ack на ack-grep
 let g:ackprg="ack-grep -H --nocolor --nogroup --column"
@@ -48,30 +97,6 @@ let g:AutoPairsShortcutToggle = '<esc>p'
 "let g:AutoPairsShortcutFastWrap = '<C-l>'
 let g:AutoPairsShortcutBackInsert = '<Leader>b'
 
-" Syntastic
-" Открываем и закрываем список с ошибками
-" автоматически.
-let g:syntastic_auto_loc_list = 1
-" Выключаем красные метки на линиях
-let g:syntastic_enable_signs = 1
-" Добавляем свои метки для ошибок и предупреждений
-let g:syntastic_error_symbol='✗'
-let g:syntastic_warning_symbol='⚠'
-" Не перескакиваем на ошибку автоматически
-let g:syntastic_auto_jump=0
-" И выключаем показ ошибки при наведении на линию
-" может сильно тормозить
-let g:syntastic_enable_balloons = 0
-" Добавляем информацию об ошибках в statusline
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-let g:syntastic_javascript_checker="jshint"
-" Настройка jshint
-let g:syntastic_javascript_jshint_conf = expand("~/.hintrc")
-" syntastic dart
-let g:syntastic_dart_analyzer_conf='-out /tmp/'
-
 " vim-notes
 let g:notes_directory = '~/Documents/Notes'
 
@@ -82,19 +107,6 @@ nmap <silent> <LEADER>w :W3mTab jquery! <c-r>=expand("<cword>")<CR><CR>
 nmap <LEADER>ws :W3mTab<space>
 nmap <LEADER>wj :W3mTab js!<space>
 
-" ctrlp.vim
-" Open goto symbol on all buffers
-"nmap <D-R> :CtrlPBufTagAll<cr>
-"imap <D-R> <esc>:CtrlPBufTagAll<cr>
-let g:ctrlp_cmd = 'CtrlPMixed'			" search anything (in files, buffers and MRU files at the same time.)
-let g:ctrlp_working_path_mode = 'ra'	" search for nearest ancestor like .git, .hg, and the directory of the current file
-let g:ctrlp_match_window_bottom = 1		" show the match window at the top of the screen
-let g:ctrlp_max_height = 10				" maxiumum height of match window
-let g:ctrlp_swDtch_buffer = 'et'		" jump to a file if it's open already
-let g:ctrlp_use_caching = 1				" enable caching
-let g:ctrlp_clear_cache_on_exit=0  		" speed up by not removing clearing cache evertime
-let g:ctrlp_show_hidden = 1				" show me dotfiles
-let g:ctrlp_mruf_max = 250 				" number of recently opened files
 
 " TODO: add javascript and some other languages who doesn't have ctags support
 " coffee: https://gist.github.com/michaelglass/5210282
@@ -102,7 +114,7 @@ let g:ctrlp_mruf_max = 250 				" number of recently opened files
 " objc:  http://www.gregsexton.org/2011/04/objective-c-exuberant-ctags-regex/
 " rust: https://github.com/mozilla/rust/blob/master/src/etc/ctags.rust
 let g:ctrlp_buftag_types = {
-\ 'go'     	   : '--language-force=go --golang-types=ftv',
+\ 'go'         : '--language-force=go --golang-types=ftv',
 \ 'coffee'     : '--language-force=coffee --coffee-types=cmfvf',
 \ 'markdown'   : '--language-force=markdown --markdown-types=hik',
 \ 'objc'       : '--language-force=objc --objc-types=mpci',
