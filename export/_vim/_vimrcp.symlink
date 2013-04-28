@@ -68,7 +68,7 @@
   Bundle "MarcWeber/vim-addon-mw-utils"
   Bundle "tomtom/tlib_vim"
   " шаблоны от honza, так как сам vim-snipmate не содержит шаблонов
-  Bundle "honza/snipmate-snippets"
+  Bundle "honza/vim-snippets"
   " сам vim-snipmate
   Bundle "garbas/vim-snipmate"
 
@@ -108,7 +108,7 @@
   " http://editorconfig.org/
   Bundle 'editorconfig/editorconfig-vim'
   " подсветка для dart-а
-  Bundle 'bartekd/vim-dart'
+  Bundle 'bartlomiejdanek/vim-dart'
   " встроенный в vim browser
   " sudo apt-get install w3m
   Bundle 'yuratomo/w3m.vim'
