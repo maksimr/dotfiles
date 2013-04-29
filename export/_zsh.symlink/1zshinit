@@ -12,7 +12,7 @@ ZSH_THEME="robbyrussell"
 HISTSIZE=1000
 SAVEHIST=1000
 
-plugins=(git vundle svn vi-mode history-substring-search zsh-syntax-highlighting jira bower debian)
+plugins=(git vundle svn vi-mode history-substring-search zsh-syntax-highlighting jira bower debian brew)
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
