@@ -42,6 +42,17 @@ let g:syntastic_javascript_checker="jshint"
 let g:syntastic_javascript_jshint_conf = expand("~/.hintrc")
 let g:syntastic_dart_analyzer_conf='-out /tmp/'
 
+" Если находимся внутри 'quickfix'
+" тогда вызываем lclose иначе quit
+function! QuitOrLclose()
+  if &buftype == 'quickfix'
+    lclose
+  else
+    quit
+  endif
+endfunction
+cabbrev q call QuitOrLclose()
+
 
 " 2013-04-28
 " XXX то что использую редко или
@@ -55,7 +66,7 @@ let g:syntastic_dart_analyzer_conf='-out /tmp/'
 "  Bundle 'benmills/vimux'
 nnoremap <Leader>vp :VimuxPromptCommand<CR>
 "  Bundle 'Conque-Shell'
-nnoremap <Leader>;; :ConqueTermTab<CR>
+nnoremap <Leader>;; :ConqueTermTab zsh<CR>
 "  Bundle 'tpope/vim-dispatch'
 nnoremap <Leader>vd :Dispatch<space>
 nnoremap <Leader>vs :Start<space>
@@ -114,12 +125,12 @@ nmap <LEADER>wj :W3mTab js!<space>
 " objc:  http://www.gregsexton.org/2011/04/objective-c-exuberant-ctags-regex/
 " rust: https://github.com/mozilla/rust/blob/master/src/etc/ctags.rust
 let g:ctrlp_buftag_types = {
-\ 'go'         : '--language-force=go --golang-types=ftv',
-\ 'coffee'     : '--language-force=coffee --coffee-types=cmfvf',
-\ 'markdown'   : '--language-force=markdown --markdown-types=hik',
-\ 'objc'       : '--language-force=objc --objc-types=mpci',
-\ 'rc'         : '--language-force=rust --rust-types=fTm'
-\ }
+      \ 'go'         : '--language-force=go --golang-types=ftv',
+      \ 'coffee'     : '--language-force=coffee --coffee-types=cmfvf',
+      \ 'markdown'   : '--language-force=markdown --markdown-types=hik',
+      \ 'objc'       : '--language-force=objc --objc-types=mpci',
+      \ 'rc'         : '--language-force=rust --rust-types=fTm'
+      \ }
 
 "vim-session
 let g:session_autosave = 'yes'
@@ -145,8 +156,8 @@ nmap <silent> <LEADER>a :call XikiLaunch()<CR>
 imap <silent> <C-a> <C-c>:call XikiLaunch()<CR>i
 " Error with flush
 if has('ruby')
-ruby << EOF
-class Object
+  ruby << EOF
+  class Object
   def flush; end unless Object.new.respond_to?(:flush)
 end
 EOF
@@ -159,3 +170,6 @@ autocmd FileType w3m nnoremap <buffer> H :call w3m#Back()<CR>
 let g:indent_guides_auto_colors = 0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#202020   ctermbg=235
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#252525 ctermbg=236
+
+"  Bundle 'marijnh/tern_for_vim'
+let g:tern_show_argument_hints = 1
