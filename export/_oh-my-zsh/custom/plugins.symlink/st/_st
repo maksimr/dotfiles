@@ -1,0 +1,10 @@
+#compdef st
+
+inTemplate=`ls -A $TEMPLATE_DIR | grep "$words[-1]"`
+if [ "$inTemplate" ]; then
+  inTemplate=(`ls -A $TEMPLATE_DIR`)
+  compadd -a inTemplate
+  return
+fi
+
+_files
