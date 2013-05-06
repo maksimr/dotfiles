@@ -42,6 +42,8 @@
 
   " Метки
   Bundle 'kshenoy/vim-signature'
+  " Историю изменений
+  Bundle 'sjl/gundo.vim'
 
 " Themes
   Bundle 'Lokaltog/vim-powerline'
