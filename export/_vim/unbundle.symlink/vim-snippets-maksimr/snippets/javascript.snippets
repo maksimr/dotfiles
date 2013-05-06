@@ -1,0 +1,58 @@
+#function
+snippet f
+	function(${1}) {
+		${2}
+	}${3}
+#function with semicolon
+snippet f;
+	function(${1}) {
+		${2}
+	};
+#Immediate function
+snippet (f
+	(function(${2}) {
+		${3}
+	}(${1})
+#Anonymous function
+snippet f,
+	function(${1}) {
+		${2}
+	},
+#Object Method
+snippet :f
+	${1}: function(${2}) {
+		${3}
+	}
+snippet :f,
+	${1}: function(${2}) {
+		${3}
+	},
+#Document Object Model(DOM)
+
+#DOJO SNIPPETS
+#dojo.declare
+snippet dd
+	dojo.provide('${1}');
+	dojo.declare('$1', [], {
+	});
+#dojo.require
+snippet dr
+	dojo.require('${1}');
+#AMD
+snippet de
+	define(['${1:module}'], function ($1) {
+		"use strict";
+	});
+snippet re
+	require(['${1:module}'], function ($1) {
+		"use strict";
+	});
+#Jasmine
+snippet des
+	describe('${1:Description}', function () {
+		${2}
+	});
+snippet it
+	it('${1:should}', function () {
+		${2}
+	});

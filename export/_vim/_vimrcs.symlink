@@ -69,7 +69,7 @@ let mapleader=','
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 set rtp+=~/.vim/bundle/vundle/             " Необходимо для vundle
 " Включаем pathogen
-execute pathogen#infect()
+execute pathogen#infect('bundle/{}', 'unbundle/{}')
 
 colorscheme lucius         " Устанавливаем цветовую схему
 

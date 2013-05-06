@@ -49,10 +49,13 @@
   Bundle 'Lokaltog/vim-powerline'
   " Подсвечивает отступы
   Bundle 'nathanaelkane/vim-indent-guides'
+  " Использую старую версию, находится в unbundle папке
+  "Bundle 'Lucius'
 
 " Interface
   Bundle 'tpope/vim-fugitive'
   Bundle 'mileszs/ack.vim'
+  Bundle 'The-NERD-Commenter'
 
   "automatic closing of quotes, parenthesis, brackets, etc.
   "Bundle 'jiangmiao/auto-pairs'
@@ -80,6 +83,7 @@
 " HTML/HAML
   Bundle 'tpope/vim-haml'
   Bundle 'hokaccha/vim-html5validator'
+  Bundle 'maksimr/vim-yate'
 
 " CSS/SASS
   Bundle 'vim-scripts/SAS-Syntax-File'

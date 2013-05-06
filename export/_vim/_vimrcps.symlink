@@ -5,6 +5,9 @@
 " 2012-04-22
 
 " XXX То что использую
+"  Bundle Lucius
+"LuciusDark
+
 "  Bundle 'garbas/vim-snipmate'
 " переопределение основной клавиши
 " <esc> - Alt
