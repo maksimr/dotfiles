@@ -1,7 +1,7 @@
 #!/bin/bash
 # Installation script
 
-DOTFILE_TARGET="$HOME/.dotfile"
+DOTFILE_TARGET="$HOME/.dotfiles"
 
 if [ -d "$DOTFILE_TARGET"  ]; then
   echo "=> Dotfile is already installed in $DOTFILE_TARGET, trying to update"
