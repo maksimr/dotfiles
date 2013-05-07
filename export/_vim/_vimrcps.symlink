@@ -47,14 +47,19 @@ let g:syntastic_dart_analyzer_conf='-out /tmp/'
 
 " Если находимся внутри 'quickfix'
 " тогда вызываем lclose иначе quit
-function! QuitOrLclose()
+function! QuitOrLclose(bang)
   if &buftype == 'quickfix'
     lclose
   else
-    quit
+    if a:bang
+      quit!
+    else
+      quit
+    endif
   endif
 endfunction
-cabbrev q call QuitOrLclose()
+com! -nargs=? -bang Q call QuitOrLclose('!' == '<bang>')
+cabbrev q Q
 
 
 " 2013-04-28
