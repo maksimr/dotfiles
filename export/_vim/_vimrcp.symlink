@@ -44,6 +44,7 @@
   Bundle 'kshenoy/vim-signature'
   " Историю изменений
   Bundle 'sjl/gundo.vim'
+  Bundle 'thisivan/vim-bufexplorer'
 
 " Themes
   Bundle 'Lokaltog/vim-powerline'
@@ -86,7 +87,7 @@
   Bundle 'maksimr/vim-yate'
 
 " CSS/SASS
-  Bundle 'vim-scripts/SAS-Syntax-File'
+  Bundle 'vim-scripts/SAS-Syntax'
 
 " Ruby/Rails
   Bundle 'vim-ruby/vim-ruby'
