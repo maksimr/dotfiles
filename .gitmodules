@@ -13,9 +13,6 @@
 [submodule "lib/bats"]
 	path = lib/bats
 	url = https://github.com/sstephenson/bats.git
-[submodule "export/_vim/unbundle.symlink/Lucius"]
-	path = export/_vim/unbundle.symlink/Lucius
-	url = https://github.com/vim-scripts/Lucius.git
 [submodule "export/_vim/unbundle.symlink/doctorjs"]
 	path = export/_vim/unbundle.symlink/doctorjs
 	url = https://github.com/mozilla/doctorjs.git

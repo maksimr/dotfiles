@@ -50,8 +50,7 @@
   Bundle 'Lokaltog/vim-powerline'
   " Подсвечивает отступы
   Bundle 'nathanaelkane/vim-indent-guides'
-  " Использую старую версию, находится в unbundle папке
-  "Bundle 'Lucius'
+  Bundle 'maksimr/Lucius2'
 
 " Interface
   Bundle 'tpope/vim-fugitive'
