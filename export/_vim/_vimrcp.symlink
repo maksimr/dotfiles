@@ -111,6 +111,9 @@
   " Autocomplete
   Bundle 'marijnh/tern_for_vim'
 
+  " Подсветка для javascript-а
+  Bundle 'maksimr/vim-javascript'
+
 " Other
   Bundle 'vim-scripts/TwitVim'
   Bundle 'maksimr/vim-translator'
