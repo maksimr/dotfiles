@@ -119,7 +119,7 @@ let g:AutoPairsShortcutToggle = '<esc>p'
 let g:AutoPairsShortcutBackInsert = '<Leader>b'
 
 " vim-notes
-let g:notes_directory = '~/Documents/Notes'
+let g:notes_directories = ['~/Documents/Notes']
 
 " w3m
 let g:w3m#search_engine = 'http://duckduckgo.com/html/?q='
