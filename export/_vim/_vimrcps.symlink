@@ -43,7 +43,7 @@ let g:syntastic_enable_signs = 1    " красные метки на линия�
 let g:syntastic_error_symbol='✗'
 let g:syntastic_warning_symbol='⚠'
 let g:syntastic_auto_jump=0         " Не перескакиваем на ошибку автоматически
-let g:syntastic_javascript_checker="jshint"
+let g:syntastic_javascript_checkers=["jshint"]
 let g:syntastic_javascript_jshint_conf = expand("~/.hintrc")
 let g:syntastic_dart_analyzer_conf='-out /tmp/'
 
@@ -182,5 +182,6 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#202020   ctermbg=235
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#252525 ctermbg=236
 
 "  Bundle 'marijnh/tern_for_vim'
+let g:tern#arguments = ['--no-port-file'] " Не создаем .tern-port файл
 let g:is_show_argument_hints_enabled = 1
-let g:tern_show_argument_hints = 'on_move'
+let g:tern_show_argument_hints = 'on_hold'
