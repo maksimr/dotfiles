@@ -10,7 +10,7 @@ if [ -d "$DOTFILE_TARGET"  ]; then
   exit
 fi
 
-git clone git://github.com/maksimr/dotfiles.git $DOTFILE_TARGET
+git clone https://github.com/maksimr/dotfiles.git $DOTFILE_TARGET
 
 if [ -s "$DOTFILE_TARGET/dot.bash"  ]
 then
