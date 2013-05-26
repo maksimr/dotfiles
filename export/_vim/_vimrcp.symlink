@@ -114,6 +114,8 @@
   Bundle 'maksimr/vim-javascript'
 
 " Other
+  " Позволяет быстро переходить по тегам
+  Bundle 'tsaleh/vim-matchit'
   Bundle 'vim-scripts/TwitVim'
   Bundle 'maksimr/vim-translator'
   " need vim with +python feature

@@ -152,7 +152,10 @@ let g:session_default_to_last = 1
 let g:delimitMate_expand_cr = 1
 let g:delimitMate_expand_space = 1
 
-let g:ycm_min_num_of_chars_for_completion  = 1
+let g:ycm_complete_in_comments = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_min_num_of_chars_for_completion  = 3
+let g:ycm_add_preview_to_completeopt = 1
 
 " SuperTab completion fall-back
 "let g:SuperTabDefaultCompletionType='<c-p>'
