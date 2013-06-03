@@ -33,6 +33,8 @@
   "Full path fuzzy file, buffer, mru, tag, ... finder for Vim.
   Bundle 'kien/ctrlp.vim'
 
+  "Dependency for vim-session
+  Bundle 'xolox/vim-misc'
   "The session.vim plug-in improves upon Vim's built-in :mksession command by
   "enabling you to easily and (if you want) automatically persist and restore
   "your Vim editing sessions. It works by generating a Vim script that restores
@@ -129,6 +131,6 @@
   Bundle 'yuratomo/w3m.vim'
   " Добавляет возможность оставлять заметки
   " в vim-е
-  Bundle 'xolox/vim-notes'
+  "Bundle 'xolox/vim-notes'
   " Замена аббревиатурам
   Bundle 'tpope/vim-abolish'
