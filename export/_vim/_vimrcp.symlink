@@ -110,7 +110,7 @@
   " проверка синтаксиса и не только для javascript-а
   Bundle 'scrooloose/syntastic'
   " Autocomplete
-  Bundle 'marijnh/tern_for_vim'
+  "Bundle 'marijnh/tern_for_vim'
 
   " Подсветка для javascript-а
   Bundle 'maksimr/vim-javascript'

@@ -35,7 +35,7 @@
     "rhino"        : false,
     "undef"        : true,
     "unused"       : true,
-    "shadow"       : true,
+    "shadow"       : false,
     "strict"       : false,
     "sub"          : true,
     "supernew"     : false,
