@@ -19,11 +19,15 @@ nnoremap <leader>eo BvEy:exe "vs ".@<cr>
 fun! SpellCheckerToggle()
   if &spell
     set nospell
+    iunmap <c-l>
     return
   endif
 
   set spelllang=ru,en
   set spell
+  " По <CTRL-L> заменяем неправильное слово на первое из предложенных
+  " в списке suggest
+  imap <c-l> <c-g>u<Esc>[s1z=<Esc>gi
 endfun
 
 nnoremap <leader>c :call SpellCheckerToggle()<cr>
