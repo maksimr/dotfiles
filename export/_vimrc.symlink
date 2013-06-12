@@ -5,3 +5,5 @@ so ~/.vim/.vimrcs
 so ~/.vim/.vimrcp
 so ~/.vim/.vimrcps
 so ~/.vim/.vimrcm
+
+so ~/.vimlocal
