@@ -6,4 +6,6 @@ so ~/.vim/.vimrcp
 so ~/.vim/.vimrcps
 so ~/.vim/.vimrcm
 
-so ~/.vimlocal
+if filereadable('~/.vimlocal')
+  so ~/.vimlocal
+endif
