@@ -16,7 +16,7 @@ endif
 imap <esc>l <Plug>snipMateNextOrTrigger
 smap <esc>l <Plug>snipMateNextOrTrigger
 
-"  Bundle 'kien/ctrlp.vim'
+"  Bundle 'kien/ctrlp.vim' <-----
 " ctrlp_cmd - Команда которая будет вызвана по умолчанию
 " 'CtrlPMixed' - искать все (внутри файлов, буферов и MRU файлах существующих
 " в этот момент)
@@ -36,6 +36,19 @@ let g:ctrlp_mruf_max = 250     " number of recently opened files
 "let g:ctrlp_user_command = 'find %s -type f'
 nnoremap <c-l> :CtrlPLine<CR>
 nnoremap <LEADER>u :CtrlPUndo<CR>
+" TODO: add javascript and some other languages who doesn't have ctags support
+" coffee: https://gist.github.com/michaelglass/5210282
+" go: http://stackoverflow.com/a/8236826/462233
+" objc:  http://www.gregsexton.org/2011/04/objective-c-exuberant-ctags-regex/
+" rust: https://github.com/mozilla/rust/blob/master/src/etc/ctags.rust
+let g:ctrlp_buftag_types = {
+      \ 'go'         : '--language-force=go --golang-types=ftv',
+      \ 'coffee'     : '--language-force=coffee --coffee-types=cmfvf',
+      \ 'markdown'   : '--language-force=markdown --markdown-types=hik',
+      \ 'objc'       : '--language-force=objc --objc-types=mpci',
+      \ 'rc'         : '--language-force=rust --rust-types=fTm'
+      \ }
+"  Bundle 'kien/ctrlp.vim' >-----
 
 "  Bundle 'scrooloose/syntastic'
 let g:syntastic_auto_loc_list = 1   " Открываем и закрываем список с ошибками автоматически.
@@ -73,118 +86,117 @@ cabbrev q Q
 " один, или удалить все если не буду
 " ими пользоваться
 
-"  Bundle 'benmills/vimux'
+"  Bundle 'benmills/vimux' <-----
 nnoremap <Leader>vp :VimuxPromptCommand<CR>
-"  Bundle 'Conque-Shell'
+"  Bundle 'benmills/vimux' >-----
+
+"  Bundle 'Conque-Shell' <-----
 nnoremap <Leader>;; :ConqueTermTab zsh<CR>
-"  Bundle 'tpope/vim-dispatch'
+"  Bundle 'Conque-Shell' >-----
+
+"  Bundle 'tpope/vim-dispatch' <-----
 nnoremap <Leader>vd :Dispatch<space>
 nnoremap <Leader>vs :Start<space>
+"  Bundle 'tpope/vim-dispatch' >-----
 
+" Bundle 'mileszs/ack.vim' <-----
 " Ack заменяем команду с ack на ack-grep
 let g:ackprg="ack-grep -H --nocolor --nogroup --column"
 set grepprg=ack-grep\ -a
 nnoremap <leader>s :Ack! <c-r>=expand("<cword>")<cr><cr>
+" Bundle 'mileszs/ack.vim' >-----
 
-" Tagbar
+" Bundle 'majutsushi/tagbar' <-----
 nnoremap <leader>i :TagbarToggle<cr>
 nnoremap <leader>t :TlistToggle<cr>
+" Bundle 'majutsushi/tagbar' >-----
 
-" LycosaBufferExplorer
+" Bundle 'LycosaExplorer' <-----
 nnoremap <S-b> :LycosaBufferExplorer<cr>
 set hidden
+" Bundle 'LycosaExplorer' >-----
 
-" Powerline
+" Bundle 'Lokaltog/vim-powerline' <-----
 let g:Powerline_symbols = 'unicode'
 set encoding=utf-8
+" Bundle 'Lokaltog/vim-powerline' >-----
 
+" Bundle 'maksimr/vim-jsbeautify' <-----
 autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
 autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
 autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+" Bundle 'maksimr/vim-jsbeautify' >-----
 
-" vim-translator
+" Bundle 'maksimr/vim-translator' <-----
 " Настройка переводчика
 " Устанавливаем язык для переводчика (vim-gtranslate)
 " Устанавливаем кнопку для перевода в визуальном режиме (vim-gtranslate)
 let g:goog_user_conf = {'langpair' : 'en|ru', 'v_key': 'T'}
+" Bundle 'maksimr/vim-translator' >-----
 
-" zencoding-vim
+" Bundle 'mattn/zencoding-vim' <-----
 let g:user_zen_settings = { 'php' : { 'extends' : 'html', 'filters' : 'c', }, 'xml' : { 'extends' : 'html', }, 'haml' : { 'extends' : 'html', 'filters' : 'haml' } }
 let g:user_zen_leader_key = '<c-y>' " Устанавливаем основную комбинацию клавиш (zencoding-vim)
+" Bundle 'mattn/zencoding-vim' >-----
 
-" auto-pairs
-let g:AutoPairsFlyMode = 1
-let g:AutoPairsShortcutToggle = '<esc>p'
-"let g:AutoPairsShortcutFastWrap = '<C-l>'
-let g:AutoPairsShortcutBackInsert = '<Leader>b'
-
-" vim-notes
-let g:notes_directories = ['~/Documents/Notes']
-
-" w3m
+" Bundle 'yuratomo/w3m.vim' <-----
 let g:w3m#search_engine = 'http://duckduckgo.com/html/?q='
 let g:w3m#homepage = "http://www.google.com/"
+
 nmap <silent> <LEADER>w :W3mTab jquery! <c-r>=expand("<cword>")<CR><CR>
 nmap <LEADER>ws :W3mTab<space>
 nmap <LEADER>wj :W3mTab js!<space>
 
+autocmd FileType w3m nnoremap <buffer> L :call w3m#Forward()<CR>
+autocmd FileType w3m nnoremap <buffer> H :call w3m#Back()<CR>
+" Bundle 'yuratomo/w3m.vim' >-----
 
-" TODO: add javascript and some other languages who doesn't have ctags support
-" coffee: https://gist.github.com/michaelglass/5210282
-" go: http://stackoverflow.com/a/8236826/462233
-" objc:  http://www.gregsexton.org/2011/04/objective-c-exuberant-ctags-regex/
-" rust: https://github.com/mozilla/rust/blob/master/src/etc/ctags.rust
-let g:ctrlp_buftag_types = {
-      \ 'go'         : '--language-force=go --golang-types=ftv',
-      \ 'coffee'     : '--language-force=coffee --coffee-types=cmfvf',
-      \ 'markdown'   : '--language-force=markdown --markdown-types=hik',
-      \ 'objc'       : '--language-force=objc --objc-types=mpci',
-      \ 'rc'         : '--language-force=rust --rust-types=fTm'
-      \ }
-
-"vim-session
+" Bundle 'xolox/vim-session' <-----
 let g:session_autosave = 'yes'
 let g:session_autoload = 'yes'
 let g:session_default_to_last = 1
 
-"delimitMate
-"create line break when pressing enter
-let g:delimitMate_expand_cr = 1
+nmap <LEADER>ss :SaveSession<space>
+nmap <LEADER>sd :DeleteSession<space>
+nmap <LEADER>so :OpenSession<space>
+" Bundle 'xolox/vim-session' >-----
+
+" Bundle 'Raimondi/delimitMate' <-----
+let g:delimitMate_expand_cr = 1 " create line break when pressing enter
 let g:delimitMate_expand_space = 1
+" Bundle 'Raimondi/delimitMate' >-----
 
-let g:ycm_complete_in_comments = 1
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_min_num_of_chars_for_completion  = 3
-let g:ycm_add_preview_to_completeopt = 1
-
+" Bundle 'ervandew/supertab' <-----
 " SuperTab completion fall-back
-"let g:SuperTabDefaultCompletionType='<c-p>'
-"set completefunc=SuperTabCodeComplete
 let g:SuperTabDefaultCompletionType='<c-p>'
+" Bundle 'ervandew/supertab' >-----
 
-" Stop completion with enter, in addition to default ctrl+y
-"imap <expr> <CR> pumvisible() ? '\<c-y>' : '<Plug>delimitMateCR'
-
-nmap <silent> <LEADER>a :call XikiLaunch()<CR>
-imap <silent> <C-a> <C-c>:call XikiLaunch()<CR>i
-" Error with flush
-if has('ruby')
-  ruby << EOF
-  class Object
-  def flush; end unless Object.new.respond_to?(:flush)
-end
-EOF
-endif
-
-autocmd FileType w3m nnoremap <buffer> L :call w3m#Forward()<CR>
-autocmd FileType w3m nnoremap <buffer> H :call w3m#Back()<CR>
-
-" nathanaelkane/vim-indent-guides
+" Bundle 'nathanaelkane/vim-indent-guides' <-----
 let g:indent_guides_auto_colors = 0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#202020   ctermbg=235
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#252525 ctermbg=236
+" Bundle 'nathanaelkane/vim-indent-guides' >-----
 
-"  Bundle 'marijnh/tern_for_vim'
-let g:tern#arguments = ['--no-port-file'] " Не создаем .tern-port файл
-let g:is_show_argument_hints_enabled = 1
-let g:tern_show_argument_hints = 'on_hold'
+" Bundle 'Valloric/YouCompleteMe' <-----
+"let g:ycm_complete_in_comments = 1
+"let g:ycm_collect_identifiers_from_comments_and_strings = 1
+"let g:ycm_min_num_of_chars_for_completion  = 3
+"let g:ycm_add_preview_to_completeopt = 1
+" Bundle 'Valloric/YouCompleteMe' >-----
+
+"  Bundle 'marijnh/tern_for_vim' <-----
+"let g:tern#arguments = ['--no-port-file'] " Не создаем .tern-port файл
+"let g:is_show_argument_hints_enabled = 1
+"let g:tern_show_argument_hints = 'on_hold'
+"  Bundle 'marijnh/tern_for_vim' >-----
+
+" Bundle 'jiangmiao/auto-pairs' <-----
+"let g:AutoPairsFlyMode = 1
+"let g:AutoPairsShortcutToggle = '<esc>p'
+"let g:AutoPairsShortcutFastWrap = '<C-l>'
+"let g:AutoPairsShortcutBackInsert = '<Leader>b'
+" Bundle 'jiangmiao/auto-pairs' >-----
+
+" Bundle 'xolox/vim-notes' <-----
+"let g:notes_directories = ['~/Documents/Notes']
+" Bundle 'xolox/vim-notes' >-----
