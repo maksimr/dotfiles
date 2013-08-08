@@ -64,7 +64,8 @@ let g:syntastic_dart_analyzer_conf='-out /tmp/'
 " тогда вызываем lclose иначе quit
 function! QuitOrLclose(bang)
   if &buftype == 'quickfix'
-    lclose
+    ccl
+    lcl
   else
     if a:bang
       quit!

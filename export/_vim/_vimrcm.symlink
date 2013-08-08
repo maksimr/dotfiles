@@ -86,6 +86,9 @@ imap <D-R> <esc>:CtrlPBufTagAll<cr>
 
 nnoremap <s-f> mngg=G`n
 
+" <c-r> search in command line
+cnoremap <C-r> <Up>
+
 "fs brousing navigation
 augroup RubyTests
   au!
