@@ -24,6 +24,11 @@ bind ^A select-pane -t :.+
 # Выделение и копирование vim like
 bind-key -t vi-copy v begin-selection
 bind-key -t vi-copy y copy-selection
+bind -t vi-copy V rectangle-toggle
+bind ] paste-buffer
+
+# buffer
+bind a choose-buffer
 
 # Навигация по командной строке и списку окон в режиме vi
 set -g status-keys vi
