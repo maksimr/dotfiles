@@ -21,6 +21,10 @@ bind r source-file ~/.tmux.conf
 unbind ^A
 bind ^A select-pane -t :.+
 
+# Выделение и копирование vim like
+bind-key -t vi-copy v begin-selection
+bind-key -t vi-copy y copy-selection
+
 # Навигация по командной строке и списку окон в режиме vi
 set -g status-keys vi
 setw -g mode-keys vi
