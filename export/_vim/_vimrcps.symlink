@@ -13,8 +13,23 @@ endif
 "  Bundle 'garbas/vim-snipmate'
 " переопределение основной клавиши
 " <esc> - Alt
-imap <esc>l <Plug>snipMateNextOrTrigger
-smap <esc>l <Plug>snipMateNextOrTrigger
+let c='l'
+
+while c <= 'z'
+  exec "set <A-".c.">=\e".c
+  exec "imap \e".c." <A-".c.">"
+  let c = nr2char(1+char2nr(c))
+endw
+
+" CRAZYYYYYY <Alt>
+imap <A-l> <Plug>snipMateNextOrTrigger
+smap <A-l> <Plug>snipMateNextOrTrigger
+set ttimeoutlen=50
+
+let g:snipMate = {}
+let g:snipMate.scope_aliases = {}
+let g:snipMate.scope_aliases['javascript'] = "javascript,javascript-angular,javascript-jquery,javascript-jasmine"
+let g:snipMate.scope_aliases['html'] = "html,html-angular"
 
 "  Bundle 'kien/ctrlp.vim' <-----
 " ctrlp_cmd - Команда которая будет вызвана по умолчанию
