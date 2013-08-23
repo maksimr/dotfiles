@@ -111,7 +111,7 @@ nnoremap <Leader>;; :ConqueTermTab zsh<CR>
 "  Bundle 'Conque-Shell' >-----
 
 "  Bundle 'tpope/vim-dispatch' <-----
-nnoremap <Leader>vd :Dispatch<space>
+nnoremap <Leader>d :Dispatch<space>
 nnoremap <Leader>vs :Start<space>
 "  Bundle 'tpope/vim-dispatch' >-----
 
