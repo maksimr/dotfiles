@@ -10,6 +10,9 @@ function {
 
   for src in $scripts
   do
-    . $src 2>/dev/null
+    # XXX optimization loading nvm.sh
+    # 10ms loading nvm.sh
+    # & - optimize loading (send loading script to background)
+    . $src 2>/dev/null &
   done
 }
