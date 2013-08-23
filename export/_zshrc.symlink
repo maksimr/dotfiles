@@ -75,6 +75,23 @@ then
   alias jshint="grc jshint"
 fi
 
+# npm
+if [ "$(command -v npm)"  ]
+then
+  alias ni="npm install"
+  alias nis="npm install --save"
+  alias nisd="npm install --save-dev"
+  alias nu="npm uninstall"
+  alias nug="npm uninstall -g"
+fi
+
+# googlecl
+if [ "$(command -v google)"  ]
+then
+  alias gdoc="google docs"
+  alias gcal="google calendar"
+fi
+
 alias zshprofiling="/usr/bin/time zsh -i -c exit"
 
 # load local aliases
@@ -203,9 +220,10 @@ then
     cd "$(fasd -a $@)"
   }
 
-  alias f="ff"
   # aliases
-  alias fv='ff vim'
+  alias f="ff"
+  alias fv="ff vim"
+  alias vv="fasd -t -e vim -b viminfo"
 fi
 
 # Load scripts
