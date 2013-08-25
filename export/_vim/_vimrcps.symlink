@@ -159,9 +159,9 @@ let g:user_zen_leader_key = '<c-y>' " Устанавливаем основну�
 let g:w3m#search_engine = 'http://duckduckgo.com/html/?q='
 let g:w3m#homepage = "http://www.google.com/"
 
-nmap <silent> <LEADER>w :W3mTab jquery! <c-r>=expand("<cword>")<CR><CR>
-nmap <LEADER>ws :W3mTab<space>
-nmap <LEADER>wj :W3mTab js!<space>
+"nmap <silent> <LEADER>w :W3mTab jquery! <c-r>=expand("<cword>")<CR><CR>
+"nmap <LEADER>ws :W3mTab<space>
+"nmap <LEADER>wj :W3mTab js!<space>
 
 autocmd FileType w3m nnoremap <buffer> L :call w3m#Forward()<CR>
 autocmd FileType w3m nnoremap <buffer> H :call w3m#Back()<CR>
@@ -196,8 +196,10 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#252525 ctermbg=236
 " Bundle 'Valloric/YouCompleteMe' <-----
 "let g:ycm_complete_in_comments = 1
 "let g:ycm_collect_identifiers_from_comments_and_strings = 1
+"let g:ycm_collect_identifiers_from_tags_files = 1
 "let g:ycm_min_num_of_chars_for_completion  = 3
 "let g:ycm_add_preview_to_completeopt = 1
+"imap <A-l> <esc>A<Plug>snipMateNextOrTrigger
 " Bundle 'Valloric/YouCompleteMe' >-----
 
 "  Bundle 'marijnh/tern_for_vim' <-----
@@ -214,5 +216,5 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#252525 ctermbg=236
 " Bundle 'jiangmiao/auto-pairs' >-----
 
 " Bundle 'xolox/vim-notes' <-----
-"let g:notes_directories = ['~/Documents/Notes']
+let g:notes_directories = ['~/Documents/Notes']
 " Bundle 'xolox/vim-notes' >-----

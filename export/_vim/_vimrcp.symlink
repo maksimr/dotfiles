@@ -47,6 +47,10 @@
   " Историю изменений
   Bundle 'sjl/gundo.vim'
   Bundle 'thisivan/vim-bufexplorer'
+  " Поддержка ctags
+  Bundle 'szw/vim-tags'
+  " Навигация по коду используя буквы
+  Bundle 'Lokaltog/vim-easymotion'
 
 " Themes
   Bundle 'Lokaltog/vim-powerline'
@@ -131,6 +135,6 @@
   Bundle 'yuratomo/w3m.vim'
   " Добавляет возможность оставлять заметки
   " в vim-е
-  "Bundle 'xolox/vim-notes'
+  Bundle 'xolox/vim-notes'
   " Замена аббревиатурам
   Bundle 'tpope/vim-abolish'
