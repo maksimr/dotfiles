@@ -41,6 +41,8 @@ alias i="sudo apt-get install "
 alias mk="mkdir -p"
 alias t="touch"
 alias q="exit"
+alias rm="rm -rf"
+alias nd="node --debug-brk"
 
 alias l="ls"
 
