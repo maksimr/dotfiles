@@ -29,7 +29,7 @@ set ttimeoutlen=50
 let g:snipMate = {}
 let g:snipMate.scope_aliases = {}
 let g:snipMate.scope_aliases['javascript'] = "javascript,javascript-angular,javascript-jquery,javascript-jasmine"
-let g:snipMate.scope_aliases['html'] = "html,html-angular"
+let g:snipMate.scope_aliases['html'] = "html,html-angular,html-bootstrap"
 
 "  Bundle 'kien/ctrlp.vim' <-----
 " ctrlp_cmd - Команда которая будет вызвана по умолчанию
