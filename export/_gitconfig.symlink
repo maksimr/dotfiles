@@ -7,6 +7,8 @@
 	co = checkout
 	br = branch
 	cl = clone --recursive
+	die = reset --hard
+	g = grep -I --heading --break -p
 [color]
 	branch = auto
 	diff = auto
