@@ -44,6 +44,8 @@ map -g user <Leader>r -ex readability
 map -g user <Leader>rl -ex readability-later
 map -g user <Alt>k -ex readability-kindle
 
+map -g user <Leader>sv -ex source ~./.pentadactylrc
+
 set guioptions=Cs
 set fbliverun
 set complete+=bookmark
@@ -53,6 +55,7 @@ set  passkeys+='^http?://music\.google\.com/music/':-=<Space>/
 set  passkeys+='^https?://mail\.google\.com/mail/':jknpo#
 set  passkeys+='^https?://www\.google\.com/reader/':jknpostuvNPT
 set  passkeys+='^https?://class\.coursera\.org/':pc<Left><Right><Up><Down>
+set  passkeys+='^https?://mail\.yandex-team\.ru/neo2/':<Left><Right><Up><Down><C-i>wq<shift><enter>+
 set hintkeys=absdfglkjhoperqnmit
 
 Bundle maksimr/pundle
