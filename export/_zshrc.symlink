@@ -190,6 +190,8 @@ then
   # more coolest fasd
   function ff(){
     local ARGUMENTS
+    local ARGV
+    local LARG
 
     if [ ! "$1" ]
     then
@@ -210,12 +212,15 @@ then
       return
     fi
 
-    if [ $# -eq 2 ]
+    if [ $# -ge 2 ]
     then
-      # first argument command
-      # second path
-      ARGUMENTS="${2//\// }"
-      fasd -e "$1" -a ${(s/ /)ARGUMENTS}
+      ARGV=("$@")
+      LARG="$(($# - 1))"
+      ARGUMENTS="${ARGV[$#]}"
+      # first arguments command
+      # last argument is a path
+      ARGUMENTS="${ARGUMENTS//\// }"
+      fasd -e "${ARGV[@]:0:$LARG}" -a ${(s/ /)ARGUMENTS}
       return
     fi
 
