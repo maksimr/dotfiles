@@ -44,7 +44,7 @@ map -g user <Leader>r -ex readability
 map -g user <Leader>rl -ex readability-later
 map -g user <Alt>k -ex readability-kindle
 
-map -g user <Leader>sv -ex source ~./.pentadactylrc
+map -g user <Leader>sv -ex source ~/.pentadactylrc
 
 set guioptions=Cs
 set fbliverun
