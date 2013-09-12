@@ -2,6 +2,7 @@
 
 colorscheme ubuntu
 loadplugins '\.(js|penta)$'
+map , <Leader>
 map -modes=n E :bmarks<Space>
 map -modes=n,v <F6> :flashplay
 map -modes=n,v <F8> :flashtoggle
@@ -31,6 +32,18 @@ map -modes=n sc :spider -C<Space>
 map -modes=n sp :spider -P<Space>
 map -modes=n <SPACE> :youtb -t<Return>
 map <LEADER>h <C-^>
+
+" scroll up and down by 5 lines at a time - less stretching than C-d/u etc.
+nmap -builtin j 5j
+nmap -builtin k 5k
+
+command readability -description "Bookmarklet: Make webpage readable using readability" open javascript:(%28function%28%29%7Bwindow.baseUrl%3D%27http%3A//www.readability.com%27%3Bwindow.readabilityToken%3D%275WVHNckUS22LueJAk7eGeajpfvXbjnhHf7nF4Yeb%27%3Bvar%20s%3Ddocument.createElement%28%27script%27%29%3Bs.setAttribute%28%27type%27%2C%27text/javascript%27%29%3Bs.setAttribute%28%27charset%27%2C%27UTF-8%27%29%3Bs.setAttribute%28%27src%27%2CbaseUrl%2B%27/bookmarklet/read.js%27%29%3Bdocument.documentElement.appendChild%28s%29%3B%7D%29%28%29)
+command readability-kindle -description "Bookmarklet: Send any article directly to your Kindle for reading later in the comfortable Readability view" open javascript:(%28function%28%29%7Bwindow.baseUrl%3D%27http%3A//www.readability.com%27%3Bwindow.readabilityToken%3D%275WVHNckUS22LueJAk7eGeajpfvXbjnhHf7nF4Yeb%27%3Bvar%20s%3Ddocument.createElement%28%27script%27%29%3Bs.setAttribute%28%27type%27%2C%27text/javascript%27%29%3Bs.setAttribute%28%27charset%27%2C%27UTF-8%27%29%3Bs.setAttribute%28%27src%27%2CbaseUrl%2B%27/bookmarklet/send-to-kindle.js%27%29%3Bdocument.documentElement.appendChild%28s%29%3B%7D%29%28%29)
+command readability-later -description "Bookmarklet: Saves articles to your Reading List for enjoying later" open javascript:(%28function%28%29%7Bwindow.baseUrl%3D%27http%3A//www.readability.com%27%3Bwindow.readabilityToken%3D%275WVHNckUS22LueJAk7eGeajpfvXbjnhHf7nF4Yeb%27%3Bvar%20s%3Ddocument.createElement%28%27script%27%29%3Bs.setAttribute%28%27type%27%2C%27text/javascript%27%29%3Bs.setAttribute%28%27charset%27%2C%27UTF-8%27%29%3Bs.setAttribute%28%27src%27%2CbaseUrl%2B%27/bookmarklet/save.js%27%29%3Bdocument.documentElement.appendChild%28s%29%3B%7D%29%28%29)
+map -g user <Leader>r -ex readability
+map -g user <Leader>rl -ex readability-later
+map -g user <Alt>k -ex readability-kindle
+
 set guioptions=Cs
 set fbliverun
 set complete+=bookmark
