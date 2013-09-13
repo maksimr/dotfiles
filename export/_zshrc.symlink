@@ -80,6 +80,7 @@ fi
 # npm
 if [ "$(command -v npm)"  ]
 then
+  alias n="npm"
   alias ni="npm install"
   alias nis="npm install --save"
   alias nisd="npm install --save-dev"
