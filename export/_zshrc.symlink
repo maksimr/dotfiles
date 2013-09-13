@@ -43,6 +43,7 @@ alias t="touch"
 alias q="exit"
 alias rm="rm -rf"
 alias nd="node --debug-brk"
+alias pl="sudo"
 
 alias l="ls"
 
