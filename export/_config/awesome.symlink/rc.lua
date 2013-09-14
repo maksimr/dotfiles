@@ -17,7 +17,6 @@ require("screenful")
 -- Widget library
 vicious = require("vicious")
 
-
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
 beautiful.init(awful.util.getdir("config") .. "/themes/power/theme.lua")
@@ -295,6 +294,14 @@ awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
 awful.button({ modkey }, 1, awful.mouse.client.move),
 awful.button({ modkey }, 3, awful.mouse.client.resize))
 
+-- {{{ load the 'run or raise' function
+local ror = require("aweror")
+
+--awful.key({ modkey,  }, "g", function () run_or_raise("google-chrome --app='http://mail.google.com/mail/'", { name = "Gmail"  }) end)
+-- generate and add the 'run or raise' key bindings to the globalkeys table
+globalkeys = awful.util.table.join(globalkeys, ror.genkeys(modkey))
+-- }}}
+
 -- Set keys
 root.keys(globalkeys)
 -- }}}
@@ -372,7 +379,9 @@ function run_once(prg)
   if not prg then
     do return nil end
   end
-  awful.util.spawn_with_shell("pgrep -u $USER -x " .. prg .. " || (" .. prg .. ")")
+  psgrep = "ps -o pid -C " .. prg
+  pgrep = "pgrep -u $USER -x " .. prg
+  awful.util.spawn_with_shell(psgrep .. " || " .. pgrep .. " || (" .. prg .. ")")
 end
 
 run_once("gnome-power-manager")
