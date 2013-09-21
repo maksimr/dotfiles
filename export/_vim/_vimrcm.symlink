@@ -120,6 +120,6 @@ augroup END
 
 " tags/ctags/jsctags
 " select tag from list
-noremap gt g]
+noremap <leader>s g]
 " go first matched tag
-noremap go <C-]>
+noremap <leader>o <C-]>
