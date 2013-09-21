@@ -117,3 +117,9 @@ autocmd FileType ruby,eruby set omnifunc=rubycomplete
 augroup Nodejs
   autocmd BufRead,BufNewFile *.js,*.js :noremap <buffer> <leader>m :Dispatch node %<cr>
 augroup END
+
+" tags/ctags/jsctags
+" select tag from list
+noremap gt g]
+" go first matched tag
+noremap go <C-]>
