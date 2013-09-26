@@ -68,7 +68,7 @@
   Bundle 'Raimondi/delimitMate'
 
   Bundle 'ervandew/supertab'
-  Bundle 'mattn/zencoding-vim'
+  Bundle 'mattn/emmet-vim'
   Bundle 'tpope/vim-eunuch'
   " Позволяет обрамлять текстовые объекты кавычками,
   " тегами, скобками

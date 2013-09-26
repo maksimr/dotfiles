@@ -150,10 +150,10 @@ autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
 let g:goog_user_conf = {'langpair' : 'en|ru', 'v_key': 'T'}
 " Bundle 'maksimr/vim-translator' >-----
 
-" Bundle 'mattn/zencoding-vim' <-----
+" Bundle 'mattn/emmet-vim' <-----
 let g:user_zen_settings = { 'php' : { 'extends' : 'html', 'filters' : 'c', }, 'xml' : { 'extends' : 'html', }, 'haml' : { 'extends' : 'html', 'filters' : 'haml' } }
 let g:user_zen_leader_key = '<c-y>' " Устанавливаем основную комбинацию клавиш (zencoding-vim)
-" Bundle 'mattn/zencoding-vim' >-----
+" Bundle 'mattn/emmet-vim' >-----
 
 " Bundle 'yuratomo/w3m.vim' <-----
 let g:w3m#search_engine = 'http://duckduckgo.com/html/?q='
