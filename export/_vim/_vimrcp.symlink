@@ -119,6 +119,13 @@
   " Подсветка для javascript-а
   Bundle 'maksimr/vim-javascript'
 
+" Bash
+  " Подсветка для basts
+  Bundle 'rosstimson/bats.vim'
+
+" Vim
+  Bundle 'kana/vim-vspec'
+
 " Other
   " Позволяет быстро переходить по тегам
   Bundle 'tsaleh/vim-matchit'

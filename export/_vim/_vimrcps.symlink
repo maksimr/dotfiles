@@ -119,7 +119,7 @@ nnoremap <Leader>vs :Start<space>
 " Ack заменяем команду с ack на ack-grep
 let g:ackprg="ack-grep -H --nocolor --nogroup --column"
 set grepprg=ack-grep\ -a
-nnoremap <leader>s :Ack! <c-r>=expand("<cword>")<cr><cr>
+nnoremap <leader>f :Ack! <c-r>=expand("<cword>")<cr><cr>
 " Bundle 'mileszs/ack.vim' >-----
 
 " Bundle 'majutsushi/tagbar' <-----
