@@ -145,3 +145,6 @@
   Bundle 'xolox/vim-notes'
   " Замена аббревиатурам
   Bundle 'tpope/vim-abolish'
+  " Ставит пузу на повторное использование
+  " клавиш паразитов jklh
+  Bundle 'takac/vim-hardtime'
