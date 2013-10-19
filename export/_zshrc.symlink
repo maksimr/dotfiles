@@ -36,6 +36,8 @@ PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n:%~ %{$fg_bold
 # vim: ft=zsh
 
 alias zshrc="vim ~/.zshrc"
+alias zrc="vim ~/.zshrc"
+alias zr="source ~/.zshrc"
 alias up="sudo apt-get update && sudo apt-get upgrade"
 alias i="sudo apt-get install "
 alias u="sudo apt-get remove "
@@ -62,6 +64,7 @@ alias v="vim"
 alias vl='vim "$(ls -t | head -1)"' # open last modified file in vim
 # open nested last modified file, exclude dotfiles and ot directories
 alias vll='vim "$(find . ! \( -path "./.*" -o  -path "*/.*" \) -type f -printf "%T@ %p\n" | sort -n | tail -1 | cut -f2- -d" " )"'
+alias vrc='vim ~/.vimrc'
 
 # change some aliases if grc installed
 if [ "$(command -v grc)"  ]
