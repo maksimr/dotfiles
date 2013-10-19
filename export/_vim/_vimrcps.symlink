@@ -218,3 +218,7 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#252525 ctermbg=236
 " Bundle 'xolox/vim-notes' <-----
 let g:notes_directories = ['~/Documents/Notes']
 " Bundle 'xolox/vim-notes' >-----
+
+" Bundle 'takac/vim-hardtime' <-----
+let g:hardtime_default_on = 1
+" Bundle 'takac/vim-hardtime' >-----
