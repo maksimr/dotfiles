@@ -123,3 +123,11 @@ augroup END
 noremap <leader>s g]
 " go first matched tag
 noremap <leader>o <C-]>
+
+" set no autoindent
+fun! NoAutoIndent()
+  :DelimitMateSwitch
+  setl noai nocin nosi inde=
+endfun
+
+command NoAutoIndent call NoAutoIndent()
