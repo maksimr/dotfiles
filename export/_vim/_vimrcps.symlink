@@ -220,5 +220,5 @@ let g:notes_directories = ['~/Documents/Notes']
 " Bundle 'xolox/vim-notes' >-----
 
 " Bundle 'takac/vim-hardtime' <-----
-let g:hardtime_default_on = 1
+let g:hardtime_default_on = 0
 " Bundle 'takac/vim-hardtime' >-----
