@@ -139,7 +139,7 @@
   Bundle 'bartlomiejdanek/vim-dart'
   " встроенный в vim browser
   " sudo apt-get install w3m
-  Bundle 'yuratomo/w3m.vim'
+  " Bundle 'yuratomo/w3m.vim'
   " Добавляет возможность оставлять заметки
   " в vim-е
   Bundle 'xolox/vim-notes'
