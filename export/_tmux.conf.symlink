@@ -39,6 +39,15 @@ bind l select-pane -R
 bind-key -r C-h select-window -t :-
 bind-key -r C-l select-window -t :+
 
+# alternatively, use better mnemonics for horizontal/vertical splits
+bind-key - split-window -v
+bind-key _ split-window -v
+bind-key | split-window -h
+
+# resize panes like vim
+bind-key -r < resize-pane -L 3
+bind-key -r > resize-pane -R 3
+
 # buffer
 bind a choose-buffer
 
