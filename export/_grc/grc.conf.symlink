@@ -24,7 +24,7 @@ conf.gcc
 
 # make command
 (^|[/\w\.]+/)g?make\s?
-conf.gcc
+conf.make
 
 # netstat command
 (^|[/\w\.]+/)netstat\s?
