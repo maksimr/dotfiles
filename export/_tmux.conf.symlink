@@ -47,10 +47,6 @@ bind a choose-buffer
 # Need install xclip
 bind y run-shell "tmux show-buffer | xclip -sel clip -i"
 
-# Zoom in tmux 1.7
-unbind z
-bind z new-window -d -n tmux-zoom\; swap-pane -s tmux-zoom.0 \; select-window -t tmux-zoom
-
 # Навигация по командной строке и списку окон в режиме vi
 set -g status-keys vi
 setw -g mode-keys vi
