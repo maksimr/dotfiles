@@ -71,7 +71,7 @@ let g:syntastic_enable_signs = 1    " красные метки на линия�
 let g:syntastic_error_symbol='✗'
 let g:syntastic_warning_symbol='⚠'
 let g:syntastic_auto_jump=0         " Не перескакиваем на ошибку автоматически
-let g:syntastic_javascript_checkers=["jshint"]
+let g:syntastic_javascript_checkers=["jshint", "eslint"]
 let g:syntastic_javascript_jshint_conf = expand("~/.hintrc")
 let g:syntastic_dart_analyzer_conf='-out /tmp/'
 

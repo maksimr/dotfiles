@@ -52,6 +52,10 @@
   " Навигация по коду используя буквы
   Bundle 'Lokaltog/vim-easymotion'
 
+  " Пользовательские текстовые объекты для vim-а
+  Bundle 'kana/vim-textobj-user'
+  Bundle 'glts/vim-textobj-comment'
+
 " Themes
   Bundle 'Lokaltog/vim-powerline'
   " Подсвечивает отступы
