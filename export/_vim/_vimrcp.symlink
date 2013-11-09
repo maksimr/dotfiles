@@ -64,6 +64,8 @@
 
 " Interface
   Bundle 'tpope/vim-fugitive'
+  " Отображает какие строки изменились в левой колонке (git diff)
+  Bundle 'airblade/vim-gitgutter'
   Bundle 'mileszs/ack.vim'
   Bundle 'The-NERD-Commenter'
 
