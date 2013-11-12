@@ -119,8 +119,8 @@
   "Bundle 'malclocke/vim-buster'
   " проверка синтаксиса и не только для javascript-а
   Bundle 'scrooloose/syntastic'
-  " Autocomplete
-  "Bundle 'marijnh/tern_for_vim'
+  " Autocomplete, syntax analyzer
+  Bundle 'marijnh/tern_for_vim'
 
   " Подсветка для javascript-а
   Bundle 'maksimr/vim-javascript'
