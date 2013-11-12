@@ -130,4 +130,4 @@ fun! NoAutoIndent()
   setl noai nocin nosi inde=
 endfun
 
-command NoAutoIndent call NoAutoIndent()
+command! NoAutoIndent call NoAutoIndent()
