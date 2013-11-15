@@ -56,6 +56,9 @@ bind a choose-buffer
 # Need install xclip
 bind y run-shell "tmux show-buffer | xclip -sel clip -i"
 
+# Agressive resize!!!
+bind e run-shell "tmux detach -a"
+
 # Навигация по командной строке и списку окон в режиме vi
 set -g status-keys vi
 setw -g mode-keys vi
