@@ -64,7 +64,7 @@
 
         "brace-style": 0,
         "block-scoped-var": 0,
-        "camelcase": 2,
+        "camelcase": 1,
         "complexity": [0, 11],
         "consistent-this": [0, "that"],
         "curly": 2,
