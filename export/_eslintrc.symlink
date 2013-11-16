@@ -1,7 +1,7 @@
 {
     "env": {
-        "browser": false,
-        "node": false,
+        "browser": true,
+        "node": true,
         "amd": false
     },
 
@@ -83,7 +83,7 @@
         "radix": 0,
         "regex-spaces": 2,
         "semi": 2,
-        "strict": 2,
+        "strict": 1,
         "unnecessary-strict": 2,
         "use-isnan": 2,
         "wrap-iife": 0,
