@@ -25,7 +25,7 @@ function _st_getTemplate(){
     if [ -e "$templateDir" ]; then
       for tmpFileName in $(ls -A "$templateDir"); do
         if [ -e "$templateDir/$tmpFileName" ]; then
-          if [ "$tmpFileName" == "$fileName" ];then
+          if [ "$tmpFileName" = "$fileName" ];then
             TEMPLATE="$(cat $templateDir/$tmpFileName)"
           fi
         fi
