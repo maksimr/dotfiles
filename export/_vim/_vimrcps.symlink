@@ -105,6 +105,7 @@ cabbrev q Q
 
 "  Bundle 'benmills/vimux' <-----
 nnoremap <Leader>vp :VimuxPromptCommand<CR>
+nnoremap <Leader>vpl :VimuxRunLastCommand<CR>
 "  Bundle 'benmills/vimux' >-----
 
 "  Bundle 'Conque-Shell' <-----
