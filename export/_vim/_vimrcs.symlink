@@ -43,7 +43,7 @@ set statusline=%<%f%h%m%r%{fugitive#statusline()}\ %b\ %{&encoding}\ 0x\ \ %l,%c
 set smartindent          " Умный автоматический отступ (ai - обычный автоматичексий отступ)
 set smarttab             " При нажатии в начале строки TAB добавляет отступ равный shiftwidth
 set et                   " Включить автозамену таба на пробелы
-set shiftwidth=2         " Устоновить ширину сдвига >
+set shiftwidth=4         " Устоновить ширину сдвига >
 set listchars=tab:··     " Показываем табы в начале строки точками
 set listchars+=trail:␣   " Показываем пробел в конце строки как ␣
 set list

@@ -20,3 +20,5 @@
         lineNumber = true
 [github]
 	user = maksimr
+[push]
+	default = simple
