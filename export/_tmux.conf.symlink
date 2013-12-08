@@ -13,6 +13,12 @@ set -s escape-time 0
 # Aggressive Resize
 setw -g aggressive-resize on
 
+# Навигация по командной строке и списку окон в режиме vi
+set -g status-keys vi
+
+# Use vim keybindings in copy mode
+setw -g mode-keys vi
+
 # Allows us to use C-a a <command> to send commands to a TMUX session inside
 # another TMUX session
 bind-key a send-prefix
@@ -27,7 +33,7 @@ bind ^A select-pane -t :.+
 
 # Выделение и копирование vim like
 bind-key -t vi-copy v begin-selection
-bind-key -t vi-copy y copy-selection
+bind-key -t vi-copy y copy-pipe "xclip -selection clip -i"
 bind -t vi-copy V rectangle-toggle
 bind ] paste-buffer
 
@@ -54,14 +60,11 @@ bind a choose-buffer
 # Working with the system clipboard
 # http://joncairns.com/2013/06/copying-between-tmux-buffers-and-the-system-clipboard/
 # Need install xclip
-bind y run-shell "tmux show-buffer | xclip -sel clip -i"
+# For tmux 1.7
+bind y run-shell 'tmux show-buffer - | xclip -i'
 
 # Agressive resize!!!
-bind e run-shell "tmux detach -a"
-
-# Навигация по командной строке и списку окон в режиме vi
-set -g status-keys vi
-setw -g mode-keys vi
+bind e run-shell 'tmux detach -a'
 
 # Размер буфера истории
 set -g history-limit 1000
