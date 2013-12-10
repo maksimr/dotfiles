@@ -121,6 +121,8 @@
   Bundle 'scrooloose/syntastic'
   " Autocomplete, syntax analyzer
   Bundle 'marijnh/tern_for_vim'
+  " Autocompleter
+  Bundle 'Shougo/neocomplcache.vim'
 
   " Подсветка для javascript-а
   Bundle 'maksimr/vim-javascript'
