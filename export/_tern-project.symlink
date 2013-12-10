@@ -1,0 +1,25 @@
+{
+    "libs": [
+        "browser",
+        "jquery"
+    ],
+    "loadEagerly": [
+        "*.js",
+        "js/**/*.js",
+        "lib/**/**/*.js",
+        "src/**/**/*.js",
+        "tests/**/*.js",
+        "test/**/*.js",
+        "spec/**/*.js"
+    ],
+    "dontLoad": [
+        "*.js",
+        "js/**/*.js",
+        "lib/**/**/*.js",
+        "src/**/**/*.js",
+        "tests/**/*.js",
+        "test/**/*.js",
+        "spec/**/*.js"
+    ],
+    "plugins": {}
+}

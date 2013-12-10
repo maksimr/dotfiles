@@ -205,7 +205,8 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#252525 ctermbg=236
 " Bundle 'Valloric/YouCompleteMe' >-----
 
 "  Bundle 'marijnh/tern_for_vim' <-----
-let g:tern#arguments = ['--no-port-file'] " Не создаем .tern-port файл
+" By default tern run server without creating .tern-port file
+"let g:tern#arguments = ['--no-port-file'] " Не создаем .tern-port файл
 "let g:is_show_argument_hints_enabled = 1
 "let g:tern_show_argument_hints = 'on_hold'
 
