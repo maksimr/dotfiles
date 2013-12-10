@@ -13,13 +13,21 @@
         "spec/**/*.js"
     ],
     "dontLoad": [
-        "*.js",
-        "js/**/*.js",
-        "lib/**/**/*.js",
-        "src/**/**/*.js",
-        "tests/**/*.js",
-        "test/**/*.js",
-        "spec/**/*.js"
+        "*.min.js",
+        "js/**/*.min.js",
+        "lib/**/**/*.min.js",
+        "src/**/**/*.min.js",
+        "tests/**/*.min.js",
+        "test/**/*.min.js",
+        "spec/**/*.min.js",
+
+        "_*.js",
+        "js/**/_*.js",
+        "lib/**/**/_*.js",
+        "src/**/**/_*.js",
+        "tests/**/_*.js",
+        "test/**/_*.js",
+        "spec/**/_*.js"
     ],
     "plugins": {}
 }
