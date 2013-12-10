@@ -32,7 +32,7 @@ function dot_commit() {
 
     git add -A
     git commit -m "${message}"
-    git push origin
+    git push origin --progress
     echo "Wooh $USER...Changes was saved successfully!"
   else
     echo 'You did not change anything'
