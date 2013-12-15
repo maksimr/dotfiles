@@ -237,6 +237,7 @@ let g:hardtime_default_on = 0
 let g:acp_enableAtStartup = 1
 let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 1
+let g:neocomplcache_min_keyword_length = 2
 let g:neocomplcache_min_syntax_length = 1
 let g:neocomplcache_lock_iminsert = 1
 call neocomplcache#custom_source('buffer_complete', 'rank', 100)
