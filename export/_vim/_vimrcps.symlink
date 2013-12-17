@@ -252,3 +252,12 @@ autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=tern#Complete
 " Bundle 'Shougo/neocomplcache.vim' >-----
+
+" Bundle 'tpope/vim-fugitive' <-----
+nnoremap <leader>gs :Gstatus<CR>
+nnoremap <leader>gd :Gdiff<CR>
+nnoremap <leader>gc :Gcommit
+nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gl :Glog<CR>
+nnoremap <leader>gp ::Git push<CR>
+" Bundle 'tpope/vim-fugitive' >-----
