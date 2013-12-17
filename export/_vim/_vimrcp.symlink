@@ -44,6 +44,7 @@
   Bundle 'kshenoy/vim-signature'
   " Историю изменений
   Bundle 'sjl/gundo.vim'
+  Bundle 'thisivan/vim-bufexplorer'
   " Поддержка ctags
   Bundle 'szw/vim-tags'
   " Навигация по коду используя буквы
@@ -115,6 +116,7 @@
   Bundle 'marijnh/tern_for_vim'
   " Autocompleter
   Bundle 'Shougo/neocomplcache.vim'
+  Bundle 'Shougo/neosnippet'
 
   " Подсветка для javascript-а
   Bundle 'maksimr/vim-javascript'

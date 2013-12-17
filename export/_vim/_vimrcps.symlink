@@ -28,8 +28,8 @@ set ttimeoutlen=50
 
 let g:snipMate = {}
 let g:snipMate.scope_aliases = {}
-let g:snipMate.scope_aliases['javascript'] = "javascript,javascript-angular,javascript-jquery,javascript-jasmine"
-let g:snipMate.scope_aliases['html'] = "html,html-angular,html-bootstrap,html-bower"
+let g:snipMate.scope_aliases['javascript'] = "javascript,javascript_angular,javascript_jquery,javascript_jasmine"
+let g:snipMate.scope_aliases['html'] = "html,html_angular,html_bootstrap,html_bower"
 let g:snipMate.scope_aliases['yate'] = "yate,html"
 
 "  Bundle 'kien/ctrlp.vim' <-----
@@ -248,3 +248,19 @@ nnoremap <leader>gb :Gblame<CR>
 nnoremap <leader>gl :Glog<CR>
 nnoremap <leader>gp ::Git push<CR>
 " Bundle 'tpope/vim-fugitive' >-----
+
+" Bundle 'Shougo/neosnippet' <-----
+" Enable snipMate compatibility feature.
+let g:neosnippet#enable_snipmate_compatibility = 1
+let g:neosnippet#enable_preview = 1
+
+" Tell Neosnippet about the other snippets
+let g:neosnippet#snippets_directory=['~/.vim/bundle/vim-snippets/snippets', '~/.vim/bundle/vim-javascript/snippets']
+" Plugin key-mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+" SuperTab like snippets behavior.
+autocmd VimEnter * imap <expr><TAB> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<C-X><C-U>"
+autocmd VimEnter * smap <expr><TAB> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<C-X><C-U>"
+" Bundle 'Shougo/neosnippet' >-----
