@@ -94,23 +94,10 @@ com! -nargs=? -bang Q call QuitOrLclose('!' == '<bang>')
 cabbrev q Q
 
 
-" 2013-04-28
-" XXX то что использую редко или
-" не использую вообще но выкинуть жалко
-"
-" TODO
-" vimux, Conque-Shell, vim-dispatch надо оставить только
-" один, или удалить все если не буду
-" ими пользоваться
-
 "  Bundle 'benmills/vimux' <-----
 nnoremap <Leader>vp :VimuxPromptCommand<CR>
 nnoremap <Leader>vpl :VimuxRunLastCommand<CR>
 "  Bundle 'benmills/vimux' >-----
-
-"  Bundle 'Conque-Shell' <-----
-nnoremap <Leader>;; :ConqueTermTab zsh<CR>
-"  Bundle 'Conque-Shell' >-----
 
 "  Bundle 'tpope/vim-dispatch' <-----
 nnoremap <Leader>d :Dispatch<space>

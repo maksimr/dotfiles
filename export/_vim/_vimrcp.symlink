@@ -7,21 +7,19 @@
 
 " Vim utilites
   Bundle 'tpope/vim-pathogen'
+  " Загрузка плагинов
   Bundle 'gmarik/vundle'
+  " Интерфейс для работы с tmux-ом
+  " из vim-а
   Bundle 'benmills/vimux'
+  " Работа с файлами в буфере
   Bundle 'LycosaExplorer'
-  " Терминал внутри vim-а
-  Bundle 'Conque-Shell'
+  " Поиск файлов
   " Необходимо дополнительно установить C-расширение
   "   cd ~/.vim/bundle/Command-T/ruby/command-t
   "   ruby extconf.rb
   "   make
   Bundle 'wincent/Command-T'
-  " A code-completion engine for Vim
-  " Need install ycm_core
-  " cd bundle/YouCompleteMe && ./install.sh
-  " XXX Wait support ctags
-  "Bundle 'Valloric/YouCompleteMe'
 
   "Leverage the power of Vim's compiler plugins without being bound by
   "synchronicity. Kick off builds and test suites using one of several
@@ -46,7 +44,6 @@
   Bundle 'kshenoy/vim-signature'
   " Историю изменений
   Bundle 'sjl/gundo.vim'
-  Bundle 'thisivan/vim-bufexplorer'
   " Поддержка ctags
   Bundle 'szw/vim-tags'
   " Навигация по коду используя буквы
@@ -58,8 +55,6 @@
 
 " Themes
   Bundle 'Lokaltog/vim-powerline'
-  " Подсвечивает отступы
-  Bundle 'nathanaelkane/vim-indent-guides'
   Bundle 'maksimr/Lucius2'
 
 " Interface
@@ -94,7 +89,6 @@
 
 " HTML/HAML
   Bundle 'tpope/vim-haml'
-  Bundle 'hokaccha/vim-html5validator'
   Bundle 'maksimr/vim-yate'
 
 " CSS/SASS
@@ -112,11 +106,9 @@
   " sudo apt-get install exuberant-ctags
   " для javascript можно установить jsctags (https://github.com/mozilla/doctorjs)
   Bundle 'majutsushi/tagbar'
-  Bundle 'douglascrockford/JSLint'
   " расширенный taglist.vim с улучшенной поддержкой javascript
   " также зависит от jsctags
   Bundle 'int3/vim-taglist-plus'
-  "Bundle 'malclocke/vim-buster'
   " проверка синтаксиса и не только для javascript-а
   Bundle 'scrooloose/syntastic'
   " Autocomplete, syntax analyzer
@@ -151,8 +143,6 @@
   " Добавляет возможность оставлять заметки
   " в vim-е
   Bundle 'xolox/vim-notes'
-  " Замена аббревиатурам
-  Bundle 'tpope/vim-abolish'
   " Ставит пузу на повторное использование
   " клавиш паразитов jklh
   Bundle 'takac/vim-hardtime'
