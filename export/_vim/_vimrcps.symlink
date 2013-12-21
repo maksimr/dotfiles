@@ -31,6 +31,7 @@ let g:snipMate.scope_aliases = {}
 let g:snipMate.scope_aliases['javascript'] = "javascript,javascript_angular,javascript_jquery,javascript_jasmine"
 let g:snipMate.scope_aliases['html'] = "html,html_angular,html_bootstrap,html_bower"
 let g:snipMate.scope_aliases['yate'] = "yate,html"
+let g:snipMate.scope_aliases['vim'] = "vim,vim_vspec"
 
 "  Bundle 'kien/ctrlp.vim' <-----
 " ctrlp_cmd - Команда которая будет вызвана по умолчанию
