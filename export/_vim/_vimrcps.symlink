@@ -17,7 +17,7 @@ let c='l'
 
 while c <= 'z'
   exec "set <A-".c.">=\e".c
-  exec "imap \e".c." <A-".c.">"
+  exec "inoremap \e".c." <A-".c.">"
   let c = nr2char(1+char2nr(c))
 endw
 
@@ -114,7 +114,6 @@ nnoremap <leader>f :Ack! <c-r>=expand("<cword>")<cr><cr>
 
 " Bundle 'majutsushi/tagbar' <-----
 nnoremap <leader>i :TagbarToggle<cr>
-"nnoremap <leader>t :TlistToggle<cr>
 " Bundle 'majutsushi/tagbar' >-----
 
 " Bundle 'LycosaExplorer' <-----
@@ -128,9 +127,13 @@ set encoding=utf-8
 " Bundle 'Lokaltog/vim-powerline' >-----
 
 " Bundle 'maksimr/vim-jsbeautify' <-----
-autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
-autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
-autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+augroup JSBeautify
+    autocmd!
+
+    autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
+    autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
+    autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+augroup END
 " Bundle 'maksimr/vim-jsbeautify' >-----
 
 " Bundle 'maksimr/vim-translator' <-----
@@ -145,27 +148,15 @@ let g:user_zen_settings = { 'php' : { 'extends' : 'html', 'filters' : 'c', }, 'x
 let g:user_zen_leader_key = '<c-y>' " Устанавливаем основную комбинацию клавиш (zencoding-vim)
 " Bundle 'mattn/emmet-vim' >-----
 
-" Bundle 'yuratomo/w3m.vim' <-----
-let g:w3m#search_engine = 'http://duckduckgo.com/html/?q='
-let g:w3m#homepage = "http://www.google.com/"
-
-"nmap <silent> <LEADER>w :W3mTab jquery! <c-r>=expand("<cword>")<CR><CR>
-"nmap <LEADER>ws :W3mTab<space>
-"nmap <LEADER>wj :W3mTab js!<space>
-
-autocmd FileType w3m nnoremap <buffer> L :call w3m#Forward()<CR>
-autocmd FileType w3m nnoremap <buffer> H :call w3m#Back()<CR>
-" Bundle 'yuratomo/w3m.vim' >-----
-
 " Bundle 'xolox/vim-session' <-----
 let g:session_autosave = 'yes'
 let g:session_autoload = 'yes'
 let g:session_default_to_last = 1
 
-nmap <LEADER>ss :SaveSession<space>
-nmap <LEADER>sd :DeleteSession<space>
-nmap <LEADER>so :OpenSession<space>
-nmap <LEADER>so :CloseSession<Enter>
+nnoremap <Leader>ss :SaveSession<space>
+nnoremap <Leader>sd :DeleteSession<space>
+nnoremap <Leader>so :OpenSession<space>
+nnoremap <Leader>so :CloseSession<Enter>
 " Bundle 'xolox/vim-session' >-----
 
 " Bundle 'Raimondi/delimitMate' <-----
@@ -178,40 +169,17 @@ let g:delimitMate_expand_space = 1
 let g:SuperTabDefaultCompletionType='<c-p>'
 " Bundle 'ervandew/supertab' >-----
 
-" Bundle 'nathanaelkane/vim-indent-guides' <-----
-let g:indent_guides_auto_colors = 0
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#202020   ctermbg=235
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#252525 ctermbg=236
-" Bundle 'nathanaelkane/vim-indent-guides' >-----
+" Bundle 'marijnh/tern_for_vim' <-----
+augroup Tern
+    autocmd!
 
-" Bundle 'Valloric/YouCompleteMe' <-----
-"let g:ycm_complete_in_comments = 1
-"let g:ycm_collect_identifiers_from_comments_and_strings = 1
-"let g:ycm_collect_identifiers_from_tags_files = 1
-"let g:ycm_min_num_of_chars_for_completion  = 3
-"let g:ycm_add_preview_to_completeopt = 1
-"imap <A-l> <esc>A<Plug>snipMateNextOrTrigger
-" Bundle 'Valloric/YouCompleteMe' >-----
-
-"  Bundle 'marijnh/tern_for_vim' <-----
-" By default tern run server without creating .tern-port file
-"let g:tern#arguments = ['--no-port-file'] " Не создаем .tern-port файл
-"let g:is_show_argument_hints_enabled = 1
-"let g:tern_show_argument_hints = 'on_hold'
-
-autocmd FileType javascript noremap <buffer>  <Leader>tp :TernDef<cr>
-autocmd FileType javascript noremap <buffer>  <Leader>tr :TernRefs<cr>
-autocmd FileType javascript noremap <buffer>  <Leader>tpp :TernDefPreview<cr>
-autocmd FileType javascript noremap <buffer>  <Leader>trr :TernRename<cr>
-autocmd FileType javascript noremap <buffer>  <Leader>tt :TernType<cr>
-"  Bundle 'marijnh/tern_for_vim' >-----
-
-" Bundle 'jiangmiao/auto-pairs' <-----
-"let g:AutoPairsFlyMode = 1
-"let g:AutoPairsShortcutToggle = '<esc>p'
-"let g:AutoPairsShortcutFastWrap = '<C-l>'
-"let g:AutoPairsShortcutBackInsert = '<Leader>b'
-" Bundle 'jiangmiao/auto-pairs' >-----
+    autocmd FileType javascript noremap <buffer>  <LocalLeader>tp :TernDef<cr>
+    autocmd FileType javascript noremap <buffer>  <LocalLeader>tr :TernRefs<cr>
+    autocmd FileType javascript noremap <buffer>  <LocalLeader>tpp :TernDefPreview<cr>
+    autocmd FileType javascript noremap <buffer>  <LocalLeader>trr :TernRename<cr>
+    autocmd FileType javascript noremap <buffer>  <LocalLeader>tt :TernType<cr>
+augroup END
+" Bundle 'marijnh/tern_for_vim' >-----
 
 " Bundle 'xolox/vim-notes' <-----
 let g:notes_directories = ['~/Documents/Notes']
@@ -236,18 +204,22 @@ let g:neocomplcache_same_filetype_lists._ = '_'
 let g:neocomplcache_disable_auto_complete = 0
 let g:SuperTabDefaultCompletionType = '<C-X><C-U>'
 
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=tern#Complete
+augroup Neocomplcache
+    autocmd!
+
+    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+    autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType javascript setlocal omnifunc=tern#Complete
+augroup END
 " Bundle 'Shougo/neocomplcache.vim' >-----
 
 " Bundle 'tpope/vim-fugitive' <-----
-nnoremap <leader>gs :Gstatus<CR>
-nnoremap <leader>gd :Gdiff<CR>
-nnoremap <leader>gc :Gcommit
-nnoremap <leader>gb :Gblame<CR>
-nnoremap <leader>gl :Glog<CR>
-nnoremap <leader>gp ::Git push<CR>
+nnoremap <Leader>gs :Gstatus<CR>
+nnoremap <Leader>gd :Gdiff<CR>
+nnoremap <Leader>gc :Gcommit
+nnoremap <Leader>gb :Gblame<CR>
+nnoremap <Leader>gl :Glog<CR>
+nnoremap <Leader>gp ::Git push<CR>
 " Bundle 'tpope/vim-fugitive' >-----
 
 " Bundle 'Shougo/neosnippet' <-----
@@ -262,8 +234,12 @@ imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-k>     <Plug>(neosnippet_expand_target)
 " SuperTab like snippets behavior.
-autocmd VimEnter * imap <expr><TAB> neosnippet#expandable() && !pumvisible() ?  "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<Plug>SuperTabForward"
-autocmd VimEnter * smap <expr><TAB> neosnippet#expandable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<C-X><C-U>"
-autocmd VimEnter * imap <expr><A-l> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<A-l>"
-autocmd VimEnter * smap <expr><A-l> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<A-l>"
+augroup Neosnippet
+    autocmd!
+
+    autocmd VimEnter * imap <expr><TAB> neosnippet#expandable() && !pumvisible() ?  "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<Plug>SuperTabForward"
+    autocmd VimEnter * smap <expr><TAB> neosnippet#expandable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<C-X><C-U>"
+    autocmd VimEnter * imap <expr><A-l> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<A-l>"
+    autocmd VimEnter * smap <expr><A-l> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<A-l>"
+augroup END
 " Bundle 'Shougo/neosnippet' >-----

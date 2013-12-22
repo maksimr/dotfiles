@@ -17,8 +17,10 @@ nnoremap <leader>eo BvEy:exe "vs ".@<cr>
 
 " выход в нормальный режим из insert mode
 inoremap jk <esc>
+
 " Learn Vim the Hard Way! T_T
-inoremap <esc> <nop>
+" conflict with garbas/vim-snipmate
+"inoremap <esc> <nop>
 
 " wildmenu
 " <Left> и <Right> внутри wildmenu перемещают
@@ -108,6 +110,13 @@ endfun
 
 command! NoAutoIndent call NoAutoIndent()
 
+" @desc Global Mappings!
+
+onoremap in( :<c-u>normal! f(vi(<cr>
+onoremap ip( :<c-u>normal! F)vi(<cr>
+onoremap an( :<c-u>normal! f(va(<cr>
+onoremap ap( :<c-u>normal! F)va(<cr>
+
 
 " @desc Autocommands!
 
@@ -115,8 +124,6 @@ augroup JavaScript
     autocmd!
 
     autocmd FileType javascript noremap <buffer> <LocalLeader>m :Dispatch node %<cr>
-    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-    autocmd FileType javascript compiler node
     " В javascript файлах удаляем пробелы в конце строк при сохранении файла
     autocmd BufWritePre *.js silent exec "%s/\\s\\+$//e"
 augroup END

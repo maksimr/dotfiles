@@ -65,8 +65,9 @@ cabbr vimrc e ~/.vim/.vimrc<cr>
 " Конфигурация расширений
 let g:netrw_list_hide='\~$,\~\*$,\.swp$,\.svn'
 
-" устанавливаем <Leader>-клавишу
+" устанавливаем <Leader>-клавишу и <LocalLeader>
 let mapleader=','
+let maplocalleader=','
 
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 set rtp+=~/.vim/bundle/vundle/             " Необходимо для vundle
