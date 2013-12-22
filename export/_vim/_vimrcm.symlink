@@ -26,6 +26,11 @@ inoremap <esc> <nop>
 cnoremap <Left> <Space><BS><Left>
 cnoremap <Right> <Space><BS><Right>
 
+" tags/ctags/jsctags
+" select tag from list
+noremap <leader>s g]
+" go first matched tag
+noremap <leader>o <C-]>
 
 " spell checker
 fun! SpellCheckerToggle()
@@ -43,14 +48,6 @@ fun! SpellCheckerToggle()
 endfun
 
 nnoremap <leader>c :call SpellCheckerToggle()<cr>
-
-" Удаляем пробелы в конце строк
-fun! DeleteTrailingWhiteSpace()
-  silent exec "%s/\\s\\+$//e"
-endfun
-
-" В javascript файлах удаляем пробелы в конце строк при сохранении файла
-au BufWritePost *.js call DeleteTrailingWhiteSpace()
 
 " ↪ Символ, который будет показан перед перенесенной строкой
 let &sbr = nr2char(8618).' '
@@ -101,33 +98,7 @@ nnoremap <s-f> mngg=G`n
 " <c-r> search in command line
 cnoremap <C-r> <Up>
 
-"fs brousing navigation
-augroup RubyTests
-  au!
-  autocmd BufRead,BufNewFile *.rb,*.rb
-        \ :compiler ruby
-  autocmd BufRead,BufNewFile *_test.rb,test_*.rb
-        \ :compiler rubyunit
-  autocmd BufRead,BufNewFile *.rb,*.rb
-        \ :noremap <buffer> <F5> :make %<cr>
-augroup END
 noremap <F10> :cal VimCommanderToggle()<cr>
-
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-autocmd FileType ruby,eruby set omnifunc=rubycomplete
-
-augroup Nodejs
-  autocmd BufRead,BufNewFile *.js,*.js :noremap <buffer> <leader>m :Dispatch node %<cr>
-augroup END
-
-" tags/ctags/jsctags
-" select tag from list
-noremap <leader>s g]
-" go first matched tag
-noremap <leader>o <C-]>
 
 " set no autoindent
 fun! NoAutoIndent()
@@ -136,3 +107,48 @@ fun! NoAutoIndent()
 endfun
 
 command! NoAutoIndent call NoAutoIndent()
+
+
+" @desc Autocommands!
+
+augroup JavaScript
+    autocmd!
+
+    autocmd FileType javascript noremap <buffer> <LocalLeader>m :Dispatch node %<cr>
+    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+    autocmd FileType javascript compiler node
+    " В javascript файлах удаляем пробелы в конце строк при сохранении файла
+    autocmd BufWritePre *.js silent exec "%s/\\s\\+$//e"
+augroup END
+
+augroup Ruby
+    autocmd!
+
+    autocmd BufRead,BufNewFile *.rb compiler ruby
+    autocmd BufRead,BufNewFile *_test.rb,test_*.rb compiler rubyunit
+    autocmd FileType ruby noremap <buffer> <F5> :make %<cr>
+    autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete
+augroup END
+
+augroup Html
+    autocmd!
+
+    autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+augroup END
+
+augroup StyleSheets
+    autocmd!
+
+    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+augroup END
+
+augroup Txt
+    autocmd!
+
+    autocmd FileType txt setlocal spell
+augroup END
+
+
+" @desc Abbreviation!
+iabbrev @@ rv.maksim@yandex.com<left>
