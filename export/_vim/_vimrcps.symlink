@@ -94,6 +94,9 @@ endfunction
 com! -nargs=? -bang Q call QuitOrLclose('!' == '<bang>')
 cabbrev q Q
 
+"  Bundle 'command-t' <-----
+nnoremap <leader>, :CommandT<cr>
+"  Bundle 'command-t' >-----
 
 "  Bundle 'benmills/vimux' <-----
 nnoremap <Leader>vp :VimuxPromptCommand<CR>
@@ -141,7 +144,14 @@ augroup END
 " Устанавливаем язык для переводчика (vim-gtranslate)
 " Устанавливаем кнопку для перевода в визуальном режиме (vim-gtranslate)
 let g:goog_user_conf = {'langpair' : 'en|ru', 'v_key': 'T'}
+nnoremap g; :Translate<space>
 " Bundle 'maksimr/vim-translator' >-----
+
+" Bundle 'thisivan/vim-bufexplorer' <----
+" открывает окно с текущей директорией
+nnoremap <C-e> :Explore<cr>
+nnoremap <S-e> :BufExplorer<cr>
+" Bundle 'thisivan/vim-bufexplorer' >----
 
 " Bundle 'mattn/emmet-vim' <-----
 let g:user_zen_settings = { 'php' : { 'extends' : 'html', 'filters' : 'c', }, 'xml' : { 'extends' : 'html', }, 'haml' : { 'extends' : 'html', 'filters' : 'haml' } }

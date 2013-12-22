@@ -59,6 +59,9 @@ set wildignore+=.hg,.git,.svn  " Version control
 set wildignore+=*.DS_Store     " OSX bullshit
 set wildignore+=*.pyc          " Python byte code
 
+" ↪ Символ, который будет показан перед перенесенной строкой
+let &showbreak = nr2char(8618).' '
+
 " Аббревиатура: Вызвав vimrc в командной строке исполнить команду e ~/.vim/.vimrc
 cabbr vimrc e ~/.vim/.vimrc<cr>
 

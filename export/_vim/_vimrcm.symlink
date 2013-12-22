@@ -4,36 +4,7 @@
 " @type misc
 " 2012-04-22
 
-" открываем .vimrc
-nnoremap <leader>ev :vsplit ~/.vimrc<cr>
-" загружаем .vimrc в текущую сессию
-nnoremap <leader>sv :so ~/.vimrc<cr>
-
-" открывает новую вкладку
-nnoremap <leader>nt :tabnew %<cr>
-
-" открываем фаил по пути который под курсором
-nnoremap <leader>eo BvEy:exe "vs ".@<cr>
-
-" выход в нормальный режим из insert mode
-inoremap jk <esc>
-
-" Learn Vim the Hard Way! T_T
-" conflict with garbas/vim-snipmate
-"inoremap <esc> <nop>
-
-" wildmenu
-" <Left> и <Right> внутри wildmenu перемещают
-" курсор, вместо перехода к следующему совпадению
-cnoremap <Left> <Space><BS><Left>
-cnoremap <Right> <Space><BS><Right>
-
-" tags/ctags/jsctags
-" select tag from list
-noremap <leader>s g]
-" go first matched tag
-noremap <leader>o <C-]>
-
+" Need Refactoring!!! {{{
 " spell checker
 fun! SpellCheckerToggle()
   if &spell
@@ -51,57 +22,6 @@ endfun
 
 nnoremap <leader>c :call SpellCheckerToggle()<cr>
 
-" ↪ Символ, который будет показан перед перенесенной строкой
-let &sbr = nr2char(8618).' '
-
-" Увеличивает и уменьшает ширину окна
-" <esc> - ALT, потому что ALT или META клавиши не всегда поддерживаются
-nnoremap <esc>. :vertical res +10<cr>
-nnoremap <esc>, :vertical res -10<cr>
-
-" Поиск и замена слова под курсором
-nnoremap \ff :vim /\<<c-r>=expand("<cword>")<cr>\>/ **/*.
-nnoremap \s :%s/\<<c-r>=expand("<cword>")<cr>\>/
-
-" clipboard (копирование для во внешний буфер, позволяет использовать дальше
-" везде не только в виме)
-vnoremap <C-c> "+yy
-
-" автодополнение из словоря
-inoremap <c-l> <c-x><c-o>
-
-"CSS
-"map <leader>o ?{<CR>jV/^\s*\}\=$<CR>k:sort<CR>:let @/=''<CR>
-
-" открывает окно с текущей директорией
-noremap <C-E> :Explore<CR>
-
-" обозреватели открытых файлов
-nnoremap <S-e> :BufExplorer<cr>
-
-" vim-translator
-" переводчик
-noremap g; :Translate<space>
-
-" command-t
-noremap <leader>, :CommandT<cr>
-
-" vim-w3m
-nnoremap <leader>bb :W3m<space>
-nnoremap <leader>bw :W3m<space>http://search.yandex-team.ru/search?text=
-
-" ctrlp.vim
-" Open goto symbol on all buffers
-nmap <D-R> :CtrlPBufTagAll<cr>
-imap <D-R> <esc>:CtrlPBufTagAll<cr>
-
-nnoremap <s-f> mngg=G`n
-
-" <c-r> search in command line
-cnoremap <C-r> <Up>
-
-noremap <F10> :cal VimCommanderToggle()<cr>
-
 " set no autoindent
 fun! NoAutoIndent()
   :DelimitMateSwitch
@@ -109,20 +29,57 @@ fun! NoAutoIndent()
 endfun
 
 command! NoAutoIndent call NoAutoIndent()
+"}}}
+
 
 " @desc Global Mappings!
 " Mapping --- {{{
+nnoremap <c-w>" :belowright split %<cr>
+" Indentation(formating)
+nnoremap <s-f> mngg=G`n
+" Поиск и замена слова под курсором
+nnoremap \ff :vim /\<<c-r>=expand("<cword>")<cr>\>/ **/*.
+nnoremap \s :%s/\<<c-r>=expand("<cword>")<cr>\>/
+" Увеличивает и уменьшает ширину окна
+" <esc> - ALT, потому что ALT или META клавиши не всегда поддерживаются
+nnoremap <esc>. :vertical res +10<cr>
+nnoremap <esc>, :vertical res -10<cr>
+" tags/ctags/jsctags
+" select tag from list
+nnoremap <leader>s g]
+" go first matched tag
+nnoremap <leader>o <C-]>
+" открываем .vimrc
+nnoremap <leader>ev :vsplit ~/.vimrc<cr>
+" загружаем .vimrc в текущую сессию
+nnoremap <leader>sv :so ~/.vimrc<cr>
+" открывает новую вкладку
+nnoremap <leader>nt :tabnew %<cr>
+
+" выход в нормальный режим из insert mode
+inoremap jk <esc>
+
+" clipboard (копирование для во внешний буфер, позволяет использовать дальше
+" везде не только в виме)
+vnoremap <C-c> "+yy
 
 onoremap in( :<c-u>normal! f(vi(<cr>
 onoremap ip( :<c-u>normal! F)vi(<cr>
 onoremap an( :<c-u>normal! f(va(<cr>
 onoremap ap( :<c-u>normal! F)va(<cr>
+
+" <c-r>|<c-p> search in command line
+cnoremap <C-r> <Up>
+cnoremap <C-p> <Down>
+" wildmenu <Left> и <Right> внутри wildmenu перемещают
+" курсор, вместо перехода к следующему совпадению
+cnoremap <Left> <Space><BS><Left>
+cnoremap <Right> <Space><BS><Right>
 " }}}
 
 
 " @desc Autocommands!
 " Autocommands settings --- {{{
-
 augroup filetype_javascript
     autocmd!
 
