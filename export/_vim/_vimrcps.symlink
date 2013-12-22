@@ -110,9 +110,14 @@ nnoremap <Leader>vs :Start<space>
 
 " Bundle 'mileszs/ack.vim' <-----
 " Ack заменяем команду с ack на ack-grep
-let g:ackprg="ack-grep -H --nocolor --nogroup --column"
-set grepprg=ack-grep\ -a
-nnoremap <leader>f :Ack! <c-r>=expand("<cword>")<cr><cr>
+if executable('ack-grep')
+    let g:ackprg="ack-grep -H --nocolor --nogroup --column"
+    set grepprg=ack-grep\ -a
+else
+    let g:ackprg="grep"
+endif
+
+nnoremap <leader>g :Ack! <c-r>=expand("<cword>")<cr><cr>
 " Bundle 'mileszs/ack.vim' >-----
 
 " Bundle 'majutsushi/tagbar' <-----
@@ -229,7 +234,7 @@ nnoremap <Leader>gd :Gdiff<CR>
 nnoremap <Leader>gc :Gcommit
 nnoremap <Leader>gb :Gblame<CR>
 nnoremap <Leader>gl :Glog<CR>
-nnoremap <Leader>gp ::Git push<CR>
+nnoremap <Leader>gp :Git push<CR>
 " Bundle 'tpope/vim-fugitive' >-----
 
 " Bundle 'Shougo/neosnippet' <-----
