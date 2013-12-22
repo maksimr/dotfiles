@@ -70,7 +70,7 @@ let g:netrw_list_hide='\~$,\~\*$,\.swp$,\.svn'
 
 " устанавливаем <Leader>-клавишу и <LocalLeader>
 let mapleader=','
-let maplocalleader=','
+let maplocalleader=mapleader
 
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 set rtp+=~/.vim/bundle/vundle/             " Необходимо для vundle
