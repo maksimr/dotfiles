@@ -111,16 +111,19 @@ endfun
 command! NoAutoIndent call NoAutoIndent()
 
 " @desc Global Mappings!
+" Mapping --- {{{
 
 onoremap in( :<c-u>normal! f(vi(<cr>
 onoremap ip( :<c-u>normal! F)vi(<cr>
 onoremap an( :<c-u>normal! f(va(<cr>
 onoremap ap( :<c-u>normal! F)va(<cr>
+" }}}
 
 
 " @desc Autocommands!
+" Autocommands settings --- {{{
 
-augroup JavaScript
+augroup filetype_javascript
     autocmd!
 
     autocmd FileType javascript noremap <buffer> <LocalLeader>m :Dispatch node %<cr>
@@ -128,7 +131,7 @@ augroup JavaScript
     autocmd BufWritePre *.js silent exec "%s/\\s\\+$//e"
 augroup END
 
-augroup Ruby
+augroup filetype_ruby
     autocmd!
 
     autocmd BufRead,BufNewFile *.rb compiler ruby
@@ -137,25 +140,38 @@ augroup Ruby
     autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete
 augroup END
 
-augroup Html
+augroup filetype_html
     autocmd!
 
     autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
+augroup END
+
+augroup filetype_xml
+    autocmd!
     autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 augroup END
 
-augroup StyleSheets
+augroup filetype_css
     autocmd!
 
     autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 augroup END
 
-augroup Txt
+augroup filetype_txt
     autocmd!
 
     autocmd FileType txt setlocal spell
 augroup END
 
+augroup filetype_vim
+    autocmd!
+
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+" }}}
+
 
 " @desc Abbreviation!
+" Abbreviations --- {{{
 iabbrev @@ rv.maksim@yandex.com<left>
+" }}}

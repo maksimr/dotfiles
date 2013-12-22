@@ -127,7 +127,7 @@ set encoding=utf-8
 " Bundle 'Lokaltog/vim-powerline' >-----
 
 " Bundle 'maksimr/vim-jsbeautify' <-----
-augroup JSBeautify
+augroup plugin_vim_jsbeautify
     autocmd!
 
     autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
@@ -170,7 +170,7 @@ let g:SuperTabDefaultCompletionType='<c-p>'
 " Bundle 'ervandew/supertab' >-----
 
 " Bundle 'marijnh/tern_for_vim' <-----
-augroup Tern
+augroup plugin_tern_for_vim
     autocmd!
 
     autocmd FileType javascript noremap <buffer>  <LocalLeader>tp :TernDef<cr>
@@ -204,7 +204,7 @@ let g:neocomplcache_same_filetype_lists._ = '_'
 let g:neocomplcache_disable_auto_complete = 0
 let g:SuperTabDefaultCompletionType = '<C-X><C-U>'
 
-augroup Neocomplcache
+augroup plugin_neocomplcache
     autocmd!
 
     autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
@@ -234,7 +234,7 @@ imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-k>     <Plug>(neosnippet_expand_target)
 " SuperTab like snippets behavior.
-augroup Neosnippet
+augroup plugin_neosnippet
     autocmd!
 
     autocmd VimEnter * imap <expr><TAB> neosnippet#expandable() && !pumvisible() ?  "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<Plug>SuperTabForward"
