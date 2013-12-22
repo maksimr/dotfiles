@@ -166,7 +166,7 @@ let g:session_default_to_last = 1
 nnoremap <Leader>ss :SaveSession<space>
 nnoremap <Leader>sd :DeleteSession<space>
 nnoremap <Leader>so :OpenSession<space>
-nnoremap <Leader>so :CloseSession<Enter>
+nnoremap <Leader>sc :CloseSession<Enter>
 " Bundle 'xolox/vim-session' >-----
 
 " Bundle 'Raimondi/delimitMate' <-----
