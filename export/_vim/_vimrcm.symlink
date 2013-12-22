@@ -15,6 +15,11 @@ nnoremap <leader>nt :tabnew %<cr>
 " открываем фаил по пути который под курсором
 nnoremap <leader>eo BvEy:exe "vs ".@<cr>
 
+" выход в нормальный режим из insert mode
+inoremap jk <esc>
+" Learn Vim the Hard Way! T_T
+inoremap <esc> <nop>
+
 " wildmenu
 " <Left> и <Right> внутри wildmenu перемещают
 " курсор, вместо перехода к следующему совпадению
