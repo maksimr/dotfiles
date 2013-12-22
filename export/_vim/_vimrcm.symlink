@@ -132,3 +132,10 @@ augroup END
 " Abbreviations --- {{{
 iabbrev @@ rv.maksim@yandex.com<left>
 " }}}
+
+
+" @desc Matches
+" {{{
+" Подсвечивает пробелы в конце строки как ошибку
+match Error /\s\+$/
+" }}}
