@@ -7,7 +7,7 @@
 " XXX То что использую
 "  Bundle Lucius
 if exists(':LuciusDark')
-  LuciusDark
+    LuciusDark
 endif
 
 "  Bundle 'garbas/vim-snipmate'
@@ -26,12 +26,14 @@ imap <A-l> <Plug>snipMateNextOrTrigger
 smap <A-l> <Plug>snipMateNextOrTrigger
 set ttimeoutlen=50
 
-let g:snipMate = {}
-let g:snipMate.scope_aliases = {}
-let g:snipMate.scope_aliases['javascript'] = "javascript,javascript_angular,javascript_jquery,javascript_jasmine"
-let g:snipMate.scope_aliases['html'] = "html,html_angular,html_bootstrap,html_bower"
-let g:snipMate.scope_aliases['yate'] = "yate,html"
-let g:snipMate.scope_aliases['vim'] = "vim,vim_vspec"
+if !exists('g:vimrcps_loaded')
+    let g:snipMate = {}
+    let g:snipMate.scope_aliases = {}
+    let g:snipMate.scope_aliases['javascript'] = "javascript,javascript_angular,javascript_jquery,javascript_jasmine"
+    let g:snipMate.scope_aliases['html'] = "html,html_angular,html_bootstrap,html_bower"
+    let g:snipMate.scope_aliases['yate'] = "yate,html"
+    let g:snipMate.scope_aliases['vim'] = "vim,vim_vspec"
+endif
 
 "  Bundle 'kien/ctrlp.vim' <-----
 " ctrlp_cmd - Команда которая будет вызвана по умолчанию
@@ -205,19 +207,19 @@ let g:hardtime_default_on = 0
 " Bundle 'takac/vim-hardtime' >-----
 
 " Bundle 'Shougo/neocomplcache.vim' <-----
-let g:acp_enableAtStartup = 1
+"let g:acp_enableAtStartup = 1
 let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 1
 let g:neocomplcache_min_keyword_length = 2
 let g:neocomplcache_min_syntax_length = 1
-let g:neocomplcache_lock_iminsert = 1
+"let g:neocomplcache_lock_iminsert = 1
 call neocomplcache#custom_source('buffer_complete', 'rank', 100)
 " Complete from all buffers
 let g:neocomplcache_same_filetype_lists = {}
 let g:neocomplcache_same_filetype_lists._ = '_'
 " Play nice with SuperTab and snipMate
 let g:neocomplcache_disable_auto_complete = 0
-let g:SuperTabDefaultCompletionType = '<C-X><C-U>'
+"let g:SuperTabDefaultCompletionType = '<C-X><C-U>'
 
 augroup plugin_neocomplcache
     autocmd!
@@ -240,7 +242,7 @@ nnoremap <Leader>gp :Git push<CR>
 " Bundle 'Shougo/neosnippet' <-----
 " Enable snipMate compatibility feature.
 let g:neosnippet#enable_snipmate_compatibility = 1
-let g:neosnippet#enable_preview = 0
+let g:neosnippet#enable_preview = 1
 
 " Tell Neosnippet about the other snippets
 let g:neosnippet#snippets_directory=['~/.vim/bundle/vim-snippets/snippets', '~/.vim/bundle/vim-javascript/snippets']
@@ -253,8 +255,10 @@ augroup plugin_neosnippet
     autocmd!
 
     autocmd VimEnter * imap <expr><TAB> neosnippet#expandable() && !pumvisible() ?  "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<Plug>SuperTabForward"
-    autocmd VimEnter * smap <expr><TAB> neosnippet#expandable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<C-X><C-U>"
+    autocmd VimEnter * smap <expr><TAB> neosnippet#expandable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<Plug>SuperTabForward"
     autocmd VimEnter * imap <expr><A-l> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<A-l>"
     autocmd VimEnter * smap <expr><A-l> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<A-l>"
 augroup END
 " Bundle 'Shougo/neosnippet' >-----
+
+let g:vimrcps_loaded = 1
