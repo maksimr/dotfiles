@@ -140,9 +140,13 @@ set encoding=utf-8
 augroup plugin_vim_jsbeautify
     autocmd!
 
-    autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
-    autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
-    autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+    autocmd FileType javascript nnoremap <buffer>  <c-f> :call JsBeautify()<cr>
+    autocmd FileType html nnoremap <buffer> <c-f> :call HtmlBeautify()<cr>
+    autocmd FileType css nnoremap <buffer> <c-f> :call CSSBeautify()<cr>
+
+    autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
+    autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
+    autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
 augroup END
 " Bundle 'maksimr/vim-jsbeautify' >-----
 
