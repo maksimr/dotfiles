@@ -241,6 +241,9 @@ nnoremap <Leader>gc :Gcommit
 nnoremap <Leader>gb :Gblame<CR>
 nnoremap <Leader>gl :Glog<CR>
 nnoremap <Leader>gp :Git push<CR>
+
+command! -nargs=+ GitGrep execute 'let &grepprg="git grep --no-color" | silent grep! <args> | redraw! | set grepprg& | copen'
+nnoremap <Leader>gg :GitGrep <cword><cr>
 " Bundle 'tpope/vim-fugitive' >-----
 
 " Bundle 'Shougo/neosnippet' <-----
