@@ -29,6 +29,8 @@ fun! NoAutoIndent()
 endfun
 
 command! NoAutoIndent call NoAutoIndent()
+command! -nargs=+ GitGrep execute 'let &grepprg="git grep --no-color" | silent grep! <args> | redraw! | set grepprg& | copen'
+nnoremap <Leader>gg :GitGrep <cword><cr>
 "}}}
 
 
