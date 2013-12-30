@@ -210,30 +210,6 @@ let g:notes_directories = ['~/Documents/Notes']
 let g:hardtime_default_on = 0
 " Bundle 'takac/vim-hardtime' >-----
 
-" Bundle 'Shougo/neocomplcache.vim' <-----
-"let g:acp_enableAtStartup = 1
-let g:neocomplcache_enable_at_startup = 1
-let g:neocomplcache_enable_smart_case = 1
-let g:neocomplcache_min_keyword_length = 2
-let g:neocomplcache_min_syntax_length = 1
-"let g:neocomplcache_lock_iminsert = 1
-call neocomplcache#custom_source('buffer_complete', 'rank', 100)
-" Complete from all buffers
-let g:neocomplcache_same_filetype_lists = {}
-let g:neocomplcache_same_filetype_lists._ = '_'
-" Play nice with SuperTab and snipMate
-let g:neocomplcache_disable_auto_complete = 0
-"let g:SuperTabDefaultCompletionType = '<C-X><C-U>'
-
-augroup plugin_neocomplcache
-    autocmd!
-
-    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-    autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType javascript setlocal omnifunc=tern#Complete
-augroup END
-" Bundle 'Shougo/neocomplcache.vim' >-----
-
 " Bundle 'tpope/vim-fugitive' <-----
 nnoremap <Leader>gs :Gstatus<CR>
 nnoremap <Leader>gd :Gdiff<CR>
@@ -246,10 +222,32 @@ command! -nargs=+ GitGrep execute 'let &grepprg="git grep --no-color" | silent g
 nnoremap <Leader>gg :GitGrep <cword><cr>
 " Bundle 'tpope/vim-fugitive' >-----
 
+" Bundle 'Shougo/neocomplcache.vim' <-----
+let g:neocomplcache_enable_at_startup = 1
+let g:neocomplcache_enable_smart_case = 1
+let g:neocomplcache_min_keyword_length = 2
+let g:neocomplcache_min_syntax_length = 1
+call neocomplcache#custom_source('buffer_complete', 'rank', 100)
+" Complete from all buffers
+let g:neocomplcache_same_filetype_lists = {}
+let g:neocomplcache_same_filetype_lists._ = '_'
+" Play nice with SuperTab and snipMate
+let g:neocomplcache_disable_auto_complete = 0
+
+augroup plugin_neocomplcache
+    autocmd!
+
+    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+    autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType javascript setlocal omnifunc=tern#Complete
+augroup END
+" Bundle 'Shougo/neocomplcache.vim' >-----
+
 " Bundle 'Shougo/neosnippet' <-----
 " Enable snipMate compatibility feature.
 let g:neosnippet#enable_snipmate_compatibility = 1
 let g:neosnippet#enable_preview = 0
+set completeopt-=preview
 
 " Tell Neosnippet about the other snippets
 let g:neosnippet#snippets_directory=['~/.vim/bundle/vim-snippets/snippets', '~/.vim/bundle/vim-javascript/snippets']
