@@ -249,6 +249,19 @@ let g:neosnippet#enable_snipmate_compatibility = 1
 let g:neosnippet#enable_preview = 0
 set completeopt-=preview
 
+if !exists('g:vimrcps_loaded')
+    let g:neosnippet#scope_aliases = {}
+
+    if exists('g:snipMate')
+        let g:neosnippet#scope_aliases = g:snipMate.scope_aliases
+    else
+        let g:neosnippet#scope_aliases['javascript'] = "javascript,javascript_angular,javascript_jquery,javascript_jasmine"
+        let g:neosnippet#scope_aliases['html'] = "html,html_angular,html_bootstrap,html_bower"
+        let g:neosnippet#scope_aliases['yate'] = "yate,html,yate_nanoislands"
+        let g:neosnippet#scope_aliases['vim'] = "vim,vim_vspec"
+    endif
+endif
+
 " Tell Neosnippet about the other snippets
 let g:neosnippet#snippets_directory=['~/.vim/bundle/vim-snippets/snippets', '~/.vim/bundle/vim-javascript/snippets']
 " Plugin key-mappings.
