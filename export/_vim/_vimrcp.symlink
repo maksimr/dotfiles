@@ -41,12 +41,12 @@
   Bundle 'xolox/vim-session'
 
   " Метки
-  Bundle 'kshenoy/vim-signature'
+  "Bundle 'kshenoy/vim-signature'
   " Историю изменений
   Bundle 'sjl/gundo.vim'
   Bundle 'thisivan/vim-bufexplorer'
   " Поддержка ctags
-  Bundle 'szw/vim-tags'
+  "Bundle 'szw/vim-tags'
   " Навигация по коду используя буквы
   Bundle 'Lokaltog/vim-easymotion'
 
@@ -109,7 +109,7 @@
   Bundle 'majutsushi/tagbar'
   " расширенный taglist.vim с улучшенной поддержкой javascript
   " также зависит от jsctags
-  Bundle 'int3/vim-taglist-plus'
+  "Bundle 'int3/vim-taglist-plus'
   " проверка синтаксиса и не только для javascript-а
   Bundle 'scrooloose/syntastic'
   " Autocomplete, syntax analyzer
