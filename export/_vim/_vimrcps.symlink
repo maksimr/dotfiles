@@ -258,6 +258,8 @@ if !exists('g:vimrcps_loaded')
     let g:neosnippet#scope_aliases = g:snippets.scope_aliases
 endif
 
+let g:neosnippet#disable_runtime_snippets = { '_' : 1 }
+
 " Tell Neosnippet about the other snippets
 let g:neosnippet#snippets_directory=['~/.vim/bundle/vim-snippets/snippets', '~/.vim/bundle/vim-javascript/snippets']
 " Plugin key-mappings.
