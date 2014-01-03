@@ -59,6 +59,9 @@ set wildignore+=.hg,.git,.svn  " Version control
 set wildignore+=*.DS_Store     " OSX bullshit
 set wildignore+=*.pyc          " Python byte code
 
+" Not open error window
+let g:netrw_use_errorwindow    = 0
+
 " ↪ Символ, который будет показан перед перенесенной строкой
 let &showbreak = nr2char(8618).' '
 
