@@ -41,7 +41,7 @@
   Bundle 'xolox/vim-session'
 
   " Метки
-  "Bundle 'kshenoy/vim-signature'
+  Bundle 'kshenoy/vim-signature'
   " Историю изменений
   Bundle 'sjl/gundo.vim'
   Bundle 'thisivan/vim-bufexplorer'

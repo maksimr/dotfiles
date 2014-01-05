@@ -81,6 +81,13 @@ let g:syntastic_warning_symbol='⚠'
 let g:syntastic_auto_jump=0         " Не перескакиваем на ошибку автоматически
 let g:syntastic_javascript_checkers=["jshint", "eslint"]
 let g:syntastic_javascript_jshint_conf = expand("~/.hintrc")
+
+" User project jshintrc if exist when run vim
+let g:project_jshint_path = getcwd()."/.jshintrc"
+if filereadable(g:project_jshint_path)
+    let g:syntastic_javascript_jshint_conf = expand(g:project_jshint_path)
+endif
+
 let g:syntastic_dart_analyzer_conf='-out /tmp/'
 
 " Если находимся внутри 'quickfix'
