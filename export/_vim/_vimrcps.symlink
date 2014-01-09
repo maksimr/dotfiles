@@ -268,7 +268,7 @@ endif
 let g:neosnippet#disable_runtime_snippets = { '_' : 1 }
 
 " Tell Neosnippet about the other snippets
-let g:neosnippet#snippets_directory=['~/.vim/bundle/vim-snippets/snippets', '~/.vim/bundle/vim-javascript/snippets']
+let g:neosnippet#snippets_directory=['~/.vim/bundle/vim-snippets/snippets', '~/.vim/bundle/vim-javascript/snippets', '~/.vim/bundle/vim-yate/snippets']
 " Plugin key-mappings.
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
