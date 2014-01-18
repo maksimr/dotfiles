@@ -66,9 +66,6 @@ let g:netrw_use_errorwindow    = 0
 " ↪ Символ, который будет показан перед перенесенной строкой
 let &showbreak = nr2char(8618).' '
 
-" Аббревиатура: Вызвав vimrc в командной строке исполнить команду e ~/.vim/.vimrc
-cabbr vimrc e ~/.vim/.vimrc<cr>
-
 " Конфигурация расширений
 let g:netrw_list_hide='\~$,\~\*$,\.swp$,\.svn'
 
