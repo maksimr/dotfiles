@@ -230,7 +230,7 @@ nnoremap <Leader>gl :Glog<CR>
 nnoremap <Leader>gp :Git push<CR>
 
 command! -nargs=+ GitGrep execute 'let &grepprg="git grep --no-color" | silent grep! <args> | redraw! | set grepprg& | copen'
-nnoremap <Leader>gg :GitGrep <cword><cr>
+nnoremap <Leader>gg :GitGrep <cword>
 " Bundle 'tpope/vim-fugitive' >-----
 
 " Bundle 'Shougo/neocomplcache.vim' <-----
