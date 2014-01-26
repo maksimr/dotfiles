@@ -165,7 +165,7 @@ augroup END
 " Настройка переводчика
 " Устанавливаем язык для переводчика (vim-gtranslate)
 " Устанавливаем кнопку для перевода в визуальном режиме (vim-gtranslate)
-let g:goog_user_conf = {'langpair' : 'en|ru', 'v_key': 'T'}
+let g:goog_user_conf = {'langpair' : 'en|ru', 'v_key': 'T', 'cmd': 'node'}
 nnoremap g; :Translate<space>
 " Bundle 'maksimr/vim-translator' >-----
 
