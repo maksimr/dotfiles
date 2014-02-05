@@ -107,6 +107,10 @@ endfunction
 com! -nargs=? -bang Q call QuitOrLclose('!' == '<bang>')
 cabbrev q Q
 
+"  Bundle 'Lokaltog/vim-easymotion' <-----
+let g:EasyMotion_leader_key = "<Leader><Leader><Leader>"
+"  Bundle 'Lokaltog/vim-easymotion' >-----
+"
 "  Bundle 'command-t' <-----
 nnoremap <leader>, :CommandT<cr>
 "  Bundle 'command-t' >-----
