@@ -284,7 +284,7 @@ augroup plugin_neosnippet
 
     autocmd VimEnter * imap <expr><TAB> neosnippet#expandable() && !pumvisible() ?  "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<Plug>SuperTabForward"
     autocmd VimEnter * smap <expr><TAB> neosnippet#expandable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<Plug>SuperTabForward"
-    autocmd VimEnter * imap <expr><A-l> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<Plug>snipMateNextOrTrigger"
+    autocmd VimEnter * imap <expr><A-l> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ? "\<C-x><C-x><A-l>" : "\<Plug>snipMateNextOrTrigger")
     autocmd VimEnter * smap <expr><A-l> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<A-l>"
     autocmd InsertLeave * :NeoSnippetClearMarkers
 augroup END
