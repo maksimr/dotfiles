@@ -239,7 +239,8 @@ nnoremap <Leader>gg :GitGrep
 
 " Bundle 'Shougo/neocomplcache.vim' <-----
 let g:neocomplcache_enable_at_startup = 1
-let g:neocomplcache_enable_smart_case = 1
+let g:neocomplcache_enable_ignore_case = 0
+let g:neocomplcache_enable_smart_case = 0
 let g:neocomplcache_min_keyword_length = 2
 let g:neocomplcache_min_syntax_length = 1
 call neocomplcache#custom_source('buffer_complete', 'rank', 100)
