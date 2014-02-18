@@ -61,7 +61,7 @@ bind a choose-buffer
 # http://joncairns.com/2013/06/copying-between-tmux-buffers-and-the-system-clipboard/
 # Need install xclip
 # For tmux 1.7
-bind y run-shell 'tmux show-buffer - | xclip -i'
+bind y run-shell 'tmux show-buffer - | xclip -sel clip -i > /dev/null'
 
 # Agressive resize!!!
 bind e run-shell 'tmux detach -a'
