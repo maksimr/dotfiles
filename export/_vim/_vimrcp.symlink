@@ -148,3 +148,5 @@
   " Ставит пузу на повторное использование
   " клавиш паразитов jklh
   Bundle 'takac/vim-hardtime'
+  " Get issues from github
+  Bundle 'jaxbot/github-issues.vim'
