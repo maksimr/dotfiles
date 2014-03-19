@@ -302,3 +302,5 @@ if [ -d "$HOME/.local/zsh" ]; then
     . $HOME/.local/zsh/$lzsh
   done
 fi
+
+export CHROME_BIN="chromium-browser"
