@@ -82,12 +82,6 @@ let g:syntastic_auto_jump=0         " Не перескакиваем на ош�
 let g:syntastic_javascript_checkers=["jshint", "eslint"]
 let g:syntastic_javascript_jshint_conf = expand("~/.hintrc")
 
-" User project jshintrc if exist when run vim
-let g:project_jshint_path = getcwd()."/.jshintrc"
-if filereadable(g:project_jshint_path)
-    let g:syntastic_javascript_jshint_conf = expand(g:project_jshint_path)
-endif
-
 let g:syntastic_dart_analyzer_conf='-out /tmp/'
 
 " Если находимся внутри 'quickfix'
@@ -106,6 +100,35 @@ function! QuitOrLclose(bang)
 endfunction
 com! -nargs=? -bang Q call QuitOrLclose('!' == '<bang>')
 cabbrev q Q
+
+" User project jshintrc if exist when run vim
+function s:find_jshintrc(dir)
+    let l:found = globpath(a:dir, '.jshintrc')
+    if filereadable(l:found)
+        return l:found
+    endif
+
+    let l:parent = fnamemodify(a:dir, ':h')
+    if l:parent != a:dir
+        return s:find_jshintrc(l:parent)
+    endif
+
+    return "~/.jshintrc"
+endfunction
+
+function UpdateJsHintConf()
+    let l:dir = expand('%:p:h')
+    let l:jshintrc = s:find_jshintrc(l:dir)
+
+    if filereadable(l:jshintrc)
+        let g:syntastic_javascript_jshint_conf = expand(l:jshintrc)
+    endif
+endfunction
+
+augroup plugin_syntastic
+    autocmd!
+    autocmd BufEnter * call UpdateJsHintConf()
+augroup END
 
 "  Bundle 'Lokaltog/vim-easymotion' <-----
 let g:EasyMotion_leader_key = "<Leader><Leader><Leader>"
