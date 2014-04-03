@@ -102,7 +102,7 @@ com! -nargs=? -bang Q call QuitOrLclose('!' == '<bang>')
 cabbrev q Q
 
 " User project jshintrc if exist when run vim
-function s:find_jshintrc(dir)
+function! s:find_jshintrc(dir)
     let l:found = globpath(a:dir, '.jshintrc')
     if filereadable(l:found)
         return l:found
@@ -116,7 +116,7 @@ function s:find_jshintrc(dir)
     return "~/.jshintrc"
 endfunction
 
-function UpdateJsHintConf()
+function! UpdateJsHintConf()
     let l:dir = expand('%:p:h')
     let l:jshintrc = s:find_jshintrc(l:dir)
 
@@ -256,7 +256,7 @@ nnoremap <Leader>gb :Gblame<CR>
 nnoremap <Leader>gl :Glog<CR>
 nnoremap <Leader>gp :Git push<CR>
 
-command! -nargs=+ GitGrep execute 'let &grepprg="git grep --no-color" | silent grep! <args> | redraw! | set grepprg& | copen'
+command! -nargs=+ GitGrep execute 'let &grepprg="git grep --no-color" | silent grep! '.<q-args>.' | redraw! | set grepprg& | copen'
 nnoremap <Leader>gg :GitGrep 
 " Bundle 'tpope/vim-fugitive' >-----
 
