@@ -129,9 +129,6 @@
   Bundle 'kana/vim-vspec'
 
 " Other
-  " Позволяет быстро переходить по тегам
-  Bundle 'tsaleh/vim-matchit'
-  Bundle 'vim-scripts/TwitVim'
   Bundle 'maksimr/vim-translator'
   " need vim with +python feature
   " define indent for different files
