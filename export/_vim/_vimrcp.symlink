@@ -129,6 +129,8 @@
   Bundle 'kana/vim-vspec'
 
 " Other
+  " extended % matching for HTML
+  Bundle 'tmhedberg/matchit'
   Bundle 'maksimr/vim-translator'
   " need vim with +python feature
   " define indent for different files
