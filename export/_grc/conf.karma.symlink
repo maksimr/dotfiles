@@ -1,0 +1,24 @@
+# Highlight karma sinon errors
+
+# Error
+regexp=AssertError:.*
+colours=bold white
+-
+regexp=AssertError:
+colours=bold white
+-
+# Test file
+regexp=^\s*at\s[A-Za-z0-9_().&*/\-]+:\d+$
+colours=bold blue
+-
+# Line
+regexp=(?::)\d+$
+colours=bold white
+-
+# Start at
+regexp=^\s*at\s
+colours=bold white
+-
+# Node modules files
+regexp=^\s*at\s(?P<fileName>[A-Za-z0-9_().&*/\-]+)(?=node_modules)[A-Za-z0-9_().&*/\-]+:\d+$
+colours=

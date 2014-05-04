@@ -53,3 +53,7 @@ conf.cvs
 # jshint command
 (^|[/\w\.]+/)jshint\s?
 conf.jshint
+
+# karma command
+(^|[/\w\.]+/)karma\s?
+conf.karma

@@ -90,6 +90,7 @@ then
   alias logt="grc tail"
   alias logh="grc head"
   alias jshint="grc jshint"
+  alias karma="grc karma"
 fi
 
 # npm
