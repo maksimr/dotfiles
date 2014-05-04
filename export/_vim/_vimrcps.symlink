@@ -188,6 +188,17 @@ augroup plugin_vim_jsbeautify
 augroup END
 " Bundle 'maksimr/vim-jsbeautify' >-----
 
+" Bundle 'maksimr/vim-karm' <-----
+augroup plugin_vim_karma
+    autocmd!
+
+    autocmd FileType javascript nnoremap <buffer>  <Leader>ks :call RunNearestSpec()<cr>
+    autocmd FileType javascript nnoremap <buffer>  <Leader>kd :call RunNearestTestSuite()<cr>
+    autocmd FileType javascript nnoremap <buffer>  <Leader>kf :call RunCurrentSpecFile()<cr>
+    autocmd FileType javascript nnoremap <buffer>  <Leader>ka :call RunAllSpecs()<cr>
+augroup END
+" Bundle 'maksimr/vim-karm' >-----
+
 " Bundle 'maksimr/vim-translator' <-----
 " Настройка переводчика
 " Устанавливаем язык для переводчика (vim-gtranslate)

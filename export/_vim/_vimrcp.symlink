@@ -102,6 +102,7 @@
 " Javascript
   Bundle 'kchmck/vim-coffee-script.git'
   Bundle 'maksimr/vim-jsbeautify'
+  Bundle 'maksimr/vim-karma'
   Bundle 'einars/js-beautify'
   " Необходимо дополнительно установить в системе ctags
   " sudo apt-get install exuberant-ctags
