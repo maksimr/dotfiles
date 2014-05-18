@@ -126,6 +126,12 @@
   " Подсветка для basts
   Bundle 'rosstimson/bats.vim'
 
+" Clojure
+  Bundle 'guns/vim-clojure-static'
+  Bundle 'tpope/vim-fireplace'
+  Bundle 'tpope/vim-projectionist'
+  Bundle 'slimv.vim'
+
 " Vim
   Bundle 'kana/vim-vspec'
 
