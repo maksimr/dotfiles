@@ -303,6 +303,16 @@ zle -N insert-selecta-path-in-command-line
 # Bind the key to the newly created widget
 bindkey "^S" "insert-selecta-path-in-command-line"
 
+# Liquidprompt
+export DISABLE_AUTO_TITLE='true'
+export LP_PS1='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n(%m):%~${LP_BATT}${LP_LOAD}${LP_JOBS}${LP_PROXY}${LP_ERR} %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
+
+if [ -f "$HOME/bin/liquidprompt" ]
+then
+    source $HOME/bin/liquidprompt
+fi
+# Liquidprompt end
+
 # Global tmux configuration
 # vim: ft=zsh
 
