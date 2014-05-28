@@ -391,14 +391,11 @@ run_once("gnome-settings-daemon")
 run_once("pidgin")
 run_once("gnome-do")
 run_once("easystroke")
+run_once("screencloud")
 --run_once("gnome-pie")
 --run_once("google-musicmanager")
 
---run_once("unity-2d-panel")
---run_once("unity-2d-shell")
---
 os.execute("dropbox start &")
+-- HACK(maksimrv): Fix problem with keyboard switcher alt-shift
 -- Enable keyboard layout switcher
--- problem in ubuntu11.10 need for fix keyboard
--- switcher in ubuntu12.04
 os.execute("setxkbmap -option grp:switch,grp:alt_shift_toggle us,ru")
