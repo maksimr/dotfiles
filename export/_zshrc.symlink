@@ -307,6 +307,20 @@ then
     zle -N insert-selecta-path-in-command-line
     # Bind the key to the newly created widget
     bindkey "^S" "insert-selecta-path-in-command-line"
+
+    # Select git branch
+    function sgb(){
+        git branch $@ | cut -c 3- | selecta | xargs git checkout
+    }
+
+    function scat(){
+        if [ $# -eq 1 ]
+        then
+            cat $(find * -type f -name $@ | selecta)
+        else
+            cat $(find * -type f -name \* | selecta)
+        fi
+    }
 fi
 
 # Liquidprompt
