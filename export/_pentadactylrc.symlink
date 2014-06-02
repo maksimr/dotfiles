@@ -33,6 +33,9 @@ map -modes=n sp :spider -P<Space>
 map -modes=n <SPACE> :youtb -t<Return>
 map <LEADER>h <C-^>
 
+" Quick Marks
+qmark g http://google.com
+
 " scroll up and down by 5 lines at a time - less stretching than C-d/u etc.
 nmap -builtin j 2j
 nmap -builtin k 2k
