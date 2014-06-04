@@ -341,8 +341,8 @@ fi
 # -2 for supporting colors (256)
 # I Don't use patched font in terminal
 export USE_PATCHED_FONT="false"
-if [ $SHLVL = 1   ]; then
-  tmux -2 && exit # exit from shell after exit tmux
+if [ $SHLVL = 1 ] || [ $SHLVL = 0 ]; then
+  tmux -2 &>/dev/null && exit # exit from shell after exit tmux
 fi
 
 # load .zshrc.local
