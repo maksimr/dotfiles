@@ -375,13 +375,14 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 -- }}}
 -- {{{ Autorun
 -- Run process only once
-function run_once(prg)
+function run_once(prg, prgarg)
   if not prg then
     do return nil end
   end
+  prgarg = prgarg or ""
   psgrep = "ps -o pid -C " .. prg
   pgrep = "pgrep -u $USER -x " .. prg
-  awful.util.spawn_with_shell(psgrep .. " || " .. pgrep .. " || (" .. prg .. ")")
+  awful.util.spawn_with_shell(psgrep .. " || " .. pgrep .. " || (" .. prg .. " " .. prgarg .. ")")
 end
 
 run_once("gnome-power-manager")
@@ -392,6 +393,7 @@ run_once("pidgin")
 run_once("gnome-do")
 run_once("easystroke")
 run_once("screencloud")
+run_once("fluxgui")
 --run_once("gnome-pie")
 --run_once("google-musicmanager")
 
