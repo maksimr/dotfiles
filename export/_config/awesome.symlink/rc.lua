@@ -366,11 +366,11 @@ end)
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
 -- show cleint on focus
--- need for correct work gnome-pie
---client.add_signal("focus", function(c)
-  --c:raise()
-  --awful.screen(c.screen)
---end)
+-- need for correct work gnome-pie, webstorm
+client.add_signal("focus", function(c)
+  c:raise()
+  awful.screen(c.screen)
+end)
 
 -- }}}
 -- {{{ Autorun
