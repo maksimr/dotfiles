@@ -371,6 +371,9 @@ client.add_signal("focus", function(c)
   c:raise()
   awful.screen(c.screen)
 end)
+client.add_signal("unfocus", function(c)
+  c:lower()
+end)
 
 -- }}}
 -- {{{ Autorun
