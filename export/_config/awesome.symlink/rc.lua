@@ -333,6 +333,9 @@ awful.rules.rules = {
 }
 -- }}}
 
+-- Enable/Disable sloppy foucs (focus by hover)
+sloppyFocus = true
+
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.add_signal("manage", function (c, startup)
@@ -342,7 +345,8 @@ client.add_signal("manage", function (c, startup)
   -- Enable sloppy focus
   c:add_signal("mouse::enter", function(c)
     if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-      and awful.client.focus.filter(c) then
+      and awful.client.focus.filter(c)
+      and sloppyFocus then
       client.focus = c
     end
   end)
@@ -365,14 +369,42 @@ client.add_signal("focus", function(c)
 end)
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
+function is_webstorm(c)
+  return c.class == 'jetbrains-webstorm'
+end
+
 -- show cleint on focus
 -- need for correct work gnome-pie, webstorm
 client.add_signal("focus", function(c)
-  c:raise()
-  awful.screen(c.screen)
+  if is_webstorm(c) then
+    -- Raise webstorm window
+    c:raise()
+    client.focus = c
+
+    if c.type == 'dialog' then
+      -- For dialog disable sloppy focus
+      sloppyFocus = false
+    end
+  end
 end)
+
+-- Fix unpleasure behaviour webstorm's dialogs
 client.add_signal("unfocus", function(c)
-  c:lower()
+  if is_webstorm(c) and c.type == 'dialog' then
+    --awful.util.spawn_with_shell('notify-send ' .. c.class .. ' ' .. c.type)
+
+    -- When close dialog enable sloppy focus
+    sloppyFocus = true
+
+    -- Remove dialog from focus history
+    awful.client.focus.history.delete(c)
+    -- Focus previous window, usually it main webstorm window
+    awful.client.focus.history.previous()
+    pcl = awful.client.focus.history.get(c.screen, 1)
+    client.focus = pcl
+    -- Kill dialog client
+    c:kill()
+  end
 end)
 
 -- }}}
