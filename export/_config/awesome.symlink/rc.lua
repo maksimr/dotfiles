@@ -429,6 +429,8 @@ run_once("gnome-do")
 run_once("easystroke")
 run_once("screencloud")
 run_once("fluxgui")
+-- This demon open password dialog when need sudoer
+run_once("/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1")
 --run_once("gnome-pie")
 --run_once("google-musicmanager")
 
