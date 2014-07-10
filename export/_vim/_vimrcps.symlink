@@ -80,7 +80,7 @@ let g:syntastic_error_symbol='✗'
 let g:syntastic_warning_symbol='⚠'
 let g:syntastic_auto_jump=0         " Не перескакиваем на ошибку автоматически
 let g:syntastic_javascript_checkers=["jshint", "eslint"]
-let g:syntastic_javascript_jshint_conf = expand("~/.jshintrc")
+let g:syntastic_javascript_jshint_args = '--config '.expand("~/.jshintrc")
 
 let g:syntastic_dart_analyzer_conf='-out /tmp/'
 
@@ -88,8 +88,10 @@ let g:syntastic_dart_analyzer_conf='-out /tmp/'
 " тогда вызываем lclose иначе quit
 function! QuitOrLclose(bang)
   if &buftype == 'quickfix'
+    let g:syntastic_auto_loc_list = 0
     ccl
     lcl
+    let g:syntastic_auto_loc_list = 1
   else
     if a:bang
       quit!
