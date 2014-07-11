@@ -417,10 +417,9 @@ function run_once(prg, prgarg)
   prgarg = prgarg or ""
   psgrep = "ps -o pid -C " .. prg
   pgrep = "pgrep -u $USER -x " .. prg
-  awful.util.spawn_with_shell(psgrep .. " || " .. pgrep .. " || (" .. prg .. " " .. prgarg .. ")")
+  awful.util.spawn_with_shell(psgrep .. " || " .. pgrep .. " || (command -v " .. prg .. " && " .. prg .. " " .. prgarg .. ")")
 end
 
-run_once("gnome-power-manager")
 run_once("nm-applet")
 run_once("gnome-screensaver")
 run_once("gnome-settings-daemon")
@@ -428,13 +427,12 @@ run_once("pidgin")
 run_once("gnome-do")
 run_once("easystroke")
 run_once("screencloud")
-run_once("fluxgui")
 -- This demon open password dialog when need sudoer
 run_once("/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1")
---run_once("gnome-pie")
---run_once("google-musicmanager")
 
 os.execute("dropbox start &")
 -- HACK(maksimrv): Fix problem with keyboard switcher alt-shift
 -- Enable keyboard layout switcher
-os.execute("setxkbmap -option grp:switch,grp:alt_shift_toggle us,ru")
+--os.execute("setxkbmap -model pc105 -layout us,ru -option '' -option grep:switch -option grp:alt_shift_toggle")
+--os.execute("setxkbmap -option grp:switch,grp:alt_shift_toggle us,ru")
+os.execute("setxkbmap -model pc105 -layout us,ru -option '' -option grep:switch -option grp:alt_shift_toggle")

@@ -71,7 +71,6 @@
     "waitsFor",
     "Benchmark",
     "Raphael",
-    "Backbone",
     "Modernizr",
     "suite",
     "before",
