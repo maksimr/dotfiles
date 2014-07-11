@@ -357,6 +357,9 @@ then
 fi
 # Liquidprompt end
 
+# Fix problem with intelliji window focus
+export _JAVA_AWT_WM_NONREPARENTING=1;
+
 # Global tmux configuration
 # vim: ft=zsh
 
