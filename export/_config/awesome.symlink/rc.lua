@@ -391,7 +391,7 @@ end)
 -- Fix unpleasure behaviour webstorm's dialogs
 client.add_signal("unfocus", function(c)
   if is_webstorm(c) and c.type == 'dialog' then
-    --awful.util.spawn_with_shell('notify-send ' .. c.class .. ' ' .. c.type)
+    awful.util.spawn_with_shell('notify-send ' .. c.class .. ' ' .. c.type)
 
     -- When close dialog enable sloppy focus
     sloppyFocus = true
@@ -402,8 +402,6 @@ client.add_signal("unfocus", function(c)
     awful.client.focus.history.previous()
     pcl = awful.client.focus.history.get(c.screen, 1)
     client.focus = pcl
-    -- Kill dialog client
-    c:kill()
   end
 end)
 
