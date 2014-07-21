@@ -330,4 +330,6 @@ augroup plugin_neosnippet
 augroup END
 " Bundle 'Shougo/neosnippet' >-----
 
+let g:slimv_swank_clojure = '!xterm -e lein swank &'
+
 let g:vimrcps_loaded = 1

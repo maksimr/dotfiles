@@ -130,7 +130,7 @@
   Bundle 'guns/vim-clojure-static'
   Bundle 'tpope/vim-fireplace'
   Bundle 'tpope/vim-projectionist'
-  Bundle 'slimv.vim'
+  Bundle 'kovisoft/slimv'
 
 " Vim
   Bundle 'kana/vim-vspec'
