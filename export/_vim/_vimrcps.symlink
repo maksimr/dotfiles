@@ -331,7 +331,11 @@ augroup END
 " Bundle 'Shougo/neosnippet' >-----
 
 " Clojure <-----
-" Need install lein plugin install swank-clojure 1.3.3
+"
+" How install lein-swank(for lein2.0):
+"     You should put lein-swank plugin version `1.4.5` or above
+"     to you profiles.clj(./lein/profiles.clj) and run `lein`:
+"     {:user {:plugins [ [lein-swank '1.4.5'] ]}}
 let g:slimv_swank_clojure = '!lein swank &'
 let g:vimrcps_loaded = 1
 " Clojure >-----

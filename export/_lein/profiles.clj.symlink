@@ -1,2 +1,2 @@
 {:user {:plugins [
-                  [lein-swank "1.4.4"] ]}}
+                  [lein-swank "1.4.5"] ]}}
