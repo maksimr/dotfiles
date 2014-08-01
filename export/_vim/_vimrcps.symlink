@@ -337,5 +337,6 @@ augroup END
 "     to you profiles.clj(./lein/profiles.clj) and run `lein`:
 "     {:user {:plugins [ [lein-swank '1.4.5'] ]}}
 let g:slimv_swank_clojure = '!lein swank &'
+let g:slimv_menu = 0
 let g:vimrcps_loaded = 1
 " Clojure >-----
