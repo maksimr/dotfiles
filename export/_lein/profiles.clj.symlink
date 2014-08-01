@@ -1,2 +1,3 @@
 {:user {:plugins [
-                  [lein-swank "1.4.5"] ]}}
+                  [cljs-template "0.1.5"]
+                  [lein-swank "1.4.5"]]}}
