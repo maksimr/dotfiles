@@ -289,6 +289,8 @@ let g:neocomplcache_same_filetype_lists = {}
 let g:neocomplcache_same_filetype_lists._ = '_'
 " Play nice with SuperTab and snipMate
 let g:neocomplcache_disable_auto_complete = 0
+" https://github.com/guns/vim-clojure-static/issues/32
+let g:neocomplcache_force_overwrite_completefunc = 1
 
 augroup plugin_neocomplcache
     autocmd!
