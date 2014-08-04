@@ -131,6 +131,7 @@
   Bundle 'tpope/vim-fireplace'
   Bundle 'tpope/vim-projectionist'
   Bundle 'kovisoft/slimv'
+  Bundle 'paredit.vim'
 
 " Vim
   Bundle 'kana/vim-vspec'
