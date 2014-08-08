@@ -7,6 +7,9 @@
 [submodule "export/_oh-my-zsh/custom/plugins.symlink/zsh-syntax-highlighting"]
 	path = export/_oh-my-zsh/custom/plugins.symlink/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
+[submodule "export/_oh-my-zsh/custom/plugins.symlink/zsh-history-substring-search"]
+	path = export/_oh-my-zsh/custom/plugins.symlink/zsh-history-substring-search
+	url = https://github.com/zsh-users/zsh-history-substring-search.git
 [submodule "export/_tmux.symlink/tmux-powerline"]
 	path = export/_tmux.symlink/tmux-powerline
 	url = https://github.com/erikw/tmux-powerline.git
