@@ -19,3 +19,6 @@
 [submodule "export/_vim/unbundle.symlink/doctorjs"]
 	path = export/_vim/unbundle.symlink/doctorjs
 	url = https://github.com/mozilla/doctorjs.git
+[submodule "export/_fzf.symlink"]
+	path = export/_fzf.symlink
+	url = https://github.com/junegunn/fzf.git
