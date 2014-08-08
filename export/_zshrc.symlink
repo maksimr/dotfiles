@@ -254,6 +254,14 @@ then
   alias vv="fasd -t -e vim -b viminfo"
 fi
 
+# http://www.gitignore.io/cli
+if [ "$(command -v curl)" ]
+then
+  function gi() {
+    curl http://www.gitignore.io/api/$@
+  }
+fi
+
 # Load scripts
 # vim: ft=zsh
 
