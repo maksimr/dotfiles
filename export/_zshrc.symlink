@@ -301,6 +301,21 @@ bindkey -M vicmd 'j' history-substring-search-down
 bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 
+# Setup zsh-autosuggestions
+if [ -f "$DOTFILE_DIR/export/_oh-my-zsh/custom/plugins.symlink/zsh-autosuggestions/autosuggestions.zsh" ]
+then
+    source "$DOTFILE_DIR/export/_oh-my-zsh/custom/plugins.symlink/zsh-autosuggestions/autosuggestions.zsh"
+    AUTOSUGGESTION_HIGHLIGHT_COLOR="fg=cyan,bold"
+    # Enable autosuggestions automatically
+    zle-line-init() {
+            zle autosuggest-start
+    }
+    zle -N zle-line-init
+    # use ctrl+t to toggle autosuggestions(hopefully this wont be needed as
+    # zsh-autosuggestions is designed to be unobtrusive)
+    bindkey '^T' autosuggest-toggle
+fi
+
 # percol
 # Percol adds flavor of interactive selection to the traditional pipe concept on UNIX.
 # @link https://github.com/mooz/percol

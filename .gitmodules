@@ -22,3 +22,6 @@
 [submodule "export/_fzf.symlink"]
 	path = export/_fzf.symlink
 	url = https://github.com/junegunn/fzf.git
+[submodule "export/_oh-my-zsh/custom/plugins.symlink/zsh-autosuggestions"]
+	path = export/_oh-my-zsh/custom/plugins.symlink/zsh-autosuggestions
+	url = git@github.com:maksimr/zsh-autosuggestions.git
