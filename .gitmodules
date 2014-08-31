@@ -25,3 +25,6 @@
 [submodule "export/_oh-my-zsh/custom/plugins.symlink/zsh-autosuggestions"]
 	path = export/_oh-my-zsh/custom/plugins.symlink/zsh-autosuggestions
 	url = git@github.com:maksimr/zsh-autosuggestions.git
+[submodule "export/_tmux.symlink/plugins/tpm"]
+	path = export/_tmux.symlink/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm

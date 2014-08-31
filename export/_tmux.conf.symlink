@@ -4,6 +4,13 @@
 unbind C-b
 set -g prefix C-a
 
+set -g @tpm_plugins " \
+  tmux-plugins/tpm \
+  tmux-plugins/tmux-resurrect \
+"
+# initializes TMUX plugin manager
+run-shell ~/.tmux/plugins/tpm/tpm
+
 # Изменяем правую часть статусной строки
 set -g status-right '#(echo $USER )@#H #(uptime | cut -d "," -f 1 )'
 
