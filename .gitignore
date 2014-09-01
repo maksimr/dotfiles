@@ -5,3 +5,6 @@
 *.swm
 /aliases
 node_modules
+!/export/_tmux.symlink/plugins
+/export/_tmux.symlink/plugins/*
+!/export/_tmux.symlink/plugins/tpm
