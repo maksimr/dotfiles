@@ -425,6 +425,7 @@ run_once("pidgin")
 run_once("gnome-do")
 run_once("easystroke")
 run_once("screencloud")
+run_once("zeal")
 -- This demon open password dialog when need sudoer
 run_once("/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1")
 
