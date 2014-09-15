@@ -40,8 +40,8 @@ bind ^A select-pane -t :.+
 
 # For 1.9 - Make new windows start in the
 # same directory as the current window
-if-shell "[[ `tmux -V` == *1.9  ]]" \
-    'bind % split-window -h -c "#{pane_current_path}";bind c new-window -c "#{pane_current_path}";bind \'"\' split-window -c "#{pane_current_path}"'
+if-shell "tmux -V | grep  1.9" \
+    "bind % split-window -h -c '#{pane_current_path}'; bind c new-window -c '#{pane_current_path}'; bind '\"' split-window -c '#{pane_current_path}'"
 
 # Выделение и копирование vim like
 bind-key -t vi-copy v begin-selection
@@ -73,7 +73,7 @@ bind a choose-buffer
 # http://joncairns.com/2013/06/copying-between-tmux-buffers-and-the-system-clipboard/
 # Need install xclip
 # For tmux 1.7
-if-shell "[[ `tmux -V` == *1.7  ]]" \
+if-shell "tmux -V | grep  1.7" \
     "bind y run-shell 'tmux show-buffer - | xclip -sel clip -i > /dev/null'"
 
 # Agressive resize!!!
