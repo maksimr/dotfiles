@@ -7,7 +7,7 @@ map -modes=n E :bmarks<Space>
 map -modes=n,v <F6> :flashplay
 map -modes=n,v <F8> :flashtoggle
 map -modes=n,v <F7> :flashstop
-map -modes=n,v b :buffer<Space><Tab>
+map -modes=n,v b :buffer<Space>
 map -modes=n,v gq :set<Space>mainecoon=am<Return>
 map -modes=n,v gf :set<Space>mainecoon=afm<Return>
 map -modes=n,v c :firebug<Space>toggle<Return>
