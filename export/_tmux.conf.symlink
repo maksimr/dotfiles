@@ -38,6 +38,10 @@ bind r source-file ~/.tmux.conf
 unbind ^A
 bind ^A select-pane -t :.+
 
+# Close current session and attach to another detached session
+#bind-key X confirm-before -p "Kill #S (y/n)?" "run-shell 'tmux switch-client -n \\\; kill-session -t \"\$(tmux display-message -p \"#S\")\"'"
+bind-key X confirm-before -p "Kill #S (y/n)?" "run-shell 'tmux list-sessions | grep -v attached | awk -F: \"{print \\\$1}\" | xargs -I{} tmux switch-client -t {} \\\; kill-session -t \"\$(tmux display-message -p \"#S\")\"'"
+
 # For 1.9 - Make new windows start in the
 # same directory as the current window
 if-shell "tmux -V | grep  1.9" \
