@@ -342,3 +342,7 @@ let g:slimv_swank_clojure = '!lein swank &'
 let g:slimv_leader = '\'
 let g:vimrcps_loaded = 1
 " Clojure >-----
+
+" tpope/vim-projectionist <-----
+nnoremap <Leader>a :A<cr>
+" tpope/vim-projectionist >-----
