@@ -129,7 +129,6 @@
 " Clojure
   Bundle 'guns/vim-clojure-static'
   Bundle 'tpope/vim-fireplace'
-  Bundle 'tpope/vim-projectionist'
   Bundle 'kovisoft/slimv'
   Bundle 'paredit.vim'
 
@@ -137,6 +136,7 @@
   Bundle 'kana/vim-vspec'
 
 " Other
+  Bundle 'tpope/vim-projectionist'
   " extended % matching for HTML
   Bundle 'tmhedberg/matchit'
   Bundle 'maksimr/vim-translator'
