@@ -115,7 +115,7 @@ fi
 
 alias zshprofiling="/usr/bin/time zsh -i -c exit"
 alias xm="xmodmap ~/.xmodmap"
-alias iie="curl -s https://raw.github.com/xdissent/ievms/master/ievms.sh | bash"
+alias iie="curl -s https://raw.githubusercontent.com/xdissent/ievms/master/ievms.sh | bash"
 
 # load local aliases
 # it can be rewrited aliases from .local/zsh
