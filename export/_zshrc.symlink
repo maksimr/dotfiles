@@ -62,7 +62,7 @@ alias l="ls"
 
 alias gg="git grep"
 alias mimimi="git pull --rebase"
-alias frfrfr="git push origin $(current_branch)"
+alias frfrfr="g br --merged $(current_branch) | grep -v '\*\|master'"
 
 alias c="cd"
 alias f="find"
