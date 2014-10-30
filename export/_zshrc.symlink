@@ -12,7 +12,7 @@ ZSH_THEME="robbyrussell"
 HISTSIZE=1000
 SAVEHIST=1000
 
-plugins=(git vundle vi-mode history-substring-search zsh-syntax-highlighting zsh-history-substring-search debian st git-flow-avh tmuxinator)
+plugins=(git vundle vi-mode history-substring-search zsh-syntax-highlighting zsh-history-substring-search debian st git-flow-avh tmuxinator gulp)
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
