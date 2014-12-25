@@ -348,3 +348,7 @@ let g:vimrcps_loaded = 1
 " tpope/vim-projectionist <-----
 nnoremap <Leader>a :A<cr>
 " tpope/vim-projectionist >-----
+
+" airblade/vim-gitgutter <-----
+let g:gitgutter_max_signs=5000
+" airblade/vim-gitgutter >-----
