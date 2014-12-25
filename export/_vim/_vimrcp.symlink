@@ -159,3 +159,5 @@
   Bundle 'takac/vim-hardtime'
   " Get issues from github
   Bundle 'jaxbot/github-issues.vim'
+  " Zeavim allows to use Zeal documentation browser directly from Vim
+  Bundle 'KabbAmine/zeavim.vim'
