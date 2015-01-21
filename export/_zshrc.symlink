@@ -1,4 +1,8 @@
 # vim: ft=zsh
+#
+# For profiling loading time of zsh we can use
+# zprof. We should add `zmodload zsh/zprof` in to the beginning of
+# zshrc file and `zprof` in the end of file
 
 # Load Antigen
 . ~/.antigen.zsh 2>/dev/null
