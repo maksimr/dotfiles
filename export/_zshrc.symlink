@@ -1,22 +1,46 @@
-# initialize oh-my-zsh
-# Note this file should be loaded first!
 # vim: ft=zsh
 
-# Path to your oh-my-zsh configuration.
-ZSH=$HOME/.oh-my-zsh
+# Load Antigen
+. ~/.antigen.zsh 2>/dev/null
 
-ZSH_THEME="robbyrussell"
+# Load various lib files
+antigen bundle robbyrussell/oh-my-zsh lib/
+
+#
+# Antigen Bundles
+#
+
+antigen bundle git
+antigen bundle vundle
+antigen bundle vi-mode
+
+antigen bundle zsh-users/zsh-history-substring-search
+antigen bundle tarruda/zsh-autosuggestions
+antigen bundle zsh-users/zsh-syntax-highlighting
+
+antigen bundle maksimr/st-zsh
+antigen bundle Tarrasch/zsh-bd
+
+# Node Plugins
+antigen bundle npm
+antigen bundle node
+antigen bundle akoenig/gulp-autocompletion-zsh
+
+#
+# Antigen Theme
+#
+antigen theme robbyrussell
+
+antigen apply
 
 # Устанавливаем размер истории команд и файл в котором
 # история будет хранится
 HISTSIZE=1000
 SAVEHIST=1000
 
-plugins=(git vundle vi-mode history-substring-search zsh-syntax-highlighting zsh-history-substring-search debian st git-flow-avh tmuxinator gulp)
-
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
-# Добавляем домашнюю директорию bin
+# Добавляем домашнюю директори
 # если ее еще нет в переменной $PATH
 case ":$PATH:" in
   *:"$HOME/bin":*) ;;
@@ -27,8 +51,6 @@ case ":$PATH:" in
   *:"$HOME/local/bin":*) ;;
   *) PATH="$HOME/local/bin:$PATH" ;;
 esac
-
-source $ZSH/oh-my-zsh.sh
 
 case ":$NODE_PATH:" in
   *:"/usr/local/lib/jsctags/":*) ;;
@@ -302,9 +324,8 @@ bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 
 # Setup zsh-autosuggestions
-if [ -f "$DOTFILE_DIR/export/_oh-my-zsh/custom/plugins.symlink/zsh-autosuggestions/autosuggestions.zsh" ]
+if [ "$(command -v autosuggest-start)"  ]
 then
-    source "$DOTFILE_DIR/export/_oh-my-zsh/custom/plugins.symlink/zsh-autosuggestions/autosuggestions.zsh"
     AUTOSUGGESTION_HIGHLIGHT_COLOR="fg=6,bold"
     # Enable autosuggestions automatically
     zle-line-init() {

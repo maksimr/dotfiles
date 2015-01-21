@@ -4,12 +4,6 @@
 [submodule "export/_config/awesome.symlink/screenful"]
 	path = export/_config/awesome.symlink/screenful
 	url = https://github.com/dluksza/screenful.git
-[submodule "export/_oh-my-zsh/custom/plugins.symlink/zsh-syntax-highlighting"]
-	path = export/_oh-my-zsh/custom/plugins.symlink/zsh-syntax-highlighting
-	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
-[submodule "export/_oh-my-zsh/custom/plugins.symlink/zsh-history-substring-search"]
-	path = export/_oh-my-zsh/custom/plugins.symlink/zsh-history-substring-search
-	url = https://github.com/zsh-users/zsh-history-substring-search.git
 [submodule "export/_tmux.symlink/tmux-powerline"]
 	path = export/_tmux.symlink/tmux-powerline
 	url = https://github.com/erikw/tmux-powerline.git
@@ -22,9 +16,6 @@
 [submodule "export/_fzf.symlink"]
 	path = export/_fzf.symlink
 	url = https://github.com/junegunn/fzf.git
-[submodule "export/_oh-my-zsh/custom/plugins.symlink/zsh-autosuggestions"]
-	path = export/_oh-my-zsh/custom/plugins.symlink/zsh-autosuggestions
-	url = https://github.com/maksimr/zsh-autosuggestions.git
 [submodule "export/_tmux.symlink/plugins/tpm"]
 	path = export/_tmux.symlink/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
