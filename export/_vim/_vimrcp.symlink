@@ -54,6 +54,8 @@
   Bundle 'kana/vim-textobj-user'
   Bundle 'glts/vim-textobj-comment'
 
+  Bundle 'junegunn/fzf'
+
 " Themes
   Bundle 'Lokaltog/vim-powerline'
   Bundle 'maksimr/Lucius2'
