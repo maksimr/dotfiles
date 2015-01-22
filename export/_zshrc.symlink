@@ -30,6 +30,7 @@ antigen bundle Tarrasch/zsh-bd
 antigen bundle npm
 antigen bundle node
 antigen bundle akoenig/gulp-autocompletion-zsh
+antigen bundle karma-runner/karma karma-completion.sh
 
 #
 # Antigen Theme
@@ -119,7 +120,9 @@ then
   alias logt="grc tail"
   alias logh="grc head"
   alias jshint="grc jshint"
-  alias karma="grc karma"
+
+  # This break autocompletion for karma
+  #alias karma="grc karma"
 fi
 
 # npm
