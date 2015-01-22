@@ -120,9 +120,7 @@ then
   alias logt="grc tail"
   alias logh="grc head"
   alias jshint="grc jshint"
-
-  # This break autocompletion for karma
-  #alias karma="grc karma"
+  alias kk="grc karma"
 fi
 
 # npm
