@@ -334,7 +334,7 @@ if [ "$(command -v autosuggest-start)"  ]
 then
     # XXX
     # Fix problem with breaking tab completions
-    source ./.antigen/repos/https-COLON--SLASH--SLASH-github.com-SLASH-tarruda-SLASH-zsh-autosuggestions.git/autosuggestions.zsh
+    source $HOME/.antigen/repos/https-COLON--SLASH--SLASH-github.com-SLASH-tarruda-SLASH-zsh-autosuggestions.git/autosuggestions.zsh
     AUTOSUGGESTION_HIGHLIGHT_COLOR="fg=6,bold"
     # Enable autosuggestions automatically
     zle-line-init() {
