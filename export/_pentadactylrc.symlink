@@ -60,6 +60,7 @@ set  passkeys+='^https?://www\.google\.com/reader/':jknpostuvNPT
 set  passkeys+='^https?://class\.coursera\.org/':pc<Left><Right><Up><Down>
 set  passkeys+='^https?://mail\.yandex-team\.ru/neo2/':<Left><Right><Up><Down><C-i>wq<shift><enter>+
 set  passkeys+='^https?://read\.amazon\.com/':<Left><Right>
+set  passkeys+='^https?://buildserver/':q
 set hintkeys=absdfglkjhoperqnmit
 
 Bundle maksimr/pundle
