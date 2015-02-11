@@ -450,7 +450,7 @@ fi
 
 # Oracle JDK for WebStorm
 if [ -d "$HOME/.local/jdk1.8.0_25" ]; then
-    export WEBIDE_JDK=$HOME/.local/jdk1.8.0_25
+    export JDK_HOME=$HOME/.local/jdk1.8.0_25
 fi
 
 #https://github.com/np1/mps-youtube
