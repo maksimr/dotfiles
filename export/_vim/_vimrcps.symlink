@@ -140,6 +140,7 @@ let g:EasyMotion_leader_key = "<Leader><Leader><Leader>"
 "
 "  Bundle 'command-t' <-----
 nnoremap <leader>, :CommandT<cr>
+let g:CommandTFileScanner="git"
 "  Bundle 'command-t' >-----
 
 "  Bundle 'benmills/vimux' <-----
