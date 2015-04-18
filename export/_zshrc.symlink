@@ -460,6 +460,11 @@ then
     alias yt="mpsyt h"
 fi
 
+if [ "$(command -v thefuck)"  ]
+then
+    alias fuck='$(thefuck $(fc -ln -1))'
+fi
+
 # https://github.com/junegunn/fzf
 if [ "$(command -v ruby)"  ]
 then
