@@ -212,6 +212,11 @@ bindkey '\C-a' beginning-of-line
 bindkey '\C-e' end-of-line
 bindkey ' ' magic-space
 
+# Jump words with CTRL-arrow
+# To know the code of a key, execute cat, press the key(Ctrl+Left), enter and Ctrl+C
+bindkey '^[OD' backward-word
+bindkey '^[OC' forward-word
+
 bindkey -M vicmd '\C-r' history-incremental-search-backward
 bindkey -M vicmd '\C-a' beginning-of-line
 bindkey -M vicmd '\C-e' end-of-line
