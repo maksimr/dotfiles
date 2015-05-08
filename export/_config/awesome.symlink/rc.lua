@@ -370,7 +370,7 @@ end)
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
 function is_webstorm(c)
-  return c.class == 'jetbrains-webstorm'
+  return string.match(c.class, 'jetbrains')
 end
 
 -- show cleint on focus
