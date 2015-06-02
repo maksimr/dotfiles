@@ -28,3 +28,4 @@ indent_style = space
 indent_size = 4
 indent_inner_html=true
 preserve_newlines=true
+wrap-line-length = 0
