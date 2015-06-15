@@ -178,6 +178,7 @@ awful.button({ }, 5, awful.tag.viewprev)
 
 -- NOTE: Fix problem with switches keyboard layout on Ubuntu 14.x
 -- @link https://bugs.launchpad.net/ubuntu/+source/gnome-settings-daemon/+bug/1218322
+-- TODO(maksimrv): Read keyboard configuration from /etc/default/keyboard
 -- @ref #kb
 -- Keyboard map indicator and changer
 kbdcfg = {}
