@@ -195,12 +195,10 @@ end
 globalkeys = awful.util.table.join(
 -- @ref #kb
 -- Alt + Left Shift switches the current keyboard layout
-awful.key({ "Mod1",           }, "Shift_L", function ()
-    kbdcfg.switch()
-end),
-awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
-awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
-awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
+awful.key({ "Mod1",           }, "Shift_L", kbdcfg.switch            ),
+awful.key({ modkey,           }, "Left",    awful.tag.viewprev       ),
+awful.key({ modkey,           }, "Right",   awful.tag.viewnext       ),
+awful.key({ modkey,           }, "Escape",  awful.tag.history.restore),
 
 awful.key({ modkey,           }, "j",
 function ()
