@@ -176,8 +176,27 @@ awful.button({ }, 5, awful.tag.viewprev)
 ))
 -- }}}
 
+-- NOTE: Fix problem with switches keyboard layout on Ubuntu 14.x
+-- @link https://bugs.launchpad.net/ubuntu/+source/gnome-settings-daemon/+bug/1218322
+-- @ref #kb
+-- Keyboard map indicator and changer
+kbdcfg = {}
+kbdcfg.cmd = "setxkbmap"
+kbdcfg.layout = { "us", "ru" }
+kbdcfg.current = 1  -- us is our default layout
+kbdcfg.switch = function ()
+   kbdcfg.current = kbdcfg.current % #(kbdcfg.layout) + 1
+   local t = " " .. kbdcfg.layout[kbdcfg.current] .. " "
+   os.execute( kbdcfg.cmd .. t )
+end
+
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
+-- @ref #kb
+-- Alt + Left Shift switches the current keyboard layout
+awful.key({ "Mod1",           }, "Shift_L", function ()
+    kbdcfg.switch()
+end),
 awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
 awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
 awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
@@ -430,8 +449,9 @@ run_once("zeal")
 run_once("/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1")
 
 os.execute("dropbox start &")
+
 -- HACK(maksimrv): Fix problem with keyboard switcher alt-shift
 -- Enable keyboard layout switcher
 --os.execute("setxkbmap -model pc105 -layout us,ru -option '' -option grep:switch -option grp:alt_shift_toggle")
 --os.execute("setxkbmap -option grp:switch,grp:alt_shift_toggle us,ru")
-os.execute("setxkbmap -model pc105 -layout us,ru -option '' -option grep:switch -option grp:alt_shift_toggle")
+--os.execute("setxkbmap -model pc105 -layout us,ru -option '' -option grep:switch -option grp:alt_shift_toggle")
