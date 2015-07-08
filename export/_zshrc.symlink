@@ -4,40 +4,37 @@
 # zprof. We should add `zmodload zsh/zprof` in to the beginning of
 # zshrc file and `zprof` in the end of file
 
-# Load Antigen
-. ~/.antigen.zsh 2>/dev/null
+# Load zgen
+. ~/.zgen.zsh 2>/dev/null
 
-# Load various lib files
-antigen bundle robbyrussell/oh-my-zsh lib/
+if ! zgen saved; then
 
-#
-# Antigen Bundles
-#
+    # Load various lib files
+    zgen load robbyrussell/oh-my-zsh lib/
 
-antigen bundle git
-antigen bundle vundle
-antigen bundle vi-mode
+    # Bundles
+    zgen oh-my-zsh plugins/git
+    zgen oh-my-zsh plugins/vundle
+    zgen oh-my-zsh plugins/vi-mode
 
-antigen bundle zsh-users/zsh-history-substring-search
-antigen bundle maksimr/zsh-syntax-highlighting
-antigen bundle tarruda/zsh-autosuggestions
-antigen bundle zsh-users/zsh-completions src
+    zgen load zsh-users/zsh-history-substring-search
+    zgen load maksimr/zsh-syntax-highlighting
+    zgen load tarruda/zsh-autosuggestions
+    zgen load zsh-users/zsh-completions src
 
-antigen bundle maksimr/st-zsh
-antigen bundle Tarrasch/zsh-bd
+    zgen load maksimr/st-zsh
+    zgen load Tarrasch/zsh-bd
 
-# Node Plugins
-antigen bundle npm
-antigen bundle node
-antigen bundle akoenig/gulp-autocompletion-zsh
-antigen bundle karma-runner/karma karma-completion.sh
+    # Node Plugins
+    zgen oh-my-zsh plugins/npm
+    zgen oh-my-zsh plugins/node
+    zgen load akoenig/gulp-autocompletion-zsh
+    zgen load karma-runner/karma karma-completion.sh
 
-#
-# Antigen Theme
-#
-antigen theme robbyrussell
-
-antigen apply
+    # Theme
+    zgen oh-my-zsh themes/robbyrussell
+    zgen save
+fi
 
 # Устанавливаем размер истории команд и файл в котором
 # история будет хранится
