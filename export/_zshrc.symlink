@@ -334,15 +334,24 @@ bindkey '^N' history-substring-search-down
 # Setup zsh-autosuggestions
 if [ "$(command -v autosuggest-start)"  ]
 then
+
     # XXX
+    # Take implementation from old version of zsh-autosuggestions
     # Fix problem with breaking tab completions
-    source $HOME/.antigen/repos/https-COLON--SLASH--SLASH-github.com-SLASH-tarruda-SLASH-zsh-autosuggestions.git/autosuggestions.zsh
+    autosuggest-invalidate-highlight-cache() {
+        # invalidate the buffer for zsh-syntax-highlighting
+        _ZSH_HIGHLIGHT_PRIOR_BUFFER=''
+	_zsh_highlight_autosuggest_highlighter_cache=()
+    }
+
     AUTOSUGGESTION_HIGHLIGHT_COLOR="fg=6,bold"
+
     # Enable autosuggestions automatically
     zle-line-init() {
             zle autosuggest-start
     }
     zle -N zle-line-init
+
     # use ctrl+t to toggle autosuggestions(hopefully this wont be needed as
     # zsh-autosuggestions is designed to be unobtrusive)
     bindkey '^T' autosuggest-toggle
