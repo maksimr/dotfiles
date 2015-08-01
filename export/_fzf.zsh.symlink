@@ -10,10 +10,6 @@ if [[ ! "$MANPATH" =~ "/home/maksimrv/.dotfiles/export/_fzf.symlink/man" && -d "
   export MANPATH="$MANPATH:/home/maksimrv/.dotfiles/export/_fzf.symlink/man"
 fi
 
-# Auto-completion
-# ---------------
-[[ $- =~ i ]] && source "/home/maksimrv/.dotfiles/export/_fzf.symlink/shell/completion.zsh" 2> /dev/null
-
 # Key bindings
 # ------------
 source "/home/maksimrv/.dotfiles/export/_fzf.symlink/shell/key-bindings.zsh"
