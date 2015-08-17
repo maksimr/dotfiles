@@ -120,6 +120,7 @@ bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
 bindsym $mod+z workspace back_and_forth
+bindsym $mod+Ctrl+j workspace back_and_forth
 bindsym $mod+Shift+z move container to workspace back_and_forth
 
 # Scratchpad
