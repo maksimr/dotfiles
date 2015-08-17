@@ -120,17 +120,6 @@ then
   alias kk="grc karma"
 fi
 
-# npm
-if [ "$(command -v npm)"  ]
-then
-  alias n="npm"
-  alias ni="npm install"
-  alias nis="npm install --save"
-  alias nisd="npm install --save-dev"
-  alias nu="npm uninstall"
-  alias nug="npm uninstall -g"
-fi
-
 # googlecl
 if [ "$(command -v google)"  ]
 then
@@ -309,6 +298,17 @@ function {
     . $src 2>/dev/null
   done
 }
+
+# npm
+if [ "$(command -v npm)"  ]
+then
+  alias n="npm"
+  alias ni="npm install"
+  alias nis="npm install --save"
+  alias nisd="npm install --save-dev"
+  alias nu="npm uninstall"
+  alias nug="npm uninstall -g"
+fi
 
 # Different configuration for oh-my-zsh plugins
 # vim: ft=zsh
