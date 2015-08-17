@@ -73,7 +73,7 @@ bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
-bindsym $mod+m fullscreen toggle global
+bindsym $mod+m fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
@@ -119,10 +119,16 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
+bindsym $mod+z workspace back_and_forth
+bindsym $mod+Shift+z move container to workspace back_and_forth
+
 # Scratchpad
 bindsym $mod+shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
+# Goto marks in i3
+bindsym $mod+n exec i3-input -F 'mark %s' -P 'Mark name: '
+bindsym $mod+Shift+n exec i3-input -F '[con_mark=%s] focus' -P 'Go to mark: '
 
 # Automatically starting applications
 exec --no-startup-id /usr/lib/gnome-settings-daemon/gnome-settings-daemon
