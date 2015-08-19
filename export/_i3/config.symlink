@@ -133,10 +133,13 @@ bindsym $mod+Shift+n exec i3-input -F '[con_mark=%s] focus' -P 'Go to mark: '
 
 # Automatically starting applications
 exec --no-startup-id /usr/lib/gnome-settings-daemon/gnome-settings-daemon
+exec --no-startup-id gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 exec --no-startup-id gnome-do
 exec --no-startup-id nm-applet
 exec --no-startup-id pidgin
 exec --no-startup-id dropbox
+exec --no-startup-id zeal
+exec --no-startup-id screencloud
 exec --no-startup-id feh --bg-scale ~/.config/awesome/themes/power/background.png
 
 # reload the configuration file
