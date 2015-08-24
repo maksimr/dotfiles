@@ -19,6 +19,11 @@ font pango:terminus 12
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
 
+focus_follows_mouse  no
+
+#don't move to neighbouring screen with hjkl
+force_focus_wrapping yes
+
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # The font above is very space-efficient, that is, it looks good, sharp and
