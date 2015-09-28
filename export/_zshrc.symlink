@@ -60,6 +60,11 @@ case ":$NODE_PATH:" in
   *) export NODE_PATH=/usr/local/lib/jsctags/:$NODE_PATH ;;
 esac
 
+case ":$PATH:" in
+  *:"$HOME/.gem/ruby/2.2.0/bin":*) ;;
+  *) PATH="$HOME/.gem/ruby/2.2.0/bin:$PATH" ;;
+esac
+
 export EDITOR=vim
 
 PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n(%m):%~ %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
