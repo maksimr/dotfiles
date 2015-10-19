@@ -145,7 +145,7 @@ exec --no-startup-id pidgin
 exec --no-startup-id dropbox
 exec --no-startup-id zeal
 exec --no-startup-id screencloud
-exec --no-startup-id feh --bg-scale ~/.config/awesome/themes/power/background.png
+exec --no-startup-id feh --bg-scale ~/.config/awesome/themes/power/poly-lakeside.jpg
 # exec --no-startup-id gxneur
 
 # reload the configuration file
