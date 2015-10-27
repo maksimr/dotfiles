@@ -39,13 +39,18 @@ unbind ^A
 bind ^A select-pane -t :.+
 
 # Close current session and attach to another detached session
-#bind-key X confirm-before -p "Kill #S (y/n)?" "run-shell 'tmux switch-client -n \\\; kill-session -t \"\$(tmux display-message -p \"#S\")\"'"
 bind-key X confirm-before -p "Kill #S (y/n)?" "run-shell 'tmux list-sessions | grep -v attached | awk -F: \"{print \\\$1}\" | xargs -I{} tmux switch-client -t {} \\\; kill-session -t \"\$(tmux display-message -p \"#S\")\"'"
 
-# For 1.9 - Make new windows start in the
+# Make new windows start in the
 # same directory as the current window
-if-shell "tmux -V | grep  1.9" \
-    "bind % split-window -h -c '#{pane_current_path}'; bind c new-window -c '#{pane_current_path}'; bind '\"' split-window -c '#{pane_current_path}'"
+bind-key % split-window -h -c '#{pane_current_path}'
+bind-key c new-window -c '#{pane_current_path}'
+bind-key '"' split-window -c '#{pane_current_path}'
+
+# alternatively, use better mnemonics for horizontal/vertical splits
+bind-key - split-window -v -c "#{pane_current_path}"
+bind-key _ split-window -v -c "#{pane_current_path}"
+bind-key | split-window -h -c '#{pane_current_path}'
 
 # Выделение и копирование vim like
 bind-key -t vi-copy v begin-selection
@@ -60,11 +65,6 @@ bind k select-pane -U
 bind l select-pane -R
 bind-key -r C-h select-window -t :-
 bind-key -r C-l select-window -t :+
-
-# alternatively, use better mnemonics for horizontal/vertical splits
-bind-key - split-window -v
-bind-key _ split-window -v
-bind-key | split-window -h
 
 # resize panes like vim
 bind-key -r < resize-pane -L 3
