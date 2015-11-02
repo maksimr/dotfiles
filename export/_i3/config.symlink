@@ -140,6 +140,7 @@ bindsym $mod+Shift+n exec i3-input -F '[con_mark=%s] focus' -P 'Go to mark: '
 
 # Automatically starting applications
 exec --no-startup-id compton -b
+exec --no-startup-id xfce4-power-manager
 exec --no-startup-id /usr/lib/gnome-settings-daemon/gnome-settings-daemon
 exec --no-startup-id gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 exec --no-startup-id gnome-do
