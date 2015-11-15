@@ -127,11 +127,19 @@ function! UpdateJsHintConf()
     endif
 endfunction
 
+function! HasConfig(file, dir)
+    return findfile(a:file, escape(a:dir, ' ') . ';') !=# ''
+endfunction
+
 augroup plugin_syntastic
     autocmd!
     autocmd BufEnter * call UpdateJsHintConf()
-    autocmd FileType javascript let g:syntastic_javascript_checkers=["jshint", "eslint"]
     autocmd BufEnter *.jsx let g:syntastic_javascript_checkers=["jsxhint"]
+
+    autocmd BufNewFile,BufReadPre *.js  let b:syntastic_checkers =
+        \ HasConfig('.eslintrc', expand('<amatch>:h')) ? ['eslint'] :
+        \ HasConfig('.jshintrc', expand('<amatch>:h')) ? ['jshint'] :
+        \     ['jshint']
 augroup END
 
 "  Bundle 'Lokaltog/vim-easymotion' <-----
