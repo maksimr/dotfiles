@@ -59,6 +59,10 @@ set wildignore+=.hg,.git,.svn  " Version control
 set wildignore+=*.DS_Store     " OSX bullshit
 set wildignore+=*.pyc          " Python byte code
 
+" Workaround for problem with watch in karma and webpack
+" https://github.com/karma-runner/karma/issues/199
+set backupcopy=yes
+
 " Not open error window when netrw
 " can not create folder
 let g:netrw_use_errorwindow    = 0
