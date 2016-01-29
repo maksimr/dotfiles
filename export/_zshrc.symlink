@@ -19,7 +19,7 @@ if ! zgen saved; then
 
     zgen load zsh-users/zsh-history-substring-search
     zgen load maksimr/zsh-syntax-highlighting
-    zgen load tarruda/zsh-autosuggestions
+    zgen load "tarruda/zsh-autosuggestions" "autosuggestions.zsh" "v0.1.x"
     zgen load zsh-users/zsh-completions src
 
     zgen load maksimr/st-zsh
@@ -29,7 +29,6 @@ if ! zgen saved; then
     zgen oh-my-zsh plugins/npm
     zgen oh-my-zsh plugins/node
     zgen load akoenig/gulp-autocompletion-zsh
-    zgen load karma-runner/karma karma-completion.sh
 
     # Theme
     zgen oh-my-zsh themes/robbyrussell
@@ -337,7 +336,7 @@ bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 
 # Setup zsh-autosuggestions
-if [ "$(command -v autosuggest-start)"  ]
+if [ "$(command -v autosuggest_start)"  ]
 then
 
     # XXX
@@ -349,11 +348,11 @@ then
 	_zsh_highlight_autosuggest_highlighter_cache=()
     }
 
-    AUTOSUGGESTION_HIGHLIGHT_COLOR="fg=6,bold"
+    ZSH_AUTOSUGGEST_HIGHLIGHT_COLOR="fg=6,bold"
 
     # Enable autosuggestions automatically
     zle-line-init() {
-            zle autosuggest-start
+            autosuggest_start
     }
     zle -N zle-line-init
 
