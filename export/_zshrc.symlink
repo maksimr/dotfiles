@@ -470,6 +470,10 @@ if [ -d "$HOME/.local/jdk1.8.0_25" ]; then
     export JAVA_HOME=$HOME/.local/jdk1.8.0_25
 fi
 
+if [ -f "/usr/libexec/java_home" ]; then
+    export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+fi
+
 #https://github.com/np1/mps-youtube
 if [ "$(command -v mpsyt)"  ]
 then
