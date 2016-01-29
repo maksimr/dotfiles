@@ -1,15 +1,15 @@
 # Setup fzf
 # ---------
-if [[ ! "$PATH" =~ "/home/maksimrv/.dotfiles/export/_fzf.symlink/bin" ]]; then
-  export PATH="$PATH:/home/maksimrv/.dotfiles/export/_fzf.symlink/bin"
+if [[ ! "$PATH" =~ "$HOME/.dotfiles/export/_fzf.symlink/bin" ]]; then
+  export PATH="$PATH:$HOME/.dotfiles/export/_fzf.symlink/bin"
 fi
 
 # Man path
 # --------
-if [[ ! "$MANPATH" =~ "/home/maksimrv/.dotfiles/export/_fzf.symlink/man" && -d "/home/maksimrv/.dotfiles/export/_fzf.symlink/man" ]]; then
-  export MANPATH="$MANPATH:/home/maksimrv/.dotfiles/export/_fzf.symlink/man"
+if [[ ! "$MANPATH" =~ "$HOME/.dotfiles/export/_fzf.symlink/man" && -d "$HOME/.dotfiles/export/_fzf.symlink/man" ]]; then
+  export MANPATH="$MANPATH:$HOME/.dotfiles/export/_fzf.symlink/man"
 fi
 
 # Key bindings
 # ------------
-source "/home/maksimrv/.dotfiles/export/_fzf.symlink/shell/key-bindings.zsh"
+source "$HOME/.dotfiles/export/_fzf.symlink/shell/key-bindings.zsh"
