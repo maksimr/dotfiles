@@ -498,4 +498,5 @@ then
     fi
 fi
 
+export ANDROID_HOME=/usr/local/opt/android-sdk
 export CHROME_BIN="chromium-browser"

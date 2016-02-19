@@ -54,7 +54,10 @@ bind-key | split-window -h -c '#{pane_current_path}'
 
 # Выделение и копирование vim like
 bind-key -t vi-copy v begin-selection
-bind-key -t vi-copy y copy-pipe "xclip -selection clip -i"
+if-shell "uname | grep -q Darwin" \
+    "bind-key -t vi-copy y copy-pipe 'reattach-to-user-namespace pbcopy'"
+if-shell "uname | grep -v Darwin" \
+    "bind-key -t vi-copy y copy-pipe 'xclip -selection clip -i'"
 bind -t vi-copy V rectangle-toggle
 bind ] paste-buffer
 
