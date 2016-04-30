@@ -71,6 +71,7 @@
    dotspacemacs-search-tools '("ag" "pt" "ack" "grep")
    dotspacemacs-default-package-repository nil
    dotspacemacs-whitespace-cleanup "trailing"
+   evil-escape-key-sequence "jk"
    ))
 
 (defun dotspacemacs/user-init ())
