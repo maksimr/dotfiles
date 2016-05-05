@@ -4,10 +4,22 @@
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
    '(
-     auto-completion
      emacs-lisp
      git
+
+     auto-completion
      syntax-checking
+     semantic
+
+     scheme
+     clojure
+     javascript
+     html
+
+     (shell :variables
+            shell-default-height 30
+            shell-default-position 'bottom
+            shell-defult-shell 'zsh)
      )
    dotspacemacs-additional-packages '()
    dotspacemacs-excluded-packages '()
@@ -72,8 +84,25 @@
    dotspacemacs-default-package-repository nil
    dotspacemacs-whitespace-cleanup "trailing"
    evil-escape-key-sequence "jk"
+   evil-esc-delay 0.2
    ))
 
 (defun dotspacemacs/user-init ())
 
-(defun dotspacemacs/user-config ())
+(defun dotspacemacs/user-config ()
+  (global-set-key (kbd "C-+") 'text-scale-increase)
+  (global-set-key (kbd "C--") 'text-scale-decrease)
+
+  (evil-leader/set-key-for-mode 'scheme-mode
+    "=b" 'srefactor-lisp-format-buffer)
+
+  (setq powerline-default-separator nil)
+  (setq geiser-active-implementations '(guile)
+        geiser-mode-smart-tab-p t
+        geiser-repl-autodoc-p t
+        geiser-repl-history-filename "~/.emacs.d/geiser-history"
+        geiser-repl-query-on-kill-p nil
+        geiser-implementations-alist
+        '(((regexp "\\.scm$") guile)
+          ((regexp "\\.ss$") guile)))
+  )
