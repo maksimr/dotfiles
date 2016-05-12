@@ -1,8 +1,9 @@
 {:user {:plugins [
                   [cljs-template "0.1.5"]
-                  [lein-swank "1.4.5"]]}}
-
-{:repl {:plugins [[cider/cider-nrepl "0.10.0-SNAPSHOT"]
-                  [refactor-nrepl "2.0.0-SNAPSHOT"]]
+                  [lein-swank "1.4.5"]
+                  [cider/cider-nrepl "0.10.0-SNAPSHOT"]
+                  [refactor-nrepl "2.0.0-SNAPSHOT"]
+                  ]
         :dependencies [[alembic "0.3.2"]
-                       [org.clojure/tools.nrepl "0.2.12"]]}}
+                       [org.clojure/tools.nrepl "0.2.12"]]
+        }}
