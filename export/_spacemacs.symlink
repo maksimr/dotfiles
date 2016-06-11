@@ -96,6 +96,8 @@
   (evil-leader/set-key-for-mode 'scheme-mode
     "=b" 'srefactor-lisp-format-buffer)
 
+  (setq neo-theme 'nerd)
+
   (setq powerline-default-separator nil)
   (setq geiser-active-implementations '(guile)
         geiser-mode-smart-tab-p t
