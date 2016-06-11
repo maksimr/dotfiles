@@ -1,0 +1,41 @@
+Maid.rules do
+    repeat '300s' do
+        rule 'Move to trash unused' do
+            dir('~/Downloads').each do |path|
+                if 2.days.since?(accessed_at(path))
+                    trash(path)
+                end
+            end
+        end
+
+
+        rule 'Move to trash dupes' do
+            trash verbose_dupes_in('~/Downloads/*')
+        end
+
+
+        rule 'Move to trash maid.log' do
+            dir(['~/.maid/maid.log']).each do |path|
+                trash path if (disk_usage(path) / 1000) > 100
+            end
+        end
+
+
+        rule 'Move Videos to Movies folder' do
+            where_content_type(dir('~/Downloads/*'), 'video').each do |path|
+                if 1.days.since?(accessed_at(path))
+                    move(path, '~/Movies/')
+                end
+            end
+        end
+
+
+        rule 'Remove empty directories' do
+            dir(['~/Downloads/*']).each do |path|
+                if File.directory?(path) && dir("#{ path  }/*").empty?
+                    trash(path)
+                end
+            end
+        end
+    end
+end
