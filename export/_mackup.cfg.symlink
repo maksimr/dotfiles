@@ -2,6 +2,7 @@
 engine = dropbox
 directory = Mackup
 [applications_to_sync]
-adium
 ssh
 intellijidea-14
+[configuration_files]
+.tmuxinator

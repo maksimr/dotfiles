@@ -1,7 +1,7 @@
 Maid.rules do
     repeat '300s' do
         rule 'Move to trash unused' do
-            dir('~/Downloads').each do |path|
+            dir('~/Downloads/*').each do |path|
                 if 2.days.since?(accessed_at(path))
                     trash(path)
                 end
