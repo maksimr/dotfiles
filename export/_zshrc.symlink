@@ -308,8 +308,11 @@ if [ "$(command -v npm)"  ]
 then
   alias n="npm"
   alias ni="npm install"
+  alias nr="npm run"
   alias nis="npm install --save"
+  alias nise="npm install --save --save-exact"
   alias nisd="npm install --save-dev"
+  alias nisde="npm install --save-dev"
   alias nu="npm uninstall"
   alias nug="npm uninstall -g"
 fi
