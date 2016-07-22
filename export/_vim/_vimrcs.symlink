@@ -44,8 +44,8 @@ set smartindent          " Умный автоматический отступ 
 set smarttab             " При нажатии в начале строки TAB добавляет отступ равный shiftwidth
 set et                   " Включить автозамену таба на пробелы
 set shiftwidth=4         " Устоновить ширину сдвига >
-set listchars=tab:··     " Показываем табы в начале строки точками
-set listchars+=trail:␣   " Показываем пробел в конце строки как ␣
+set listchars=tab:\··     " Показываем табы в начале строки точками
+set listchars+=trail:\␣   " Показываем пробел в конце строки как ␣
 set list
 set formatoptions-=o     " dont continue comments when pushing o/O
 
