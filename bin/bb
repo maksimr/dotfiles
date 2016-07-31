@@ -182,14 +182,22 @@ function run(buildNumber, options) {
 }
 
 function remove(buildNumber) {
-  var exec = require('child_process').exec;
-  var buildDir = getBuildDir(buildNumber);
-
-  exec('rm -r ' + buildDir, function(err) {
+  removeBuild(buildNumber, (err) => {
     if (err) {
       console.log('Remove ' + buildNumber + ' failed!');
     } else {
       console.log(buildNumber + ' was removed!');
+    }
+  });
+}
+
+function removeBuild(buildNumber, cb) {
+  var exec = require('child_process').exec;
+  var buildDir = getBuildDir(buildNumber);
+
+  exec('rm -r ' + buildDir, function(err) {
+    if (cb) {
+      cb(err);
     }
   });
 }
@@ -210,12 +218,23 @@ function saveBuildOnTheDisk(build, artifact) {
   mkdirp()(buildDir, function() {
     var filePath = path.resolve(buildDir, artifact.name);
     var file = createWriteStream(filePath);
-    downloadArtifact(artifact.href, file, build.number);
+    var removeRevertCallback = onKill(() => {
+      file.end(() => {
+        fs.unlinkSync(filePath);
+      });
+      removeBuild(build.number);
+    });
+    downloadArtifact(artifact.href, file, (err) => {
+      if (err) {
+        console.error('Download ' + build.number + ' failed!!!');
+      }
+      removeRevertCallback();
+    });
   });
 }
 
 
-function downloadArtifact(href, file, buildNumber) {
+function downloadArtifact(href, file, cb) {
   var serverInfo = getServerInfo();
   var request = http.get({
     hostname: serverInfo.hostname,
@@ -226,9 +245,11 @@ function downloadArtifact(href, file, buildNumber) {
     response.pipe(file);
   });
 
-  request.on('error', () => {
-    file.remove();
-    console.error('Download', buildNumber, 'failed!');
+  request.on('end', () => {
+    cb();
+  });
+  request.on('error', (err) => {
+    cb(err);
   });
 }
 
@@ -643,43 +664,114 @@ function mkdirp() {
 }
 
 function logResponseProgress(response) {
-  var readline = require('readline');
   var len = parseInt(response.headers['content-length'], 10);
   var cur = 0;
   var total = len / 1048576; //1048576 - bytes in  1Megabyte
+  var loaderTick = loader(35, 5);
+
+  var printMessage = function() {
+    var percents = (100.0 * cur / len).toFixed(2) + '%';
+    var curMb = (cur / 1048576).toFixed(2) + 'mb';
+    var totalMb = total.toFixed(2) + 'mb';
+
+    var message = ' ' + percents + ' [' + curMb + '/' + totalMb + ']';
+
+    loaderTick(null, message);
+  };
+
+  var timeoutDelay = 500;
+  var timeout = setTimeout(function timeoutTick() {
+    printMessage();
+    timeout = setTimeout(timeoutTick, timeoutDelay);
+  }, timeoutDelay);
+
+  var removeCacnelTimeout = onKill(() => {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+  });
 
   response.on('data', function(chunk) {
     cur += chunk.length;
-
-    readline.cursorTo(process.stdout, 0);
-    process.stdout.clearLine();
-    process.stdout.write(
-      'Downloading ' + (100.0 * cur / len).toFixed(2) + '% ' + (cur / 1048576).toFixed(2) + ' mb' + '. Total size: ' + total.toFixed(2) + ' mb'
-    );
   });
 
   response.on('end', function() {
+    removeCacnelTimeout();
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    }
     console.log('Downloading complete');
   });
 }
 
 function createWriteStream(filePath) {
-  var file = fs.createWriteStream(filePath);
-
-  file.remove = function() {
-    try {
-      file.end(function() {
-        fs.unlinkSync(filePath);
-      });
-    } catch (error) {}
-  };
-
-  onKillCallbacks.push(file.remove);
-
-  return file;
+  return fs.createWriteStream(filePath);
 }
 
 function printBuild(buildNumber, isInstalled) {
   var marker = isInstalled ? '◉' : '◯';
   console.log(' ' + marker + ' ' + buildNumber);
+}
+
+function onKill(cb) {
+  onKillCallbacks.push(cb);
+  return () => {
+    onKillCallbacks = onKillCallbacks.filter((_cb) => {
+      return _cb !== cb;
+    });
+  };
+}
+
+function loader(length, spliterChar) {
+  var readline = require('readline');
+  var dots = Array(length || 10).join('.,').split(',');
+  var shift = dots.length;
+  var spliter = (typeof spliterChar === 'string') ? spliterChar : Array(spliterChar || 2).join(' ');
+
+  return (beforeMessage, afterMessage) => {
+    beforeMessage = beforeMessage || '';
+    afterMessage = afterMessage || '';
+
+    var message = '';
+
+    if (beforeMessage) {
+      message += beforeMessage + ' ';
+    }
+
+    var printDots = dots.concat([]);
+    var printSpliter = '' + spliter;
+    var setIndex = 0;
+
+    if (shift < spliter.length) {
+      printSpliter = printSpliter.substr(0, shift);
+      setIndex = 0;
+    } else if ((shift + spliter.length) > dots.length) {
+      printSpliter = printSpliter.substr(0, ((dots.length + 1) - shift));
+      setIndex = shift - printSpliter.length;
+    } else {
+      setIndex = shift - printSpliter.length;
+    }
+
+    if (printSpliter.length) {
+      printDots.splice(0, printSpliter.length);
+      printDots[setIndex] = printSpliter;
+    }
+
+    if (shift >= dots.length) {
+      shift = 0;
+    } else {
+      shift += 1;
+    }
+
+    message += printDots.join('');
+
+    if (afterMessage) {
+      message += ' ' + afterMessage;
+    }
+
+    readline.cursorTo(process.stdout, 0);
+    process.stdout.clearLine();
+    process.stdout.write(message);
+  };
 }
