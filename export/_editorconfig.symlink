@@ -7,25 +7,25 @@ root = true
 ;vim:path=~/.vim/bundle/js-beautify/js/lib/beautify.js
 ;vim:bin=node
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 [**.jsx]
 ;vim:path=~/.vim/bundle/js-beautify/js/lib/beautify.js
 ;vim:bin=node
 e4x = true
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 [**.css]
 ;vim:path=~/.vim/bundle/js-beautify/js/lib/beautify-css.js
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 [**.html]
 ;vim:path=~/.vim/bundle/js-beautify/js/lib/beautify-html.js
 ;vim:max_char=78:brace_style=expand
 indent_style = space
-indent_size = 4
+indent_size = 2
 indent_inner_html=true
 preserve_newlines=true
 wrap-line-length = 0
