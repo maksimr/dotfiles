@@ -74,7 +74,7 @@ function printHelp() {
   }
 
   function printLine(option, description) {
-    console.log('    ' + option + '   '  + description);
+    console.log('    ' + option + '   ' + description);
   }
 }
 
@@ -85,9 +85,12 @@ function ls(options) {
   const buildTypeId = getBuildTypeId();
 
   if (options.remote) {
-    httpGET('/guestAuth/app/rest/buildTypes/' + buildTypeId + '/builds?locator=status:SUCCESS&count=' + count, (response) => {
-      response.build.forEach((build) => {
-        console.log(build.number);
+    listLocalBuilds((installedBuilds) => {
+      httpGET('/guestAuth/app/rest/buildTypes/' + buildTypeId + '/builds?locator=status:SUCCESS&count=' + count, (response) => {
+        response.build.forEach((build) => {
+          var isInstalled = installedBuilds.indexOf(build.number) > -1;
+          printBuild(build.number, isInstalled);
+        });
       });
     });
     return;
@@ -95,7 +98,7 @@ function ls(options) {
 
   listLocalBuilds((files) => {
     files.forEach((buildNumber) => {
-      console.log(buildNumber);
+      printBuild(buildNumber, true);
     });
   });
 }
@@ -674,4 +677,9 @@ function createWriteStream(filePath) {
   onKillCallbacks.push(file.remove);
 
   return file;
+}
+
+function printBuild(buildNumber, isInstalled) {
+  var marker = isInstalled ? '◉' : '◯';
+  console.log(' ' + marker + ' ' + buildNumber);
 }
