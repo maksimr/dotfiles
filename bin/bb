@@ -36,6 +36,12 @@ switch (argv._[0]) {
   case 'rm':
     remove(argv._[1]);
     break;
+  case 'remove':
+    remove(argv._[1]);
+    break;
+  case 'uninstall':
+    remove(argv._[1]);
+    break;
   default:
     printHelp();
 }
@@ -58,7 +64,7 @@ function printHelp() {
   br();
   printTitle('Usage');
   printLine('install <build>                                    ', 'Download and install a <build> of YouTrack');
-  printLine('remove <build>                                     ', 'Remove a <build>');
+  printLine('uninstall <build>                                  ', 'Remove a <build>');
   printLine('ls                                                 ', 'List installed builds');
   printLine('ls-remote [--count=10]                             ', 'List remote builds available for install');
   printLine('run <build> [--port | -p] [--host | -h] [--context]', 'Run <build> on [host], [port] and [context]');
@@ -128,6 +134,7 @@ function run(buildNumber, options) {
     '-Djetbrains.charisma.suckTheTractorDriversDick=true'
   ];
   const userJavaArgs = options['--'] || [];
+  console.log(userJavaArgs);
 
   var jarName = 'youtrack-' + buildNumber + '.jar';
   var jarPath = path.resolve(getBuildDir(buildNumber), jarName);
