@@ -454,18 +454,6 @@ if [ $SHLVL = 1 ] || [ $SHLVL = 0 ] || [ $SHLVL = 2 ] || [ $SHLVL = 3 ]; then
   tmux -2 &>/dev/null && exit # exit from shell after exit tmux
 fi
 
-# load .zshrc.local
-if [ -f "$HOME/.zshrc.local" ]; then
-  . $HOME/.zshrc.local
-fi
-
-# load local zsh files
-if [ -d "$HOME/.local/zsh" ]; then
-  for lzsh in $(ls "$HOME/.local/zsh"); do
-    . $HOME/.local/zsh/$lzsh
-  done
-fi
-
 # Oracle JDK for WebStorm
 if [ -d "$HOME/.local/jdk1.8.0_25" ]; then
     export WEBIDE_JDK=$HOME/.local/jdk1.8.0_25
@@ -513,3 +501,15 @@ fi
 
 export ANDROID_HOME=/usr/local/opt/android-sdk
 export CHROME_BIN="chromium-browser"
+
+# load .zshrc.local
+if [ -f "$HOME/.zshrc.local" ]; then
+  . $HOME/.zshrc.local
+fi
+
+# load local zsh files
+if [ -d "$HOME/.local/zsh" ]; then
+  for lzsh in $(ls "$HOME/.local/zsh"); do
+    . $HOME/.local/zsh/$lzsh
+  done
+fi

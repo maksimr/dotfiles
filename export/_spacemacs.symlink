@@ -10,6 +10,7 @@
      auto-completion
      syntax-checking
      semantic
+     osx
 
      scheme
      clojure
@@ -22,7 +23,11 @@
             shell-default-position 'bottom
             shell-defult-shell 'zsh)
      )
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages
+   '(
+     editorconfig
+     nvm
+    )
    dotspacemacs-excluded-packages '()
    dotspacemacs-delete-orphan-packages t))
 
@@ -45,7 +50,7 @@
                          monokai
                          zenburn)
    dotspacemacs-colorize-cursor-according-to-state t
-   dotspacemacs-default-font '("Terminus (TTF)"
+   dotspacemacs-default-font '("Fira Code"
                                :size 18
                                :weight normal
                                :width normal
@@ -85,7 +90,7 @@
    dotspacemacs-default-package-repository nil
    dotspacemacs-whitespace-cleanup "trailing"
    evil-escape-key-sequence "jk"
-   evil-esc-delay 0.2
+   evil-esc-delay 0.3
    ))
 
 (defun dotspacemacs/user-init ())
@@ -99,6 +104,8 @@
 
   (setq neo-theme 'nerd)
 
+  (editorconfig-mode 1)
+
   (setq powerline-default-separator nil)
   (setq geiser-active-implementations '(guile)
         geiser-mode-smart-tab-p t
@@ -108,4 +115,19 @@
         geiser-implementations-alist
         '(((regexp "\\.scm$") guile)
           ((regexp "\\.ss$") guile)))
+
+
+  (defun maksimrv/setup-local-eslint ()
+    (interactive)
+    (let ((local-eslint (expand-file-name (concat (projectile-project-root) "node_modules/.bin/eslint"))))
+      (setq flycheck-javascript-eslint-executable
+            (and (file-exists-p local-eslint) local-eslint))))
+
+  (with-eval-after-load 'flycheck
+    (maksimrv/setup-local-eslint)
+    (flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
+    (flycheck-add-mode 'javascript-eslint 'web-mode))
+
+  (with-eval-after-load 'projectile
+    (add-hook 'projectile-after-switch-project-hook 'feltnerm/setup-local-eslint))
   )
