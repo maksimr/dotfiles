@@ -13,6 +13,7 @@
      osx
 
      scheme
+     racket
      clojure
      javascript
      react
@@ -27,6 +28,7 @@
    '(
      editorconfig
      nvm
+     evil-surround
     )
    dotspacemacs-excluded-packages '()
    dotspacemacs-delete-orphan-packages t))
@@ -90,7 +92,7 @@
    dotspacemacs-default-package-repository nil
    dotspacemacs-whitespace-cleanup "trailing"
    evil-escape-key-sequence "jk"
-   evil-esc-delay 0.3
+   evil-esccape-delay 2.7
    ))
 
 (defun dotspacemacs/user-init ())
@@ -100,18 +102,27 @@
   (global-set-key (kbd "C--") 'text-scale-decrease)
 
   (evil-leader/set-key-for-mode 'scheme-mode
-    "=b" 'srefactor-lisp-format-buffer)
+    "C-f" 'srefactor-lisp-format-buffer)
+
+  (evil-leader/set-key-for-mode 'racket-mode
+    "C-f" 'srefactor-lisp-format-buffer)
 
   (setq neo-theme 'nerd)
-
   (editorconfig-mode 1)
 
+  (setq global-evil-surround-mode 1)
   (setq powerline-default-separator nil)
+  (set-default 'truncate-lines t)
+
   (setq geiser-active-implementations '(guile)
         geiser-mode-smart-tab-p t
         geiser-repl-autodoc-p t
         geiser-repl-history-filename "~/.emacs.d/geiser-history"
         geiser-repl-query-on-kill-p nil
+
+        geiser-debug-jump-to-debug-p nil
+        geiser-debug-show-debug-p nil
+
         geiser-implementations-alist
         '(((regexp "\\.scm$") guile)
           ((regexp "\\.ss$") guile)))
@@ -129,5 +140,5 @@
     (flycheck-add-mode 'javascript-eslint 'web-mode))
 
   (with-eval-after-load 'projectile
-    (add-hook 'projectile-after-switch-project-hook 'feltnerm/setup-local-eslint))
+    (add-hook 'projectile-after-switch-project-hook 'maksimrv/setup-local-eslint))
   )

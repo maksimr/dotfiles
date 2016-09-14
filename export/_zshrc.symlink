@@ -64,6 +64,11 @@ case ":$PATH:" in
   *) PATH="$HOME/.gem/ruby/2.2.0/bin:$PATH" ;;
 esac
 
+case ":$PATH:" in
+  *:"$HOME/.go/bin":*) ;;
+  *) PATH="$HOME/.go/bin:$PATH" ;;
+esac
+
 export EDITOR=vim
 
 PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n(%m):%~ %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
@@ -499,6 +504,7 @@ then
     fi
 fi
 
+export GOPATH=$HOME/.go
 export ANDROID_HOME=/usr/local/opt/android-sdk
 export CHROME_BIN="chromium-browser"
 
