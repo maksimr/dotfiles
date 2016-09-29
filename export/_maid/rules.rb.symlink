@@ -1,8 +1,16 @@
 Maid.rules do
+    repeat '1d' do
+        rule 'empty the trash daily' do
+            dir('~/.local/share/Trash/files/*').each do |path|
+                remove(path) if 30.days.since?(added_at(path))
+            end
+        end
+    end
+
     repeat '300s' do
         rule 'Move to trash unused' do
             dir('~/Downloads/*').each do |path|
-                if 2.days.since?(accessed_at(path))
+                if 2.days.since?(accessed_at(path)) or 2.days.since?(added_at(path))
                     trash(path)
                 end
             end
@@ -11,13 +19,6 @@ Maid.rules do
 
         rule 'Move to trash dupes' do
             trash verbose_dupes_in('~/Downloads/*')
-        end
-
-
-        rule 'Move to trash maid.log' do
-            dir(['~/.maid/maid.log']).each do |path|
-                trash path if (disk_usage(path) / 1000) > 100
-            end
         end
 
 
@@ -35,6 +36,13 @@ Maid.rules do
                 if File.directory?(path) && dir("#{ path  }/*").empty?
                     trash(path)
                 end
+            end
+        end
+
+
+        rule 'Move to trash maid.log' do
+            dir(['~/.maid/maid.log']).each do |path|
+                trash path if (disk_usage(path) / 1000) > 100
             end
         end
     end
