@@ -97,5 +97,9 @@ if has('ruby')
 EOF
 endif
 
+if system('uname -s') == "Darwin\n"
+  set clipboard=unnamed " Копирование в сиситемный clipboard по нажатию на y(yank)
+endif
+
 " Менеджер пакетов для vim (vundle [запускается :BundleInstall])
 call vundle#rc()
