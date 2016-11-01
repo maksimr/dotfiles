@@ -28,6 +28,7 @@
    '(
      editorconfig
      nvm
+     mocha
      evil-surround
     )
    dotspacemacs-excluded-packages '()
@@ -110,6 +111,7 @@
   (setq neo-theme 'nerd)
   (editorconfig-mode 1)
 
+  (setq clojure-enable-fancify-symbols t)
   (setq global-evil-surround-mode 1)
   (setq powerline-default-separator nil)
   (set-default 'truncate-lines t)
