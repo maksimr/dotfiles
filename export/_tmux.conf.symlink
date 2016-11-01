@@ -61,6 +61,12 @@ if-shell "uname | grep -v Darwin" \
 bind -t vi-copy V rectangle-toggle
 bind ] paste-buffer
 
+# Исправляет проблему с копирование используя ctrl-c внтури vim-а,
+# запущенного внтури tmux сессии
+# Fix problem with vim copy inside tmux session on osx/macos
+if-shell "uname | grep -q Darwin && command -v reattach-to-user-namespace" \
+    "set-option -g default-command \"reattach-to-user-namespace -l $SHELL\""
+
 # vim like move between panes
 bind h select-pane -L
 bind j select-pane -D
