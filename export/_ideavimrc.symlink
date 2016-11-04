@@ -15,3 +15,4 @@ cnoremap <Left> <Space><BS><Left>
 cnoremap <Right> <Space><BS><Right>
 
 set surround
+map f :action AceJumpAction<CR>
