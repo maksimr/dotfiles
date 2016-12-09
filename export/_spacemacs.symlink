@@ -102,6 +102,10 @@
   (global-set-key (kbd "C-+") 'text-scale-increase)
   (global-set-key (kbd "C--") 'text-scale-decrease)
 
+  (define-key evil-normal-state-map (kbd "C-f") 'oz-indent-buffer)
+
+  (add-hook 'oz-mode-hook 'auto-complete-mode)
+
   (evil-leader/set-key-for-mode 'scheme-mode
     "C-f" 'srefactor-lisp-format-buffer)
 
@@ -110,7 +114,6 @@
 
   (setq neo-theme 'nerd)
   (editorconfig-mode 1)
-
 
   (setq-default ac-sources '(ac-source-filename
                      ac-source-functions

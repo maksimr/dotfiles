@@ -138,9 +138,6 @@
   Bundle 'kana/vim-vspec'
 
 " Other
-  "Bundle 'tpope/vim-projectionist'
-  " @see https://github.com/tpope/vim-projectionist/pull/20
-  Bundle 'https://github.com/mtscout6/vim-projectionist/archive/prompt-create-alternate.zip'
   " extended % matching for HTML
   Bundle 'tmhedberg/matchit'
   Bundle 'maksimr/vim-translator'
@@ -163,3 +160,4 @@
   Bundle 'jaxbot/github-issues.vim'
   " Zeavim allows to use Zeal documentation browser directly from Vim
   Bundle 'KabbAmine/zeavim.vim'
+  Bundle 'mhinz/vim-startify'
