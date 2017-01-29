@@ -5,11 +5,11 @@
 # zshrc file and `zprof` in the end of file
 
 # Load zgen
+
 . ~/.zgen.zsh 2>/dev/null
 
 
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8,bold"
-
 
 if ! zgen saved; then
 
@@ -437,7 +437,9 @@ fi
 # Liquidprompt end
 
 # Fix problem with intelliji window focus
-export _JAVA_AWT_WM_NONREPARENTING=1;
+if [[ `uname` -ne 'Darwin' ]]; then
+    export _JAVA_AWT_WM_NONREPARENTING=1;
+fi
 
 # Global tmux configuration
 # vim: ft=zsh
@@ -447,8 +449,10 @@ export _JAVA_AWT_WM_NONREPARENTING=1;
 # -2 for supporting colors (256)
 # I Don't use patched font in terminal
 export USE_PATCHED_FONT="false"
-if [ $SHLVL = 1 ] || [ $SHLVL = 0 ] || [ $SHLVL = 2 ] || [ $SHLVL = 3 ]; then
-  tmux -2 &>/dev/null && exit # exit from shell after exit tmux
+if [ -z "$INSIDE_EMACS" ]; then
+    if [ $SHLVL = 1 ] || [ $SHLVL = 0 ] || [ $SHLVL = 2 ] || [ $SHLVL = 3 ]; then
+        tmux -2 &>/dev/null && exit # exit from shell after exit tmux
+    fi
 fi
 
 # Oracle JDK for WebStorm
