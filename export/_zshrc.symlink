@@ -116,6 +116,11 @@ alias vl='vim "$(ls -t | head -1)"' # open last modified file in vim
 alias vll='vim "$(find . ! \( -path "./.*" -o  -path "*/.*" \) -type f -printf "%T@ %p\n" | sort -n | tail -1 | cut -f2- -d" " )"'
 alias vrc='vim ~/.vimrc'
 
+function kotrun() {
+ _jar=$(basename $1 .kt).jar
+ kotlinc $1 -include-runtime -d $_jar && java -jar $_jar
+}
+
 # change some aliases if grc installed
 if [ "$(command -v grc)"  ]
 then
