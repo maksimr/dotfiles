@@ -118,7 +118,11 @@ alias vrc='vim ~/.vimrc'
 
 function kotrun() {
  _jar=$(basename $1 .kt).jar
- kotlinc $1 -include-runtime -d $_jar && java -jar $_jar
+
+ case "$1" in
+     *.kts) kotlinc -script $1 ;;
+     *.kt) kotlinc $1 -include-runtime -d $_jar && java -jar $_jar ;;
+ esac
 }
 
 # change some aliases if grc installed
