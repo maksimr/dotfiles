@@ -32,7 +32,6 @@ if ! zgen saved; then
     # Node Plugins
     zgen oh-my-zsh plugins/npm
     zgen oh-my-zsh plugins/node
-    zgen load akoenig/gulp-autocompletion-zsh
 
     # Theme
     zgen oh-my-zsh themes/robbyrussell
