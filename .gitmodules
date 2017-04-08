@@ -19,3 +19,6 @@
 [submodule "export/_tmux.symlink/plugins/tpm"]
 	path = export/_tmux.symlink/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
+[submodule "export/_zgen.symlink"]
+	path = export/_zgen.symlink
+	url = https://github.com/tarjoilija/zgen.git
