@@ -524,3 +524,7 @@ if [ -d "$HOME/.local/zsh" ]; then
     . $HOME/.local/zsh/$lzsh
   done
 fi
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/Users/maksimrv/.sdkman"
+[[ -s "/Users/maksimrv/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/maksimrv/.sdkman/bin/sdkman-init.sh"

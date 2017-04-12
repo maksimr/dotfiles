@@ -161,3 +161,4 @@
   " Zeavim allows to use Zeal documentation browser directly from Vim
   Bundle 'KabbAmine/zeavim.vim'
   Bundle 'mhinz/vim-startify'
+  Bundle 'udalov/kotlin-vim'
