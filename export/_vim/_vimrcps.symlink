@@ -174,7 +174,7 @@ augroup plugin_syntastic
 augroup END
 
 "  Bundle 'Lokaltog/vim-easymotion' <-----
-let g:EasyMotion_leader_key = "<Leader><Leader><Leader>"
+let g:EasyMotion_leader_key = "<space>"
 "  Bundle 'Lokaltog/vim-easymotion' >-----
 "
 "  Bundle 'command-t' <-----
