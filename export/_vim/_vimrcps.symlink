@@ -157,6 +157,12 @@ function! UpdateJsHintConf()
     endif
 endfunction
 
+fun! s:AddNodeModuleToPath ()
+    let old_path = &path
+    let node_modules = s:GetNodeModulesAbsPath()
+    execute "set path=".node_modules
+endfun
+
 function! HasConfig(file, dir)
     return findfile(a:file, escape(a:dir, ' ') . ';') !=# ''
 endfunction
@@ -166,6 +172,7 @@ augroup plugin_syntastic
     autocmd BufEnter * call UpdateJsHintConf()
     autocmd BufEnter *.jsx let g:syntastic_javascript_checkers=["jsxhint"]
     autocmd BufEnter *.js call s:UpdateEslintExec()
+    autocmd BufEnter *.js call s:AddNodeModuleToPath()
 
     autocmd BufNewFile,BufReadPre *.js  let b:syntastic_checkers =
                 \ HasConfig('.eslintrc', expand('<amatch>:h')) ? ['eslint'] :

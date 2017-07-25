@@ -77,6 +77,8 @@ let g:netrw_list_hide='\~$,\~\*$,\.swp$,\.svn'
 let mapleader=','
 let maplocalleader=mapleader
 
+set suffixesadd +=.js
+
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 set rtp+=~/.vim/bundle/vundle/             " Необходимо для vundle
 " Включаем pathogen
