@@ -16,7 +16,7 @@
   Bundle 'LycosaExplorer'
   " Поиск файлов
   " Необходимо дополнительно установить C-расширение
-  "   cd ~/.vim/bundle/Command-T/ruby/command-t
+  "   cd ~/.vim/bundle/Command-T/ruby/command-t/ext/command-t
   "   ruby extconf.rb
   "   make
   Bundle 'wincent/Command-T'
@@ -162,3 +162,4 @@
   Bundle 'KabbAmine/zeavim.vim'
   Bundle 'mhinz/vim-startify'
   Bundle 'udalov/kotlin-vim'
+  Bundle 'tpope/vim-projectionist'

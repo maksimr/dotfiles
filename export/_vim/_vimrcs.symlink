@@ -79,6 +79,13 @@ let maplocalleader=mapleader
 
 set suffixesadd +=.js
 
+"For example, we could adapt the includeexpr option to
+"allow Vim to directly open up the appropriate file when we
+"press gf on a class name by converting
+"CamelCase words to dash-case:
+"http://arjanvandergaag.nl/blog/navigating-project-files-with-vim.html
+set includeexpr=substitute(substitute(v:fname,'^.','\\l\\0',''),'\\(\\u\\l\\+\\\|\\l\\+\\)\\(\\u\\)','\\l\\1-\\l\\2','g')
+
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 set rtp+=~/.vim/bundle/vundle/             " Необходимо для vundle
 " Включаем pathogen

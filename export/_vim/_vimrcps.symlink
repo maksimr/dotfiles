@@ -157,10 +157,14 @@ function! UpdateJsHintConf()
     endif
 endfunction
 
+let s:projectDir = fnameescape(getcwd())
+
 fun! s:AddNodeModuleToPath ()
     let old_path = &path
     let node_modules = s:GetNodeModulesAbsPath()
-    execute "set path=".node_modules
+    execute "set path=."
+    execute "set path+=".s:projectDir
+    execute "set path+=".node_modules
 endfun
 
 function! HasConfig(file, dir)
