@@ -8,6 +8,7 @@ root = true
 ;vim:bin=node
 indent_style = space
 indent_size = 2
+brace_style = collapse,preserve-inline
 
 [**.jsx]
 ;vim:path=~/.vim/bundle/js-beautify/js/lib/beautify.js
