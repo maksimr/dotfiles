@@ -53,12 +53,12 @@ bind-key _ split-window -v -c "#{pane_current_path}"
 bind-key | split-window -h -c '#{pane_current_path}'
 
 # Выделение и копирование vim like
-bind-key -t vi-copy v begin-selection
+bind-key -T copy-mode-vi v send-keys -X begin-selection
 if-shell "uname | grep -q Darwin" \
-    "bind-key -t vi-copy y copy-pipe 'reattach-to-user-namespace pbcopy'"
+    "bind-key -T copy-mode-vi y send-keys -X copy-pipe 'reattach-to-user-namespace pbcopy'"
 if-shell "uname | grep -v Darwin" \
-    "bind-key -t vi-copy y copy-pipe 'xclip -selection clip -i'"
-bind -t vi-copy V rectangle-toggle
+    "bind-key -T copy-mode-vi y send-keys -X copy-pipe 'xclip -selection clip -i'"
+bind -T copy-mode-vi V send-keys -X rectangle-toggle
 bind ] paste-buffer
 
 # Исправляет проблему с копирование используя ctrl-c внтури vim-а,
