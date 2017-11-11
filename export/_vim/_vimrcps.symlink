@@ -404,3 +404,5 @@ nnoremap <Leader>a :A<cr>
 " airblade/vim-gitgutter <-----
 let g:gitgutter_max_signs=5000
 " airblade/vim-gitgutter >-----
+
+autocmd BufNewFile,BufRead *.gradle setf groovy
