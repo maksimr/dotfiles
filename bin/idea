@@ -4,27 +4,55 @@
 IDEA=`find $HOME/Library/Application\ Support/JetBrains/Toolbox/apps/IDEA-U -d -type d -name "IntelliJ*.app" | tail -n1`
 wd=`pwd`
 
+while [[ $# > 0  ]]
+do
+    key="$1"
+    case $key in
+        -l|--line) # [-l|--line line]
+            IDEA_ARGS="$IDEA_ARGS $1 $2"
+            shift
+            shift
+            ;;
+        --temp-project) # [--temp-project]
+            IDEA_ARGS="$IDEA_ARGS $1"
+            shift
+            ;;
+        *)
+            file="$1"
+            shift
+            ;;
+    esac
+done
+
+function xAbspath() {
+    echo "$(pwd)/$1"
+}
+
+function xOpen() {
+    open -a "$IDEA" --args $IDEA_ARGS "$(xAbspath $1)"
+}
+
 # were we given a directory?
-if [ -d "$1" ]; then
+if [ -d "$file" ]; then
     #  echo "checking for things in the working dir given"
-    wd=`ls -1d "$1" | head -n1`
+    wd=`ls -1d "$file" | head -n1`
 fi
 
-if [ -f "$1" ]; then
-    open -a "$IDEA" "$1"
+if [ -f "$file" ]; then
+    xOpen "$file"
 else
     # let's check for stuff in our working directory.
     pushd $wd > /dev/null
 
     # does our working dir have an .idea directory?
     if [ -d ".idea" ]; then
-        open -a "$IDEA" .
+        xOpen
     elif [ -f *.ipr ]; then
-        open -a "$IDEA" `ls -1d *.ipr | head -n1`
+        xOpen `ls -1d *.ipr | head -n1`
     elif [ -f pom.xml ]; then
-        open -a "$IDEA" "pom.xml"
+        xOpen "pom.xml"
     else
-        open "$IDEA"
+        xOpen
     fi
 
     popd > /dev/null
