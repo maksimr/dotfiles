@@ -474,6 +474,11 @@ if [ -f "/usr/libexec/java_home" ]; then
     export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 fi
 
+if [ "$(command -v tmuxinator)"  ]
+then
+    alias mux="tmuxinator"
+fi
+
 #https://github.com/np1/mps-youtube
 if [ "$(command -v mpsyt)"  ]
 then
