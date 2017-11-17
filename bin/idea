@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # check for where the latest version of IDEA is installed
-IDEA=`find $HOME/Library/Application\ Support/JetBrains/Toolbox/apps/IDEA-U -d -type d -name "IntelliJ*.app" | head -n1`
+IDEA=`find $HOME/Library/Application\ Support/JetBrains/Toolbox/apps/IDEA-U -d -type d -name "IntelliJ*.app" | tail -n1`
 wd=`pwd`
 
 # were we given a directory?
