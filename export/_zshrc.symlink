@@ -138,7 +138,10 @@ then
   alias logc="grc cat"
   alias logt="grc tail"
   alias logh="grc head"
-  alias jshint="grc jshint"
+  if [ "$(command -v jshint)"  ]
+  then
+    alias jshint="grc jshint"
+  fi
   alias kk="grc karma"
 fi
 
