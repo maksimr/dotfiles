@@ -533,6 +533,7 @@ if [ -d "$HOME/.local/zsh" ]; then
   done
 fi
 
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/maksimrv/.sdkman"
 [[ -s "/Users/maksimrv/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/maksimrv/.sdkman/bin/sdkman-init.sh"
