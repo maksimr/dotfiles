@@ -84,6 +84,7 @@ let g:syntastic_javascript_checkers=["jshint", "eslint"]
 let g:syntastic_html_checkers=[]
 let g:syntastic_javascript_jshint_args = '--config '.expand("~/.jshintrc")
 let g:syntastic_dart_analyzer_conf='-out /tmp/'
+let g:syntastic_dart_dartanalyzer_args = "--strong"
 
 " Если находимся внутри 'quickfix'
 " тогда вызываем lclose иначе quit

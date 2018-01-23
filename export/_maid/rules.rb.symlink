@@ -1,3 +1,4 @@
+#Library/LaunchAgents/com.benjaminoakes.maid.plist
 Maid.rules do
     repeat '1d' do
         rule 'empty the trash daily' do
