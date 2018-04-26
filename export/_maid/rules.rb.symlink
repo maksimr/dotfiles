@@ -1,4 +1,5 @@
 #Library/LaunchAgents/com.benjaminoakes.maid.plist
+#gem install maid --pre --user-install
 Maid.rules do
     repeat '1d' do
         rule 'empty the trash daily' do
