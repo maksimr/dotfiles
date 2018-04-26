@@ -140,13 +140,13 @@
 " Other
   " extended % matching for HTML
   Bundle 'tmhedberg/matchit'
-  Bundle 'maksimr/vim-translator'
   " need vim with +python feature
   " define indent for different files
   " http://editorconfig.org/
   Bundle 'editorconfig/editorconfig-vim'
   " подсветка для dart-а
   Bundle 'bartlomiejdanek/vim-dart'
+  Bundle 'dart-lang/dart-vim-plugin'
   " встроенный в vim browser
   " sudo apt-get install w3m
   " Bundle 'yuratomo/w3m.vim'
