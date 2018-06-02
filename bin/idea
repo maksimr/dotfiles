@@ -1,7 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
-# check for where the latest version of IDEA is installed
-IDEA=`find $HOME/Library/Application\ Support/JetBrains/Toolbox/apps/IDEA-U -d -type d -name "IntelliJ*.app" | head -n1`
+U_NAME="$(uname -s)"
+case "${U_NAME}" in
+    Darwin*)
+        IDEA_PATH=$HOME/Library/Application\ Support/JetBrains/Toolbox/apps/IDEA-U
+        IDEA_EXE=`find $IDEA_PATH -d -type d -name "IntelliJ*.app" | head -n1`
+        ;;
+    *)
+        IDEA_PATH=$HOME/.local/share/JetBrains/Toolbox/apps/IDEA-U
+        IDEA_BIN_NAME="idea.sh"
+        IDEA_EXE=`find $IDEA_PATH -depth -type f -name "idea.sh" | tail -n1`
+        ;;
+esac
+
 wd=`pwd`
 
 while [[ $# > 0  ]]
@@ -29,7 +40,10 @@ function xAbspath() {
 }
 
 function xOpen() {
-    open -a "$IDEA" --args $IDEA_ARGS "$(xAbspath $1)"
+    case "${U_NAME}" in
+        Darwin*) open -a "$IDEA_EXE" --args $IDEA_ARGS "$(xAbspath $1)" ;;
+        *) exec $IDEA_EXE "$IDEA_ARGS" ;;
+    esac
 }
 
 # were we given a directory?
