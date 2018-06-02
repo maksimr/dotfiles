@@ -90,19 +90,13 @@
   " сам vim-snipmate
   Bundle 'garbas/vim-snipmate'
 
-" HTML/HAML
-  Bundle 'tpope/vim-haml'
-  Bundle 'maksimr/vim-yate'
-
 " CSS/SASS
   Bundle 'vim-scripts/SAS-Syntax'
 
 " Ruby/Rails
   Bundle 'vim-ruby/vim-ruby'
-  Bundle 'tpope/vim-rails'
 
 " Javascript
-  Bundle 'kchmck/vim-coffee-script.git'
   Bundle 'maksimr/vim-jsbeautify'
   Bundle 'maksimr/vim-karma'
   Bundle 'einars/js-beautify'
