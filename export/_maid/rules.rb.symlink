@@ -1,6 +1,44 @@
 #Library/LaunchAgents/com.benjaminoakes.maid.plist
 #gem install maid --pre --user-install
 Maid.rules do
+    def added_at(path)
+        if Maid::Platform.osx?
+            path = expand(path)
+            raw = cmd("mdls -raw -name kMDItemFSCreationDate #{ sh_escape(path) }")
+
+            if raw == "(null)"
+                1.second.ago
+            else
+                begin
+                    DateTime.parse(raw).to_time
+                rescue ArgumentError => _
+                    created_at(path)
+                end
+            end
+        else
+            created_at(path)
+        end
+    end
+
+    def used_at(path)
+        if Maid::Platform.osx?
+            path = expand(path)
+            raw = cmd("mdls -raw -name kMDItemFSContentChangeDate #{ sh_escape(path) }")
+
+            if raw == "(null)"
+                nil
+            else
+                begin
+                    DateTime.parse(raw).to_time
+                rescue ArgumentError => _
+                    accessed_at(path)
+                end
+            end
+        else
+            accessed_at(path)
+        end
+    end
+
     repeat '1d' do
         rule 'empty the trash daily' do
             dir('~/.local/share/Trash/files/*').each do |path|
@@ -12,7 +50,8 @@ Maid.rules do
     repeat '300s' do
         rule 'Move to trash unused' do
             dir('~/Downloads/*').each do |path|
-                if 2.days.since?(accessed_at(path)) or 2.days.since?(added_at(path))
+                puts path, added_at(path), used_at(path)
+                if 2.days.since?(used_at(path)) or 2.days.since?(added_at(path))
                     trash(path)
                 end
             end
@@ -26,7 +65,7 @@ Maid.rules do
 
         rule 'Move Videos to Movies folder' do
             where_content_type(dir('~/Downloads/*'), 'video').each do |path|
-                if 1.days.since?(accessed_at(path))
+                if 1.days.since?(used_at(path))
                     move(path, '~/Movies/')
                 end
             end
