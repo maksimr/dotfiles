@@ -100,6 +100,7 @@
   Bundle 'maksimr/vim-jsbeautify'
   Bundle 'maksimr/vim-karma'
   Bundle 'einars/js-beautify'
+  Bundle 'metakirby5/codi.vim'
   " Необходимо дополнительно установить в системе ctags
   " sudo apt-get install exuberant-ctags
   " для javascript можно установить jsctags (https://github.com/mozilla/doctorjs)
