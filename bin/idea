@@ -3,8 +3,7 @@
 U_NAME="$(uname -s)"
 case "${U_NAME}" in
     Darwin*)
-        IDEA_PATH=$HOME/Library/Application\ Support/JetBrains/Toolbox/apps/IDEA-U
-        IDEA_EXE=`find $IDEA_PATH -d -type d -name "IntelliJ*.app" | head -n1`
+        IDEA_EXE=`find $HOME/Library/Application\ Support/JetBrains/Toolbox/apps/IDEA-U -d -type d -name "IntelliJ*.app" | head -n1`
         ;;
     *)
         IDEA_PATH=$HOME/.local/share/JetBrains/Toolbox/apps/IDEA-U
