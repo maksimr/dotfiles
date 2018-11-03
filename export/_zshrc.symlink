@@ -315,6 +315,7 @@ function {
     # 10ms loading nvm.sh
     ~/.nvm/nvm.sh
     ~/.dvm/dvm.sh
+    ~/.vvm/etc/login
   )
 
   for src in $scripts
@@ -552,3 +553,6 @@ fi
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/maksimrv/.sdkman"
 [[ -s "/Users/maksimrv/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/maksimrv/.sdkman/bin/sdkman-init.sh"
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
