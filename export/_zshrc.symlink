@@ -4,8 +4,22 @@
 # zprof. We should add `zmodload zsh/zprof` in to the beginning of
 # zshrc file and `zprof` in the end of file
 
-# Load zgen
 
+# Global tmux configuration
+# vim: ft=zsh
+# Run tmux immediately after enter to terminal
+# $SHLVL - increase by one every time when we run new bash
+# -2 for supporting colors (256)
+# I Don't use patched font in terminal
+export USE_PATCHED_FONT="false"
+if [ -z "$INSIDE_EMACS" ]; then
+    if [ $SHLVL = 1 ] || [ $SHLVL = 0 ] || [ $SHLVL = 2 ] || [ $SHLVL = 3 ]; then
+        tmux -2 &>/dev/null && exit # exit from shell after exit tmux
+    fi
+fi
+
+
+# Load zgen
 . ~/.zgen/zgen.zsh 2>/dev/null
 
 
@@ -471,20 +485,6 @@ fi
 # Fix problem with intelliji window focus
 if [[ `uname` -ne 'Darwin' ]]; then
     export _JAVA_AWT_WM_NONREPARENTING=1;
-fi
-
-# Global tmux configuration
-# vim: ft=zsh
-
-# Run tmux immediately after enter to terminal
-# $SHLVL - increase by one every time when we run new bash
-# -2 for supporting colors (256)
-# I Don't use patched font in terminal
-export USE_PATCHED_FONT="false"
-if [ -z "$INSIDE_EMACS" ]; then
-    if [ $SHLVL = 1 ] || [ $SHLVL = 0 ] || [ $SHLVL = 2 ] || [ $SHLVL = 3 ]; then
-        tmux -2 &>/dev/null && exit # exit from shell after exit tmux
-    fi
 fi
 
 # Oracle JDK for WebStorm
