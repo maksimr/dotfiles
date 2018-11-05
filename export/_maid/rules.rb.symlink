@@ -49,24 +49,10 @@ Maid.rules do
 
     repeat '300s' do
         rule 'Move to trash unused' do
-            dir('~/Downloads/*').each do |path|
+            dir(['~/Downloads/*', '~/Desktop/*']).each do |path|
                 puts path, added_at(path), used_at(path)
                 if 2.days.since?(used_at(path)) or 2.days.since?(added_at(path))
                     trash(path)
-                end
-            end
-        end
-
-
-        rule 'Move to trash dupes' do
-            trash verbose_dupes_in('~/Downloads/*')
-        end
-
-
-        rule 'Move Videos to Movies folder' do
-            where_content_type(dir('~/Downloads/*'), 'video').each do |path|
-                if 1.days.since?(used_at(path))
-                    move(path, '~/Movies/')
                 end
             end
         end
