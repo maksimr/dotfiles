@@ -26,7 +26,7 @@ Maid.rules do
             raw = cmd("mdls -raw -name kMDItemFSContentChangeDate #{ sh_escape(path) }")
 
             if raw == "(null)"
-                nil
+                1.second.ago
             else
                 begin
                     DateTime.parse(raw).to_time
