@@ -12,9 +12,11 @@
 # -2 for supporting colors (256)
 # I Don't use patched font in terminal
 export USE_PATCHED_FONT="false"
-if [ -z "$INSIDE_EMACS" ]; then
-    if [ $SHLVL = 1 ] || [ $SHLVL = 0 ] || [ $SHLVL = 2 ] || [ $SHLVL = 3 ]; then
-        tmux -2 &>/dev/null && exit # exit from shell after exit tmux
+if [ "$(command -v tmux)"  ]; then
+    if [ -z "$INSIDE_EMACS" ]; then
+        if [ -z "$TMUX" ]; then
+            tmux -2 &>/dev/null && exit # exit from shell after exit tmux
+        fi
     fi
 fi
 
