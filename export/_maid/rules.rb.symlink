@@ -50,8 +50,7 @@ Maid.rules do
     repeat '1800s' do
         rule 'Move to trash unused' do
             dir(['~/Downloads/*', '~/Desktop/*']).each do |path|
-                puts path, added_at(path), used_at(path)
-                if 2.days.since?(used_at(path)) or 2.days.since?(added_at(path))
+                if 1.days.since?(used_at(path)) or 1.days.since?(added_at(path))
                     trash(path)
                 end
             end
