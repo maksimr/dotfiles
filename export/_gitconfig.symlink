@@ -22,3 +22,5 @@
 	user = maksimr
 [push]
 	default = simple
+[core]
+	precomposeUnicode = true
