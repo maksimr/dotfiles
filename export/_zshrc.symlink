@@ -513,27 +513,24 @@ then
 fi
 
 # https://github.com/junegunn/fzf
-if [ "$(command -v rvm)"  ] || [ "$(command -v ruby)"  ]
-then
-    if [ -f "$HOME/.fzf.zsh"  ]; then
-        source ~/.fzf.zsh
+if [ -f "$HOME/.fzf.zsh"  ]; then
+    source ~/.fzf.zsh
 
-        # aliases
-        # fkill - kill process
-        function fkill() {
-          ps -ef | sed 1d | fzf -m | awk '{print $2}' | xargs kill -${1:-9}
-        }
+    # aliases
+    # fkill - kill process
+    function fkill() {
+      ps -ef | sed 1d | fzf -m | awk '{print $2}' | xargs kill -${1:-9}
+    }
 
-        function insert-fzf-path-in-command-line() {
-            local selected_path
-            echo
-            selected_path=$(find * -type f | fzf > selected) || return
-            eval 'LBUFFER="$LBUFFER$selected_path"'
-            zle reset-prompt
-        }
-        zle -N insert-fzf-path-in-command-line
-        bindkey "^F" "insert-fzf-path-in-command-line"
-    fi
+    function insert-fzf-path-in-command-line() {
+        local selected_path
+        echo
+        selected_path=$(find * -type f | fzf > selected) || return
+        eval 'LBUFFER="$LBUFFER$selected_path"'
+        zle reset-prompt
+    }
+    zle -N insert-fzf-path-in-command-line
+    bindkey "^F" "insert-fzf-path-in-command-line"
 fi
 
 export GOPATH=$HOME/.go
