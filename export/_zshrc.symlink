@@ -18,45 +18,41 @@ if [ "$(command -v tmux)"  ]; then
 fi
 
 
-# Prevent prepend /usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin to PATH when run tmux
-# https://superuser.com/questions/544989/does-tmux-sort-the-path-variable/583502
-if [ -f /etc/profile ]; then
-    PATH=""
-    source /etc/profile
-fi
-
-
 # Load zgen
-. ~/.zgen/zgen.zsh 2>/dev/null
+if [ -f ~/.zgen/zgen.zsh ]; then
+    . ~/.zgen/zgen.zsh 2>/dev/null
+fi
 
 
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=black,bold"
 
-if ! zgen saved; then
+if [ "$(command -v zgen)"  ]; then
+    if ! zgen saved; then
 
-    # Load various lib files
-    zgen load robbyrussell/oh-my-zsh lib/
+        # Load various lib files
+        zgen load robbyrussell/oh-my-zsh lib/
 
-    # Bundles
-    zgen oh-my-zsh plugins/git
-    zgen oh-my-zsh plugins/vundle
-    zgen oh-my-zsh plugins/vi-mode
-    zgen oh-my-zsh plugins/command-not-found
+        # Bundles
+        zgen oh-my-zsh plugins/git
+        zgen oh-my-zsh plugins/vundle
+        zgen oh-my-zsh plugins/vi-mode
+        zgen oh-my-zsh plugins/command-not-found
 
-    zgen load zsh-users/zsh-history-substring-search
-    zgen load zsh-users/zsh-syntax-highlighting
-    zgen load "zsh-users/zsh-autosuggestions" "zsh-autosuggestions.zsh"
-    zgen load zsh-users/zsh-completions src
+        zgen load zsh-users/zsh-history-substring-search
+        zgen load zsh-users/zsh-syntax-highlighting
+        zgen load "zsh-users/zsh-autosuggestions" "zsh-autosuggestions.zsh"
+        zgen load zsh-users/zsh-completions src
 
-    zgen load Tarrasch/zsh-bd
+        zgen load Tarrasch/zsh-bd
 
-    # Node Plugins
-    zgen oh-my-zsh plugins/npm
-    zgen oh-my-zsh plugins/node
+        # Node Plugins
+        zgen oh-my-zsh plugins/npm
+        zgen oh-my-zsh plugins/node
 
-    # Theme
-    zgen oh-my-zsh themes/robbyrussell
-    zgen save
+        # Theme
+        zgen oh-my-zsh themes/robbyrussell
+        zgen save
+    fi
 fi
 
 # Устанавливаем размер истории команд и файл в котором
