@@ -39,13 +39,13 @@ Maid.rules do
         end
     end
 
-    repeat '1d' do
-        rule 'empty the trash daily' do
-            dir('~/.Trash/*').each do |path|
-                remove(path) if 30.days.since?(added_at(path))
-            end
-        end
-    end
+    #repeat '1d' do
+        #rule 'empty the trash daily' do
+            #dir('~/.Trash/*').each do |path|
+                #remove(path) if 30.days.since?(added_at(path))
+            #end
+        #end
+    #end
 
     repeat '1800s' do
         rule 'Move to trash unused' do
