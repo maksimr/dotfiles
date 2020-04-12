@@ -138,22 +138,11 @@ call vundle#rc()
   "Full path fuzzy file, buffer, mru, tag, ... finder for Vim.
   Bundle 'kien/ctrlp.vim'
 
-  "Dependency for vim-session
-  Bundle 'xolox/vim-misc'
-  "The session.vim plug-in improves upon Vim's built-in :mksession command by
-  "enabling you to easily and (if you want) automatically persist and restore
-  "your Vim editing sessions. It works by generating a Vim script that restores
-  "your current settings and the arrangement of tab pages and/or split windows
-  "and the files they contain.
-  Bundle 'xolox/vim-session'
-
   " Метки
   Bundle 'kshenoy/vim-signature'
   " Историю изменений
   Bundle 'sjl/gundo.vim'
   Bundle 'thisivan/vim-bufexplorer'
-  " Поддержка ctags
-  "Bundle 'szw/vim-tags'
   " Навигация по коду используя буквы
   Bundle 'Lokaltog/vim-easymotion'
 
@@ -174,8 +163,6 @@ call vundle#rc()
   Bundle 'mileszs/ack.vim'
   Bundle 'The-NERD-Commenter'
 
-  "automatic closing of quotes, parenthesis, brackets, etc.
-  "Bundle 'jiangmiao/auto-pairs'
   Bundle 'Raimondi/delimitMate'
 
   Bundle 'ervandew/supertab'
@@ -217,8 +204,6 @@ call vundle#rc()
   "Bundle 'int3/vim-taglist-plus'
   " проверка синтаксиса и не только для javascript-а
   Bundle 'scrooloose/syntastic'
-  " Autocomplete, syntax analyzer
-  Bundle 'marijnh/tern_for_vim'
   " Autocompleter
   Bundle 'Shougo/neocomplcache.vim'
   Bundle 'Shougo/neosnippet'
@@ -473,10 +458,6 @@ endif
 
 nnoremap <leader>g :Ack! <c-r>=expand("<cword>")<cr><cr>
 " Bundle 'mileszs/ack.vim' >-----
-
-" Bundle 'majutsushi/tagbar' <-----
-nnoremap <leader>i :TagbarToggle<cr>
-" Bundle 'majutsushi/tagbar' >-----
 
 " Bundle 'LycosaExplorer' <-----
 nnoremap <S-b> :LycosaBufferExplorer<cr>
