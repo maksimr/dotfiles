@@ -69,6 +69,8 @@ set wildignore+=*.pyc          " Python byte code
 " https://github.com/karma-runner/karma/issues/199
 set backupcopy=yes
 
+let g:LycosaExplorerSuppressPythonWarning = 1
+
 " Not open error window when netrw
 " can not create folder
 let g:netrw_use_errorwindow    = 0
