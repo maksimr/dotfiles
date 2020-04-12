@@ -249,9 +249,6 @@ call vundle#rc()
   " подсветка для dart-а
   Bundle 'bartlomiejdanek/vim-dart'
   Bundle 'dart-lang/dart-vim-plugin'
-  " Ставит пузу на повторное использование
-  " клавиш паразитов jklh
-  Bundle 'takac/vim-hardtime'
   " Zeavim allows to use Zeal documentation browser directly from Vim
   Bundle 'KabbAmine/zeavim.vim'
   Bundle 'mhinz/vim-startify'
