@@ -249,12 +249,6 @@ call vundle#rc()
   " подсветка для dart-а
   Bundle 'bartlomiejdanek/vim-dart'
   Bundle 'dart-lang/dart-vim-plugin'
-  " встроенный в vim browser
-  " sudo apt-get install w3m
-  " Bundle 'yuratomo/w3m.vim'
-  " Добавляет возможность оставлять заметки
-  " в vim-е
-  Bundle 'xolox/vim-notes'
   " Ставит пузу на повторное использование
   " клавиш паразитов jklh
   Bundle 'takac/vim-hardtime'
