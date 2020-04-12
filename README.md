@@ -1,4 +1,4 @@
-###• Dotfile
+### Dotfile
 
 A file that is not visible by default to normal
 directory-browsing tools (on Unix, files named with a leading dot are,
@@ -34,18 +34,18 @@ Load and run.
 
 
 
-###• Installation
+### Installation
 
 To install you could use the install script (requires Git) using Wget:
 
   ```wget -qO- https://raw.github.com/maksimr/dotfiles/master/install.sh | bash```
 
 
-###• Manual install
+### Manual install
 
 If you have git installed, then just clone it:
 
-  ```git clone git://github.com/maksimr/dotfiles.git ~/.dotfiles```
+  ```git clone --recurse-submodules git://github.com/maksimr/dotfiles.git ~/.dotfiles```
 
 To activate dotfile, you need to source it from your bash shell
 
@@ -55,7 +55,7 @@ You can add this line to your '.bashrc' or '.zshrc' file to have it automaticall
 
 
 
-###• Usage
+### Usage
 
 Add symlink to home folder from dotfiles directory:
 
@@ -92,7 +92,7 @@ Run tests for dotfiles manager:
   ```dot test```
 
 
-###• What I use
+### What I use
 
   - ✗ vim
   - ✗ zsh
@@ -107,7 +107,7 @@ Run tests for dotfiles manager:
 
 For more information see `export` directory
 
-###• Test
+### Test
 
 Tests writing on 'bats'. You may install 'grunt' and run 'grunt test' for
 running tests.
