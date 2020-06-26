@@ -5,13 +5,4 @@ inoremap jk <esc>
 " везде не только в виме)
 vnoremap <C-c> "+yy
 
-" <c-r>|<c-p> search in command line
-cnoremap <C-r> <Up>
-cnoremap <C-p> <Down>
-
-" wildmenu <Left> и <Right> внутри wildmenu перемещают
-" курсор, вместо перехода к следующему совпадению
-cnoremap <Left> <Space><BS><Left>
-cnoremap <Right> <Space><BS><Right>
-
 set surround
