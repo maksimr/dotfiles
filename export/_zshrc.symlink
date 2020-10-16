@@ -537,6 +537,14 @@ export GOPATH=$HOME/.go
 export ANDROID_HOME=/usr/local/opt/android-sdk
 export CHROME_BIN="chromium-browser"
 
+# https://minikube.sigs.k8s.io/docs/commands/completion/
+if [ -f "$HOME/.minikube-completion" ]; then
+  . $HOME/.minikube-completion
+fi
+
+# https://kubernetes.io/docs/reference/kubectl/cheatsheet/#zsh
+[[ $commands[kubectl]  ]] && source <(kubectl completion zsh)
+
 # load .zshrc.local
 if [ -f "$HOME/.zshrc.local" ]; then
   . $HOME/.zshrc.local
