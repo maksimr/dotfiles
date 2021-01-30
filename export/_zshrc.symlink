@@ -535,7 +535,6 @@ fi
 
 export GOPATH=$HOME/.go
 export ANDROID_HOME=/usr/local/opt/android-sdk
-export CHROME_BIN="chromium-browser"
 
 # https://minikube.sigs.k8s.io/docs/commands/completion/
 if [ -f "$HOME/.minikube-completion" ]; then
