@@ -49,7 +49,7 @@ set statusline=%<%f%h%m%r%{fugitive#statusline()}\ %b\ %{&encoding}\ 0x\ \ %l,%c
 set smartindent          " Умный автоматический отступ (ai - обычный автоматичексий отступ)
 set smarttab             " При нажатии в начале строки TAB добавляет отступ равный shiftwidth
 set et                   " Включить автозамену таба на пробелы
-set shiftwidth=4         " Устоновить ширину сдвига >
+set shiftwidth=2         " Устоновить ширину сдвига >
 set listchars=tab:\··     " Показываем табы в начале строки точками
 set listchars+=trail:\␣   " Показываем пробел в конце строки как ␣
 set list
@@ -176,37 +176,14 @@ call vundle#rc()
   " sublime
   Bundle 'terryma/vim-multiple-cursors'
 
-  " зависимости для vim-snipmate
-  Bundle 'MarcWeber/vim-addon-mw-utils'
-  Bundle 'tomtom/tlib_vim'
-  " шаблоны от honza, так как сам vim-snipmate не содержит шаблонов
-  Bundle 'honza/vim-snippets'
-  " сам vim-snipmate
-  Bundle 'garbas/vim-snipmate'
-
 " CSS/SASS
   Bundle 'vim-scripts/SAS-Syntax'
 
-" Ruby/Rails
-  Bundle 'vim-ruby/vim-ruby'
-
 " Javascript
   Bundle 'maksimr/vim-jsbeautify'
-  Bundle 'maksimr/vim-karma'
   Bundle 'einars/js-beautify'
   Bundle 'metakirby5/codi.vim'
-  " Необходимо дополнительно установить в системе ctags
-  " sudo apt-get install exuberant-ctags
-  " для javascript можно установить jsctags (https://github.com/mozilla/doctorjs)
-  Bundle 'majutsushi/tagbar'
-  " расширенный taglist.vim с улучшенной поддержкой javascript
-  " также зависит от jsctags
-  "Bundle 'int3/vim-taglist-plus'
-  " проверка синтаксиса и не только для javascript-а
-  Bundle 'scrooloose/syntastic'
-  " Autocompleter
-  Bundle 'Shougo/neocomplcache.vim'
-  Bundle 'Shougo/neosnippet'
+  Bundle 'ycm-core/YouCompleteMe'
 
   " Подсветка для javascript-а
   Bundle 'maksimr/vim-javascript'
@@ -234,8 +211,6 @@ call vundle#rc()
   " подсветка для dart-а
   Bundle 'bartlomiejdanek/vim-dart'
   Bundle 'dart-lang/dart-vim-plugin'
-  " Zeavim allows to use Zeal documentation browser directly from Vim
-  Bundle 'KabbAmine/zeavim.vim'
   Bundle 'mhinz/vim-startify'
   Bundle 'udalov/kotlin-vim'
   Bundle 'tpope/vim-projectionist'
@@ -252,15 +227,6 @@ if exists(':LuciusDark')
 endif
 colorscheme lucius         " Устанавливаем цветовую схему
 
-if !exists('g:vimrcps_loaded')
-    let g:snippets = {}
-    let g:snippets.scope_aliases = {}
-    let g:snippets.scope_aliases['javascript'] = "javascript,javascript_angular,javascript_jquery,javascript_jasmine"
-    let g:snippets.scope_aliases['html'] = "html,html_angular,html_bootstrap,html_bower"
-    let g:snippets.scope_aliases['yate'] = "yate,html,yate_nanoislands"
-    let g:snippets.scope_aliases['vim'] = "vim,vim_vspec"
-endif
-
 "  Bundle 'garbas/vim-snipmate'
 " переопределение основной клавиши
 " <esc> - Alt
@@ -276,10 +242,6 @@ endw
 imap <A-l> <Plug>snipMateNextOrTrigger
 smap <A-l> <Plug>snipMateNextOrTrigger
 set ttimeoutlen=50
-
-if !exists('g:vimrcps_loaded')
-    let g:snipMate = g:snippets
-endif
 
 "  Bundle 'kien/ctrlp.vim' <-----
 " ctrlp_cmd - Команда которая будет вызвана по умолчанию
@@ -322,9 +284,8 @@ let g:syntastic_enable_signs = 1    " красные метки на линия�
 let g:syntastic_error_symbol='✗'
 let g:syntastic_warning_symbol='⚠'
 let g:syntastic_auto_jump=0         " Не перескакиваем на ошибку автоматически
-let g:syntastic_javascript_checkers=["jshint", "eslint"]
+let g:syntastic_javascript_checkers=["eslint"]
 let g:syntastic_html_checkers=[]
-let g:syntastic_javascript_jshint_args = '--config '.expand("~/.jshintrc")
 let g:syntastic_dart_analyzer_conf='-out /tmp/'
 let g:syntastic_dart_dartanalyzer_args = "--strong"
 
@@ -417,15 +378,9 @@ endfunction
 
 augroup plugin_syntastic
     autocmd!
-    autocmd BufEnter * call UpdateJsHintConf()
-    autocmd BufEnter *.jsx let g:syntastic_javascript_checkers=["jsxhint"]
     autocmd BufEnter *.js call s:UpdateEslintExec()
     autocmd BufEnter *.js call s:AddNodeModuleToPath()
-
-    autocmd BufNewFile,BufReadPre *.js  let b:syntastic_checkers =
-                \ HasConfig('.eslintrc', expand('<amatch>:h')) ? ['eslint'] :
-                \ HasConfig('.jshintrc', expand('<amatch>:h')) ? ['jshint'] :
-                \     ['jshint']
+    autocmd BufNewFile,BufReadPre *.js  let b:syntastic_checkers = ['eslint']
 augroup END
 
 "  Bundle 'Lokaltog/vim-easymotion' <-----
@@ -443,7 +398,6 @@ nnoremap <Leader>vpl :VimuxRunLastCommand<CR>
 "  Bundle 'benmills/vimux' >-----
 
 "  Bundle 'tpope/vim-dispatch' <-----
-nnoremap <Leader>d :Dispatch<space>
 nnoremap <Leader>vs :Start<space>
 "  Bundle 'tpope/vim-dispatch' >-----
 
@@ -456,7 +410,6 @@ else
     let g:ackprg="grep"
 endif
 
-nnoremap <leader>g :Ack! <c-r>=expand("<cword>")<cr><cr>
 " Bundle 'mileszs/ack.vim' >-----
 
 " Bundle 'LycosaExplorer' <-----
@@ -465,7 +418,6 @@ set hidden
 " Bundle 'LycosaExplorer' >-----
 
 " Bundle 'Lokaltog/vim-powerline' <-----
-let g:Powerline_symbols = 'unicode'
 set encoding=utf-8
 " Bundle 'Lokaltog/vim-powerline' >-----
 
@@ -473,7 +425,7 @@ set encoding=utf-8
 augroup plugin_vim_jsbeautify
     autocmd!
 
-    autocmd FileType javascript nnoremap <buffer>  <c-f> :call JsBeautify()<cr>
+    autocmd FileType javascript nnoremap <buffer>  <c-f> :call JsxBeautify()<cr>
     autocmd BufEnter *.jsx nnoremap <buffer>  <c-f> :call JsxBeautify()<cr>
     autocmd BufEnter *.json nnoremap <buffer>  <c-f> :call JsonBeautify()<cr>
     autocmd FileType html nnoremap <buffer> <c-f> :call HtmlBeautify()<cr>
@@ -487,16 +439,6 @@ augroup plugin_vim_jsbeautify
 augroup END
 " Bundle 'maksimr/vim-jsbeautify' >-----
 
-" Bundle 'maksimr/vim-karm' <-----
-augroup plugin_vim_karma
-    autocmd!
-
-    autocmd FileType javascript nnoremap <buffer>  <Leader>ks :call RunNearestSpec()<cr>
-    autocmd FileType javascript nnoremap <buffer>  <Leader>kd :call RunNearestTestSuite()<cr>
-    autocmd FileType javascript nnoremap <buffer>  <Leader>kf :call RunCurrentSpecFile()<cr>
-    autocmd FileType javascript nnoremap <buffer>  <Leader>ka :call RunAllSpecs()<cr>
-augroup END
-" Bundle 'maksimr/vim-karm' >-----
 
 " Bundle 'maksimr/vim-translator' <-----
 " Настройка переводчика
@@ -570,60 +512,6 @@ command! -nargs=+ GitGrep execute 'let &grepprg="git grep --no-color" | silent g
 nnoremap <Leader>gg :GitGrep <c-r>=expand("<cword>")<cr>
 " Bundle 'tpope/vim-fugitive' >-----
 
-" Bundle 'Shougo/neocomplcache.vim' <-----
-let g:neocomplcache_enable_at_startup = 1
-let g:neocomplcache_enable_ignore_case = 0
-let g:neocomplcache_enable_smart_case = 0
-let g:neocomplcache_min_keyword_length = 2
-let g:neocomplcache_min_syntax_length = 1
-call neocomplcache#custom_source('buffer_complete', 'rank', 100)
-" Complete from all buffers
-let g:neocomplcache_same_filetype_lists = {}
-let g:neocomplcache_same_filetype_lists._ = '_'
-" Play nice with SuperTab and snipMate
-let g:neocomplcache_disable_auto_complete = 0
-" https://github.com/guns/vim-clojure-static/issues/32
-let g:neocomplcache_force_overwrite_completefunc = 1
-
-augroup plugin_neocomplcache
-    autocmd!
-
-    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-    autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType javascript setlocal omnifunc=tern#Complete
-augroup END
-" Bundle 'Shougo/neocomplcache.vim' >-----
-
-" Bundle 'Shougo/neosnippet' <-----
-" Enable snipMate compatibility feature.
-let g:neosnippet#enable_snipmate_compatibility = 1
-let g:neosnippet#enable_preview = 0
-set completeopt-=preview
-
-if !exists('g:vimrcps_loaded')
-    let g:neosnippet#scope_aliases = {}
-    let g:neosnippet#scope_aliases = g:snippets.scope_aliases
-endif
-
-let g:neosnippet#disable_runtime_snippets = { '_' : 1 }
-
-" Tell Neosnippet about the other snippets
-let g:neosnippet#snippets_directory=['~/.vim/bundle/vim-javascript/snippets', '~/.vim/bundle/vim-snippets/snippets', '~/.vim/bundle/vim-yate/snippets']
-" Plugin key-mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
-" SuperTab like snippets behavior.
-augroup plugin_neosnippet
-    autocmd!
-
-    autocmd VimEnter * imap <expr><TAB> neosnippet#expandable() && !pumvisible() ?  "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<Plug>SuperTabForward"
-    autocmd VimEnter * smap <expr><TAB> neosnippet#expandable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<Plug>SuperTabForward"
-    autocmd VimEnter * imap <expr><A-l> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ? "\<C-x><C-x><A-l>" : "\<Plug>snipMateNextOrTrigger")
-    autocmd VimEnter * smap <expr><A-l> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<A-l>"
-    autocmd InsertLeave * :NeoSnippetClearMarkers
-augroup END
-" Bundle 'Shougo/neosnippet' >-----
 
 " Clojure <-----
 "
@@ -743,23 +631,6 @@ augroup filetype_ruby
     autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete
 augroup END
 
-augroup filetype_html
-    autocmd!
-
-    autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
-augroup END
-
-augroup filetype_xml
-    autocmd!
-    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-augroup END
-
-augroup filetype_css
-    autocmd!
-
-    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-augroup END
-
 augroup filetype_txt
     autocmd!
 
@@ -780,6 +651,30 @@ augroup END
 match Error /\s\+$/
 " }}}
 
+
+nnoremap <C-b> :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap <leader><cr> :YcmCompleter FixIt<CR>
+nnoremap <leader>cf :YcmCompleter FixIt<CR>
+nnoremap <leader>d :YcmDiags<CR>
+nnoremap <leader>rr :YcmCompleter RefactorRename<Space>
+nnoremap <leader>U :YcmCompleter GoToReferences<CR>
+let g:ycm_error_symbol = '✗'
+let g:ycm_warning_symbol = '⚠'
+let g:ycm_echo_current_diagnostic = 1
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_open_loclist_on_ycm_diags = 1
+let g:ycm_always_populate_location_list = 1
+let g:ycm_add_preview_to_completeopt = 0
+let g:ycm_seed_identifiers_with_syntax = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_complete_in_comments = 1
+let g:ycm_complete_in_strings = 1
+set completeopt-=preview
+augroup vimrcgroup
+    autocmd!
+    autocmd BufEnter * silent EditorConfigReload
+    autocmd BufWritePost * silent YcmDiags
+augroup END
 
 if filereadable(expand("~/.vimlocal"))
   so ~/.vimlocal

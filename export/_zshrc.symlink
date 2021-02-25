@@ -331,7 +331,6 @@ function {
     # XXX TODO optimize loading nvm.sh
     # 10ms loading nvm.sh
     ~/.nvm/nvm.sh
-    ~/.dvm/dvm.sh
     ~/.vvm/etc/login
   )
 
@@ -564,3 +563,7 @@ export SDKMAN_DIR="/Users/maksimrv/.sdkman"
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+export DENO_INSTALL="$HOME/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+export DVM_DIR="$HOME/.dvm"
+export PATH="$DVM_DIR/bin:$PATH"

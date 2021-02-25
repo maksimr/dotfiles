@@ -1,8 +1,9 @@
 " выход в нормальный режим из insert mode
 inoremap jk <esc>
 
-" clipboard (копирование для во внешний буфер, позволяет использовать дальше
+" clipboard (копирование во внешний буфер, позволяет использовать дальше
 " везде не только в виме)
 vnoremap <C-c> "+yy
-
+set clipboard+=unnamed
 set surround
+set ideajoin
