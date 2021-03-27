@@ -673,8 +673,15 @@ set completeopt-=preview
 augroup vimrcgroup
     autocmd!
     autocmd BufEnter * silent EditorConfigReload
-    autocmd BufWritePost * silent YcmDiags
+    autocmd BufWritePost * call QuickfixWindow()
 augroup END
+
+function QuickfixWindow()
+    silent YcmDiags
+    if len(getloclist(0)) == 0
+      silent lcl
+    endif
+endfunction
 
 if filereadable(expand("~/.vimlocal"))
   so ~/.vimlocal
