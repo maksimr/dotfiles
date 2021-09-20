@@ -1,6 +1,3 @@
-[submodule "export/_config/awesome.symlink/vicious"]
-	path = export/_config/awesome.symlink/vicious
-	url = http://git.sysphere.org/vicious
 [submodule "export/_config/awesome.symlink/screenful"]
 	path = export/_config/awesome.symlink/screenful
 	url = https://github.com/dluksza/screenful.git
