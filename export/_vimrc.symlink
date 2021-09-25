@@ -4,7 +4,7 @@
 " curl https://raw.githubusercontent.com/kana/vim-version-manager/master/bin/vvm | python - setup
 " source ~/.vvm/etc/login
 " vvm update_itself
-" CFLAGS="-I$HOME/.rvm/rubies/$RUBY_VERSION/include/$RUBY_VERSION" LDFLAGS="-L$HOME/.rvm/rubies/$RUBY_VERSION/lib/" vvm use vimorg--v8.1.1373 --install --with-features=huge --enable-pythoninterp --with-python-config-dir=/usr/lib/python2.7/config --enable-rubyinterp
+" CFLAGS="-I$HOME/.rvm/rubies/$RUBY_VERSION/include/$RUBY_VERSION" LDFLAGS="-L$HOME/.rvm/rubies/$RUBY_VERSION/lib/" vvm use vimorg--v8.2.2825 --install --with-features=huge --enable-pythoninterp --with-python-config-dir=/usr/lib/python2.7/config --enable-rubyinterp
 
 
 " @description Базовые настройки
