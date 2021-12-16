@@ -128,3 +128,7 @@ set-option -g status-left-length 60
 set-option -g status-right-length 90
 set-option -g status-left "#(~/.tmux/tmux-powerline/powerline.sh left)"
 set-option -g status-right "#(~/.tmux/tmux-powerline/powerline.sh right)"
+
+# Fig Tmux Integration: Enabled
+source-file ~/.fig/tmux
+# End of Fig Tmux Integration

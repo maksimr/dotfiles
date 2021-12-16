@@ -182,7 +182,7 @@ call vundle#rc()
   Bundle 'maksimr/vim-jsbeautify'
   Bundle 'einars/js-beautify'
   Bundle 'metakirby5/codi.vim'
-  Bundle 'ycm-core/YouCompleteMe'
+  "Bundle 'ycm-core/YouCompleteMe'
 
   " Подсветка для javascript-а
   Bundle 'maksimr/vim-javascript'
@@ -503,7 +503,7 @@ let g:hardtime_default_on = 0
 nnoremap <Leader>gs :Gstatus<CR>
 nnoremap <Leader>gd :Gdiff<CR>
 nnoremap <Leader>gc :Gcommit
-nnoremap <Leader>gb :Gblame<CR>
+nnoremap <Leader>gb :Git blame<CR>
 nnoremap <Leader>gl :Glog<CR>
 nnoremap <Leader>gp :Git push<CR>
 
@@ -651,36 +651,36 @@ match Error /\s\+$/
 " }}}
 
 
-nnoremap <C-b> :YcmCompleter GoToDefinitionElseDeclaration<CR>
-nnoremap <leader><cr> :YcmCompleter FixIt<CR>
-nnoremap <leader>cf :YcmCompleter FixIt<CR>
-nnoremap <leader>d :YcmDiags<CR>
-nnoremap <leader>rr :YcmCompleter RefactorRename<Space>
-nnoremap <leader>U :YcmCompleter GoToReferences<CR>
-let g:ycm_error_symbol = '✗'
-let g:ycm_warning_symbol = '⚠'
-let g:ycm_echo_current_diagnostic = 1
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_open_loclist_on_ycm_diags = 1
-let g:ycm_always_populate_location_list = 1
-let g:ycm_add_preview_to_completeopt = 0
-let g:ycm_seed_identifiers_with_syntax = 1
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_complete_in_comments = 1
-let g:ycm_complete_in_strings = 1
-set completeopt-=preview
-augroup vimrcgroup
-    autocmd!
-    autocmd BufEnter * silent EditorConfigReload
-    autocmd BufWritePost * call QuickfixWindow()
-augroup END
+"nnoremap <C-b> :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"nnoremap <leader><cr> :YcmCompleter FixIt<CR>
+"nnoremap <leader>cf :YcmCompleter FixIt<CR>
+"nnoremap <leader>d :YcmDiags<CR>
+"nnoremap <leader>rr :YcmCompleter RefactorRename<Space>
+"nnoremap <leader>U :YcmCompleter GoToReferences<CR>
+"let g:ycm_error_symbol = '✗'
+"let g:ycm_warning_symbol = '⚠'
+"let g:ycm_echo_current_diagnostic = 1
+"let g:ycm_autoclose_preview_window_after_completion = 1
+"let g:ycm_open_loclist_on_ycm_diags = 1
+"let g:ycm_always_populate_location_list = 1
+"let g:ycm_add_preview_to_completeopt = 0
+"let g:ycm_seed_identifiers_with_syntax = 1
+"let g:ycm_collect_identifiers_from_comments_and_strings = 1
+"let g:ycm_complete_in_comments = 1
+"let g:ycm_complete_in_strings = 1
+"set completeopt-=preview
+"augroup vimrcgroup
+    "autocmd!
+    "autocmd BufEnter * silent EditorConfigReload
+    "autocmd BufWritePost * call QuickfixWindow()
+"augroup END
 
-function QuickfixWindow()
-    silent YcmDiags
-    if len(getloclist(0)) == 0
-      silent lcl
-    endif
-endfunction
+"function QuickfixWindow()
+    "silent YcmDiags
+    "if len(getloclist(0)) == 0
+      "silent lcl
+    "endif
+"endfunction
 
 if filereadable(expand("~/.vimlocal"))
   so ~/.vimlocal

@@ -1,3 +1,8 @@
+
+#### FIG ENV VARIABLES ####
+# Please make sure this block is at the start of this file.
+[ -s ~/.fig/shell/pre.sh ] && source ~/.fig/shell/pre.sh
+#### END FIG ENV VARIABLES ####
 # vim: ft=zsh
 #
 # For profiling loading time of zsh we can use
@@ -318,7 +323,7 @@ fi
 if [ "$(command -v curl)" ]
 then
   function gi() {
-    curl https://www.gitignore.io/api/$@
+    curl -sL https://www.gitignore.io/api/$@
   }
 fi
 
@@ -567,3 +572,9 @@ export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 export DVM_DIR="$HOME/.dvm"
 export PATH="$DVM_DIR/bin:$PATH"
+export PATH="$HOME/Developer/depot_tools:$PATH"
+
+#### FIG ENV VARIABLES ####
+# Please make sure this block is at the end of this file.
+[ -s ~/.fig/fig.sh ] && source ~/.fig/fig.sh
+#### END FIG ENV VARIABLES ####
