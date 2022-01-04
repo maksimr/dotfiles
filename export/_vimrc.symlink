@@ -194,6 +194,7 @@ call plug#begin()
   nmap <silent> gy <Plug>(coc-type-definition)
   nmap <silent> gi <Plug>(coc-implementation)
   nmap <silent> gr <Plug>(coc-references)
+  nmap <silent> gc <Plug>(coc-rename)
 
   Plug 'maksimr/vim-javascript'
   Plug 'rosstimson/bats.vim', { 'for': 'bat' }
