@@ -117,7 +117,14 @@ call plug#begin()
   Plug 'airblade/vim-gitgutter'
   Plug 'mileszs/ack.vim'
   Plug 'vim-scripts/The-NERD-Commenter'
+
   Plug 'Raimondi/delimitMate'
+  fun! NoAutoIndent()
+    :DelimitMateSwitch
+    setl noai nocin nosi inde=
+  endfun
+  command! NoAutoIndent call NoAutoIndent()
+
   Plug 'mattn/emmet-vim'
   Plug 'tpope/vim-eunuch'
   Plug 'tpope/vim-surround'
@@ -155,7 +162,13 @@ call plug#begin()
   Plug 'vim-scripts/paredit.vim', {'for': 'clojure'}
   Plug 'kana/vim-vspec'
   Plug 'tmhedberg/matchit'
+
   Plug 'editorconfig/editorconfig-vim'
+  augroup vimrcgroup
+      autocmd!
+      autocmd BufEnter * silent EditorConfigReload
+  augroup END
+
   Plug 'mhinz/vim-startify'
   Plug 'udalov/kotlin-vim'
   Plug 'tpope/vim-projectionist'
@@ -466,96 +479,32 @@ let g:gitgutter_max_signs=5000
 
 autocmd BufNewFile,BufRead *.gradle setf groovy
 
-
-" @description Различное, настройки привязок к клавишам, расширение и т.д.
-" @type misc
-" 2012-04-22
-" Need Refactoring!!! {{{
-" spell checker
-fun! SpellCheckerToggle()
-  if &spell
-    set nospell
-    iunmap <c-l>
-    return
-  endif
-
-  set spelllang=ru,en
-  set spell
-  " По <CTRL-L> заменяем неправильное слово на первое из предложенных
-  " в списке suggest
-  imap <c-l> <c-g>u<Esc>[s1z=<Esc>gi
-endfun
-
-nnoremap <leader>c :call SpellCheckerToggle()<cr>
-
-" set no autoindent
-fun! NoAutoIndent()
-  :DelimitMateSwitch
-  setl noai nocin nosi inde=
-endfun
-
-command! NoAutoIndent call NoAutoIndent()
-"}}}
-
-
-" @desc Global Mappings!
-" Mapping --- {{{
 nnoremap <c-w>" :belowright split %<cr>
-" Indentation(formating)
 nnoremap <s-f> mngg=G`n
-" Поиск и замена слова под курсором
 nnoremap \ff :vim /\<<c-r>=expand("<cword>")<cr>\>/ **/*.
 nnoremap \s :%s/\<<c-r>=expand("<cword>")<cr>\>/
-" Увеличивает и уменьшает ширину окна
-" <esc> - ALT, потому что ALT или META клавиши не всегда поддерживаются
 nnoremap <esc>. :vertical res +10<cr>
 nnoremap <esc>, :vertical res -10<cr>
-" tags/ctags/jsctags
-" select tag from list
 nnoremap <leader>s g]
-" go first matched tag
 nnoremap <leader>o <C-]>
-" открываем .vimrc
 nnoremap <leader>ev :vsplit ~/.vimrc<cr>
-" загружаем .vimrc в текущую сессию
 nnoremap <leader>sv :so ~/.vimrc<cr>
-" открывает новую вкладку
 nnoremap <leader>nt :tabnew %<cr>
 
-" выход в нормальный режим из insert mode
 inoremap jk <esc>
-
-" clipboard (копирование для во внешний буфер, позволяет использовать дальше
-" везде не только в виме)
 vnoremap <C-c> "+yy
-
 onoremap in( :<c-u>normal! f(vi(<cr>
 onoremap ip( :<c-u>normal! F)vi(<cr>
 onoremap an( :<c-u>normal! f(va(<cr>
 onoremap ap( :<c-u>normal! F)va(<cr>
-
-" <c-r>|<c-p> search in command line
 cnoremap <C-r> <Up>
 cnoremap <C-p> <Down>
-" wildmenu <Left> и <Right> внутри wildmenu перемещают
-" курсор, вместо перехода к следующему совпадению
 cnoremap <Left> <Space><BS><Left>
 cnoremap <Right> <Space><BS><Right>
-" }}}
-
 
 augroup filetype_javascript
     autocmd!
-    autocmd FileType javascript noremap <buffer> <LocalLeader>m :Dispatch node %<cr>
     autocmd BufWritePre *.js silent exec "%s/\\s\\+$//e"
-augroup END
-
-augroup filetype_ruby
-    autocmd!
-    autocmd BufRead,BufNewFile *.rb compiler ruby
-    autocmd BufRead,BufNewFile *_test.rb,test_*.rb compiler rubyunit
-    autocmd FileType ruby noremap <buffer> <F5> :make %<cr>
-    autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete
 augroup END
 
 augroup filetype_txt
@@ -568,13 +517,7 @@ augroup filetype_vim
     autocmd FileType vim setlocal foldmethod=marker
 augroup END
 
-
 match Error /\s\+$/
-
-augroup vimrcgroup
-    autocmd!
-    autocmd BufEnter * silent EditorConfigReload
-augroup END
 
 if filereadable(expand("~/.vimlocal"))
   so ~/.vimlocal
