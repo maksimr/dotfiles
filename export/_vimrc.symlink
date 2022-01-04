@@ -104,90 +104,39 @@ endif
 
 call plug#begin()
   Plug 'wincent/Command-T', { 'do': 'cd ruby/command-t/ext/command-t && { make clean; ruby extconf.rb && make }' }
-
-  "Leverage the power of Vim's compiler plugins without being bound by
-  "synchronicity. Kick off builds and test suites using one of several
-  "asynchronous adapters (including tmux, screen, iTerm, Windows, and a
-  "headless mode), and when the job completes, errors will be loaded and
-  "parsed automatically.
-  Plug 'tpope/vim-dispatch'
-
-  "Full path fuzzy file, buffer, mru, tag, ... finder for Vim.
-  Plug 'kien/ctrlp.vim'
-
-  " Метки
   Plug 'kshenoy/vim-signature'
-  " Историю изменений
   Plug 'sjl/gundo.vim'
   Plug 'thisivan/vim-bufexplorer'
-  " Навигация по коду используя буквы
   Plug 'Lokaltog/vim-easymotion'
-
-  " Пользовательские текстовые объекты для vim-а
   Plug 'kana/vim-textobj-user'
   Plug 'glts/vim-textobj-comment'
-
   Plug 'junegunn/fzf'
-
-" Themes
   Plug 'Lokaltog/vim-powerline'
   Plug 'maksimr/Lucius2'
-
-" Interface
   Plug 'tpope/vim-fugitive'
-  " Отображает какие строки изменились в левой колонке (git diff)
   Plug 'airblade/vim-gitgutter'
   Plug 'mileszs/ack.vim'
   Plug 'vim-scripts/The-NERD-Commenter'
-
   Plug 'Raimondi/delimitMate'
-
   Plug 'ervandew/supertab'
   Plug 'mattn/emmet-vim'
   Plug 'tpope/vim-eunuch'
-  " Позволяет обрамлять текстовые объекты кавычками,
-  " тегами, скобками
   Plug 'tpope/vim-surround'
-
-  " Множественный выбор и изменение как в
-  " sublime
   Plug 'terryma/vim-multiple-cursors'
 
-" CSS/SASS
-  Plug 'vim-scripts/SAS-Syntax'
-
-" Javascript
   Plug 'maksimr/vim-jsbeautify'
   Plug 'einars/js-beautify'
   Plug 'metakirby5/codi.vim'
   Plug 'ycm-core/YouCompleteMe'
-
-  " Подсветка для javascript-а
   Plug 'maksimr/vim-javascript'
-
-" Bash
-  " Подсветка для basts
-  Plug 'rosstimson/bats.vim'
-
-" Clojure
-  Plug 'guns/vim-clojure-static'
-  Plug 'tpope/vim-fireplace'
-  Plug 'kovisoft/slimv'
-  Plug 'vim-scripts/paredit.vim'
-
-" Vim
+  Plug 'rosstimson/bats.vim', { 'for': 'bat' }
+  Plug 'guns/vim-clojure-static', {'for': 'clojure'}
+  Plug 'tpope/vim-fireplace', {'for': 'clojure'}
+  Plug 'kovisoft/slimv', {'for': 'clojure'}
+  Plug 'vim-scripts/paredit.vim', {'for': 'clojure'}
   Plug 'kana/vim-vspec'
-
-" Other
-  " extended % matching for HTML
   Plug 'tmhedberg/matchit'
-  " need vim with +python feature
-  " define indent for different files
-  " http://editorconfig.org/
   Plug 'editorconfig/editorconfig-vim'
-  " подсветка для dart-а
-  Plug 'bartlomiejdanek/vim-dart'
-  Plug 'dart-lang/dart-vim-plugin'
   Plug 'mhinz/vim-startify'
   Plug 'udalov/kotlin-vim'
   Plug 'tpope/vim-projectionist'
