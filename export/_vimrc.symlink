@@ -118,7 +118,6 @@ call plug#begin()
   Plug 'mileszs/ack.vim'
   Plug 'vim-scripts/The-NERD-Commenter'
   Plug 'Raimondi/delimitMate'
-  Plug 'ervandew/supertab'
   Plug 'mattn/emmet-vim'
   Plug 'tpope/vim-eunuch'
   Plug 'tpope/vim-surround'
@@ -127,7 +126,27 @@ call plug#begin()
   Plug 'maksimr/vim-jsbeautify'
   Plug 'einars/js-beautify'
   Plug 'metakirby5/codi.vim'
-  Plug 'ycm-core/YouCompleteMe'
+
+  Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-json coc-tsserver'}
+  " Make <CR> auto-select the first completion item and notify coc.nvim to
+  " format on enter, <cr> could be remapped by other vim plugin
+  inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+  " Use tab for trigger completion with characters ahead and navigate
+  inoremap <silent><expr> <TAB>
+        \ pumvisible() ? "\<C-n>" :
+        \ <SID>check_back_space() ? "\<TAB>" :
+        \ coc#refresh()
+  inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+  function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
+  endfunction
+  nmap <silent> gd <Plug>(coc-definition)
+  nmap <silent> gy <Plug>(coc-type-definition)
+  nmap <silent> gi <Plug>(coc-implementation)
+  nmap <silent> gr <Plug>(coc-references)
+
   Plug 'maksimr/vim-javascript'
   Plug 'rosstimson/bats.vim', { 'for': 'bat' }
   Plug 'guns/vim-clojure-static', {'for': 'clojure'}
@@ -393,11 +412,6 @@ let g:delimitMate_expand_cr = 1 " create line break when pressing enter
 let g:delimitMate_expand_space = 1
 " Bundle 'Raimondi/delimitMate' >-----
 
-" Bundle 'ervandew/supertab' <-----
-" SuperTab completion fall-back
-let g:SuperTabDefaultCompletionType='<c-p>'
-" Bundle 'ervandew/supertab' >-----
-
 " Bundle 'marijnh/tern_for_vim' <-----
 augroup plugin_tern_for_vim
     autocmd!
@@ -530,19 +544,14 @@ cnoremap <Right> <Space><BS><Right>
 " }}}
 
 
-" @desc Autocommands!
-" Autocommands settings --- {{{
 augroup filetype_javascript
     autocmd!
-
     autocmd FileType javascript noremap <buffer> <LocalLeader>m :Dispatch node %<cr>
-    " В javascript файлах удаляем пробелы в конце строк при сохранении файла
     autocmd BufWritePre *.js silent exec "%s/\\s\\+$//e"
 augroup END
 
 augroup filetype_ruby
     autocmd!
-
     autocmd BufRead,BufNewFile *.rb compiler ruby
     autocmd BufRead,BufNewFile *_test.rb,test_*.rb compiler rubyunit
     autocmd FileType ruby noremap <buffer> <F5> :make %<cr>
@@ -551,55 +560,21 @@ augroup END
 
 augroup filetype_txt
     autocmd!
-
     autocmd FileType txt setlocal spell
 augroup END
 
 augroup filetype_vim
     autocmd!
-
     autocmd FileType vim setlocal foldmethod=marker
 augroup END
-" }}}
 
 
-" @desc Matches
-" {{{
-" Подсвечивает пробелы в конце строки как ошибку
 match Error /\s\+$/
-" }}}
 
-
-"nnoremap <C-b> :YcmCompleter GoToDefinitionElseDeclaration<CR>
-"nnoremap <leader><cr> :YcmCompleter FixIt<CR>
-"nnoremap <leader>cf :YcmCompleter FixIt<CR>
-"nnoremap <leader>d :YcmDiags<CR>
-"nnoremap <leader>rr :YcmCompleter RefactorRename<Space>
-"nnoremap <leader>U :YcmCompleter GoToReferences<CR>
-"let g:ycm_error_symbol = '✗'
-"let g:ycm_warning_symbol = '⚠'
-"let g:ycm_echo_current_diagnostic = 1
-"let g:ycm_autoclose_preview_window_after_completion = 1
-"let g:ycm_open_loclist_on_ycm_diags = 1
-"let g:ycm_always_populate_location_list = 1
-"let g:ycm_add_preview_to_completeopt = 0
-"let g:ycm_seed_identifiers_with_syntax = 1
-"let g:ycm_collect_identifiers_from_comments_and_strings = 1
-"let g:ycm_complete_in_comments = 1
-"let g:ycm_complete_in_strings = 1
-"set completeopt-=preview
-"augroup vimrcgroup
-    "autocmd!
-    "autocmd BufEnter * silent EditorConfigReload
-    "autocmd BufWritePost * call QuickfixWindow()
-"augroup END
-
-"function QuickfixWindow()
-    "silent YcmDiags
-    "if len(getloclist(0)) == 0
-      "silent lcl
-    "endif
-"endfunction
+augroup vimrcgroup
+    autocmd!
+    autocmd BufEnter * silent EditorConfigReload
+augroup END
 
 if filereadable(expand("~/.vimlocal"))
   so ~/.vimlocal
