@@ -7,29 +7,24 @@
 " brew install python@3.8
 " CFLAGS="-I$HOME/.rvm/rubies/$RUBY_VERSION/include/$RUBY_VERSION" LDFLAGS="-L$HOME/.rvm/rubies/$RUBY_VERSION/lib/" vvm use vimorg--v8.2.2825 --install --with-features=huge --enable-rubyinterp --enable-pythoninterp=yes --with-python-config-dir=/usr/lib/python2.7/config --enable-python3interp=yes --with-python3-config-dir=$(python3.8-config --configdir)
 
+set nocp                 " Turn off vi compatibility mode
+set noeb                 " Turn off error bell
+set novb                 " Turn off visual error bell
+set mouse=a              " Enable mouse
+set bs=2                 " Enable backspace
 
-" @description Базовые настройки
-" @type settings
-" 2012-04-22
-set nocp                 " Отключить режим совместимость с редактором VI
-set noeb                 " Отключить звонок об ошибке
-set novb                 " Отключить визуальный звонок об ошибке
-set mouse=a              " Включение мышки
-set bs=2                 " Чтобы работал backspace
+set guifont=Terminus\ 14 " Set font (sudo apt-get install xfonts-terminus)
+set t_Co=256             " Extended color support
 
-set guifont=Terminus\ 14 " Установить шрифт (sudo apt-get install xfonts-terminus)
-set t_Co=256             " Расширить поддержку цветов
+set cursorline           " Highlight current line
 
-set cursorline           " подсветка текущей строки
+set nu                   " Line number
+set numberwidth=3        " Line number width
 
-set nu                   " Нумерация строк
-set numberwidth=3        " Ширина колонки нумерации строк
-
-set lz                   " Ленивая перерисовка экрана при выполнении скриптов
-"set complete+=kspell     " Добавляем в автокомплит слова из словарей
+set lz
 set guioptions=a
-set guioptions-=T        " Скрыть панель в gui
-set guioptions-=r        " Убрать правый скролбар
+set guioptions-=T
+set guioptions-=r        " Remove right scrollbar
 
 "set spell                " Включить проверку арфографии
 
