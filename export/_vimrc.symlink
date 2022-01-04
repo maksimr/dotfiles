@@ -103,9 +103,6 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
 endif
 
 call plug#begin()
-
-" Vim utilites
-  Plug 'vim-scripts/LycosaExplorer'
   Plug 'wincent/Command-T', { 'do': 'cd ruby/command-t/ext/command-t && { make clean; ruby extconf.rb && make }' }
 
   "Leverage the power of Vim's compiler plugins without being bound by
