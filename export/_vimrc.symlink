@@ -219,8 +219,6 @@ call plug#end()
 
 colorscheme lucius
 
-"  Bundle 'garbas/vim-snipmate'
-" переопределение основной клавиши
 " <esc> - Alt
 let c='l'
 
@@ -229,57 +227,6 @@ while c <= 'z'
     exec "inoremap \e".c." <A-".c.">"
     let c = nr2char(1+char2nr(c))
 endw
-
-" CRAZYYYYYY <Alt>
-imap <A-l> <Plug>snipMateNextOrTrigger
-smap <A-l> <Plug>snipMateNextOrTrigger
-set ttimeoutlen=50
-
-"  Bundle 'kien/ctrlp.vim' <-----
-" ctrlp_cmd - Команда которая будет вызвана по умолчанию
-" 'CtrlPMixed' - искать все (внутри файлов, буферов и MRU файлах существующих
-" в этот момент)
-let g:ctrlp_cmd = 'CtrlPMixed'
-let ctrlp_regexp = 1 "Включаем по умолчанию RegExp режим
-let g:ctrlp_match_window_bottom = 1  " показывать окно совпадений внизу
-let g:ctrlp_match_window_reversed = 0 " показывать максимальное совпадение сверху
-let g:ctrlp_max_height = 10    " высота окна совпадений
-
-let g:ctrlp_working_path_mode = 'ra' " search for nearest ancestor like .git, .hg, and the directory of the current file
-let g:ctrlp_swDtch_buffer = 'ET'  " Переходим в файл если он уже открыт в любом окне
-let g:ctrlp_use_caching = 1    " включаем cache
-let g:ctrlp_clear_cache_on_exit = 0    " Не чистим cache после выхода из vim-а
-let g:ctrlp_show_hidden = 1    " показываем скрытые (dotfiles) файлы
-let g:ctrlp_mruf_max = 250     " number of recently opened files
-"let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
-"let g:ctrlp_user_command = 'find %s -type f'
-nnoremap <c-l> :CtrlPLine<CR>
-nnoremap <LEADER>u :CtrlPUndo<CR>
-" TODO: add javascript and some other languages who doesn't have ctags support
-" coffee: https://gist.github.com/michaelglass/5210282
-" go: http://stackoverflow.com/a/8236826/462233
-" objc:  http://www.gregsexton.org/2011/04/objective-c-exuberant-ctags-regex/
-" rust: https://github.com/mozilla/rust/blob/master/src/etc/ctags.rust
-let g:ctrlp_buftag_types = {
-            \ 'go'         : '--language-force=go --golang-types=ftv',
-            \ 'coffee'     : '--language-force=coffee --coffee-types=cmfvf',
-            \ 'markdown'   : '--language-force=markdown --markdown-types=hik',
-            \ 'objc'       : '--language-force=objc --objc-types=mpci',
-            \ 'rc'         : '--language-force=rust --rust-types=fTm'
-            \ }
-"  Bundle 'kien/ctrlp.vim' >-----
-
-"  Bundle 'scrooloose/syntastic'
-let g:syntastic_auto_loc_list = 1   " Открываем и закрываем список с ошибками автоматически.
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_enable_signs = 1    " красные метки на линиях
-let g:syntastic_error_symbol='✗'
-let g:syntastic_warning_symbol='⚠'
-let g:syntastic_auto_jump=0         " Не перескакиваем на ошибку автоматически
-let g:syntastic_javascript_checkers=["eslint"]
-let g:syntastic_html_checkers=[]
-let g:syntastic_dart_analyzer_conf='-out /tmp/'
-let g:syntastic_dart_dartanalyzer_args = "--strong"
 
 " Если находимся внутри 'quickfix'
 " тогда вызываем lclose иначе quit
