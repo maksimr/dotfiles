@@ -104,34 +104,75 @@ endif
 
 call plug#begin()
   Plug 'wincent/Command-T', { 'do': 'cd ruby/command-t/ext/command-t && { make clean; ruby extconf.rb && make }' }
+  nnoremap <leader>, :CommandT<cr>
+  let g:CommandTFileScanner="git"
+
   Plug 'kshenoy/vim-signature'
   Plug 'sjl/gundo.vim'
+
   Plug 'thisivan/vim-bufexplorer'
+  nnoremap <C-e> :Explore<cr>
+  nnoremap <S-e> :BufExplorer<cr>
+
   Plug 'Lokaltog/vim-easymotion'
+  let g:EasyMotion_leader_key = "<space>"
+
   Plug 'kana/vim-textobj-user'
   Plug 'glts/vim-textobj-comment'
   Plug 'junegunn/fzf'
+
   Plug 'Lokaltog/vim-powerline'
+  set encoding=utf-8
+
   Plug 'maksimr/Lucius2'
+
   Plug 'tpope/vim-fugitive'
+  nnoremap <Leader>gs :Gstatus<CR>
+  nnoremap <Leader>gd :Gdiff<CR>
+  nnoremap <Leader>gc :Gcommit
+  nnoremap <Leader>gb :Git blame<CR>
+  nnoremap <Leader>gl :Glog<CR>
+  nnoremap <Leader>gp :Git push<CR>
+
+  command! -nargs=+ GitGrep execute 'let &grepprg="git grep --no-color" | silent grep! '.<q-args>.' | redraw! | set grepprg& | copen'
+  nnoremap <Leader>gg :GitGrep <c-r>=expand("<cword>")<cr>
+
   Plug 'airblade/vim-gitgutter'
-  Plug 'mileszs/ack.vim'
+  let g:gitgutter_max_signs=5000
+
   Plug 'vim-scripts/The-NERD-Commenter'
 
   Plug 'Raimondi/delimitMate'
+  let g:delimitMate_expand_cr = 1
+  let g:delimitMate_expand_space = 1
   fun! NoAutoIndent()
     :DelimitMateSwitch
     setl noai nocin nosi inde=
   endfun
   command! NoAutoIndent call NoAutoIndent()
 
-  Plug 'mattn/emmet-vim'
   Plug 'tpope/vim-eunuch'
   Plug 'tpope/vim-surround'
   Plug 'terryma/vim-multiple-cursors'
 
   Plug 'maksimr/vim-jsbeautify'
   Plug 'einars/js-beautify'
+  augroup plugin_vim_jsbeautify
+      autocmd!
+
+      autocmd FileType javascript nnoremap <buffer>  <c-f> :call JsxBeautify()<cr>
+      autocmd BufEnter *.jsx nnoremap <buffer>  <c-f> :call JsxBeautify()<cr>
+      autocmd BufEnter *.json nnoremap <buffer>  <c-f> :call JsonBeautify()<cr>
+      autocmd FileType html nnoremap <buffer> <c-f> :call HtmlBeautify()<cr>
+      autocmd FileType css nnoremap <buffer> <c-f> :call CSSBeautify()<cr>
+
+      autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
+      autocmd BufEnter *.jsx vnoremap <buffer>  <c-f> :call RangeJsxBeautify()<cr>
+      autocmd BufEnter *.json vnoremap <buffer>  <c-f> :call RangeJsonBeautify()<cr>
+      autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
+      autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
+  augroup END
+
   Plug 'metakirby5/codi.vim'
 
   Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-json coc-tsserver'}
@@ -172,6 +213,7 @@ call plug#begin()
   Plug 'mhinz/vim-startify'
   Plug 'udalov/kotlin-vim'
   Plug 'tpope/vim-projectionist'
+  nnoremap <Leader>a :A<cr>
 call plug#end()
 
 
@@ -333,149 +375,10 @@ augroup plugin_syntastic
     autocmd BufNewFile,BufReadPre *.js  let b:syntastic_checkers = ['eslint']
 augroup END
 
-"  Bundle 'Lokaltog/vim-easymotion' <-----
-let g:EasyMotion_leader_key = "<space>"
-"  Bundle 'Lokaltog/vim-easymotion' >-----
-"
-"  Bundle 'command-t' <-----
-nnoremap <leader>, :CommandT<cr>
-let g:CommandTFileScanner="git"
-"  Bundle 'command-t' >-----
 
-"  Bundle 'benmills/vimux' <-----
-nnoremap <Leader>vp :VimuxPromptCommand<CR>
-nnoremap <Leader>vpl :VimuxRunLastCommand<CR>
-"  Bundle 'benmills/vimux' >-----
-
-"  Bundle 'tpope/vim-dispatch' <-----
-nnoremap <Leader>vs :Start<space>
-"  Bundle 'tpope/vim-dispatch' >-----
-
-" Bundle 'mileszs/ack.vim' <-----
-" Ack заменяем команду с ack на ack-grep
-if executable('ack-grep')
-    let g:ackprg="ack-grep -H --nocolor --nogroup --column"
-    set grepprg=ack-grep\ -a
-else
-    let g:ackprg="grep"
-endif
-
-" Bundle 'mileszs/ack.vim' >-----
-
-" Bundle 'LycosaExplorer' <-----
-nnoremap <S-b> :LycosaBufferExplorer<cr>
-set hidden
-" Bundle 'LycosaExplorer' >-----
-
-" Bundle 'Lokaltog/vim-powerline' <-----
-set encoding=utf-8
-" Bundle 'Lokaltog/vim-powerline' >-----
-
-" Bundle 'maksimr/vim-jsbeautify' <-----
-augroup plugin_vim_jsbeautify
-    autocmd!
-
-    autocmd FileType javascript nnoremap <buffer>  <c-f> :call JsxBeautify()<cr>
-    autocmd BufEnter *.jsx nnoremap <buffer>  <c-f> :call JsxBeautify()<cr>
-    autocmd BufEnter *.json nnoremap <buffer>  <c-f> :call JsonBeautify()<cr>
-    autocmd FileType html nnoremap <buffer> <c-f> :call HtmlBeautify()<cr>
-    autocmd FileType css nnoremap <buffer> <c-f> :call CSSBeautify()<cr>
-
-    autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
-    autocmd BufEnter *.jsx vnoremap <buffer>  <c-f> :call RangeJsxBeautify()<cr>
-    autocmd BufEnter *.json vnoremap <buffer>  <c-f> :call RangeJsonBeautify()<cr>
-    autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
-    autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
-augroup END
-" Bundle 'maksimr/vim-jsbeautify' >-----
-
-
-" Bundle 'maksimr/vim-translator' <-----
-" Настройка переводчика
-" Устанавливаем язык для переводчика (vim-gtranslate)
-" Устанавливаем кнопку для перевода в визуальном режиме (vim-gtranslate)
-let g:goog_user_conf = {'langpair' : 'en|ru', 'v_key': 'T', 'cmd': 'node'}
-nnoremap g; :Translate<space>
-" Bundle 'maksimr/vim-translator' >-----
-
-" Bundle 'thisivan/vim-bufexplorer' <----
-" открывает окно с текущей директорией
-nnoremap <C-e> :Explore<cr>
-nnoremap <S-e> :BufExplorer<cr>
-" Bundle 'thisivan/vim-bufexplorer' >----
-
-" Bundle 'mattn/emmet-vim' <-----
-let g:user_zen_settings = { 'php' : { 'extends' : 'html', 'filters' : 'c', }, 'xml' : { 'extends' : 'html', }, 'haml' : { 'extends' : 'html', 'filters' : 'haml' } }
-let g:user_zen_leader_key = '<c-y>' " Устанавливаем основную комбинацию клавиш (zencoding-vim)
-" Bundle 'mattn/emmet-vim' >-----
-
-" Bundle 'xolox/vim-session' <-----
-let g:session_autosave = 'yes'
-let g:session_autoload = 'yes'
-let g:session_default_to_last = 1
-
-nnoremap <Leader>ss :SaveSession<space>
-nnoremap <Leader>sd :DeleteSession<space>
-nnoremap <Leader>so :OpenSession<space>
-nnoremap <Leader>sc :CloseSession<Enter>
-" Bundle 'xolox/vim-session' >-----
-
-" Bundle 'Raimondi/delimitMate' <-----
-let g:delimitMate_expand_cr = 1 " create line break when pressing enter
-let g:delimitMate_expand_space = 1
-" Bundle 'Raimondi/delimitMate' >-----
-
-" Bundle 'marijnh/tern_for_vim' <-----
-augroup plugin_tern_for_vim
-    autocmd!
-
-    autocmd FileType javascript noremap <buffer>  <LocalLeader>tp :TernDef<cr>
-    autocmd FileType javascript noremap <buffer>  <LocalLeader>tr :TernRefs<cr>
-    autocmd FileType javascript noremap <buffer>  <LocalLeader>tpp :TernDefPreview<cr>
-    autocmd FileType javascript noremap <buffer>  <LocalLeader>trr :TernRename<cr>
-    autocmd FileType javascript noremap <buffer>  <LocalLeader>tt :TernType<cr>
-augroup END
-" Bundle 'marijnh/tern_for_vim' >-----
-
-" Bundle 'xolox/vim-notes' <-----
-let g:notes_directories = ['~/Documents/Notes']
-" Bundle 'xolox/vim-notes' >-----
-
-" Bundle 'takac/vim-hardtime' <-----
-let g:hardtime_default_on = 0
-" Bundle 'takac/vim-hardtime' >-----
-
-" Bundle 'tpope/vim-fugitive' <-----
-nnoremap <Leader>gs :Gstatus<CR>
-nnoremap <Leader>gd :Gdiff<CR>
-nnoremap <Leader>gc :Gcommit
-nnoremap <Leader>gb :Git blame<CR>
-nnoremap <Leader>gl :Glog<CR>
-nnoremap <Leader>gp :Git push<CR>
-
-command! -nargs=+ GitGrep execute 'let &grepprg="git grep --no-color" | silent grep! '.<q-args>.' | redraw! | set grepprg& | copen'
-nnoremap <Leader>gg :GitGrep <c-r>=expand("<cword>")<cr>
-" Bundle 'tpope/vim-fugitive' >-----
-
-
-" Clojure <-----
-"
-" How install lein-swank(for lein2.0):
-"     You should put lein-swank plugin version `1.4.5` or above
-"     to you profiles.clj(./lein/profiles.clj) and run `lein`:
-"     {:user {:plugins [ [lein-swank '1.4.5'] ]}}
 let g:slimv_swank_clojure = '!lein swank &'
 let g:slimv_leader = '\'
 let g:vimrcps_loaded = 1
-" Clojure >-----
-
-" tpope/vim-projectionist <-----
-nnoremap <Leader>a :A<cr>
-" tpope/vim-projectionist >-----
-
-" airblade/vim-gitgutter <-----
-let g:gitgutter_max_signs=5000
-" airblade/vim-gitgutter >-----
 
 autocmd BufNewFile,BufRead *.gradle setf groovy
 
