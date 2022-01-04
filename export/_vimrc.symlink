@@ -94,138 +94,121 @@ set suffixesadd +=.js
 "http://arjanvandergaag.nl/blog/navigating-project-files-with-vim.html
 set includeexpr=substitute(substitute(v:fname,'^.','\\l\\0',''),'\\(\\u\\l\\+\\\|\\l\\+\\)\\(\\u\\)','\\l\\1-\\l\\2','g')
 
-set rtp+=~/.vim/bundle/Vundle.vim            " Необходимо для vundle
-
 syn on                     " Включаем синтаксис
-filetype off               " Требуется установить в off для vundle
 filetype plugin indent on  " Для некоторых типов файлов настройки отступов были перенесены из plugin в indent. Поэтому не забываем включить его
 
 if system('uname -s') == "Darwin\n"
   set clipboard=unnamed " Копирование в сиситемный clipboard по нажатию на y(yank)
 endif
 
-" Менеджер пакетов для vim (vundle [запускается :BundleInstall])
-call vundle#rc()
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-
-" @description Плагины для vim-а
-" @type plugins
-" 2012-04-22
-
+call plug#begin()
 
 " Vim utilites
-  " Загрузка плагинов
-  Bundle 'gmarik/Vundle.vim'
-  " Интерфейс для работы с tmux-ом
-  " из vim-а
-  Bundle 'benmills/vimux'
   " Работа с файлами в буфере
-  Bundle 'LycosaExplorer'
+  Plug 'vim-scripts/LycosaExplorer'
   " Поиск файлов
   " Необходимо дополнительно установить C-расширение
   "   cd ~/.vim/bundle/Command-T/ruby/command-t/ext/command-t
   "   ruby extconf.rb
   "   make
-  Bundle 'wincent/Command-T'
+  Plug 'wincent/Command-T'
 
   "Leverage the power of Vim's compiler plugins without being bound by
   "synchronicity. Kick off builds and test suites using one of several
   "asynchronous adapters (including tmux, screen, iTerm, Windows, and a
   "headless mode), and when the job completes, errors will be loaded and
   "parsed automatically.
-  Bundle 'tpope/vim-dispatch'
+  Plug 'tpope/vim-dispatch'
 
   "Full path fuzzy file, buffer, mru, tag, ... finder for Vim.
-  Bundle 'kien/ctrlp.vim'
+  Plug 'kien/ctrlp.vim'
 
   " Метки
-  Bundle 'kshenoy/vim-signature'
+  Plug 'kshenoy/vim-signature'
   " Историю изменений
-  Bundle 'sjl/gundo.vim'
-  Bundle 'thisivan/vim-bufexplorer'
+  Plug 'sjl/gundo.vim'
+  Plug 'thisivan/vim-bufexplorer'
   " Навигация по коду используя буквы
-  Bundle 'Lokaltog/vim-easymotion'
+  Plug 'Lokaltog/vim-easymotion'
 
   " Пользовательские текстовые объекты для vim-а
-  Bundle 'kana/vim-textobj-user'
-  Bundle 'glts/vim-textobj-comment'
+  Plug 'kana/vim-textobj-user'
+  Plug 'glts/vim-textobj-comment'
 
-  Bundle 'junegunn/fzf'
+  Plug 'junegunn/fzf'
 
 " Themes
-  Bundle 'Lokaltog/vim-powerline'
-  Bundle 'maksimr/Lucius2'
+  Plug 'Lokaltog/vim-powerline'
+  Plug 'maksimr/Lucius2'
 
 " Interface
-  Bundle 'tpope/vim-fugitive'
+  Plug 'tpope/vim-fugitive'
   " Отображает какие строки изменились в левой колонке (git diff)
-  Bundle 'airblade/vim-gitgutter'
-  Bundle 'mileszs/ack.vim'
-  Bundle 'The-NERD-Commenter'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'mileszs/ack.vim'
+  Plug 'vim-scripts/The-NERD-Commenter'
 
-  Bundle 'Raimondi/delimitMate'
+  Plug 'Raimondi/delimitMate'
 
-  Bundle 'ervandew/supertab'
-  Bundle 'mattn/emmet-vim'
-  Bundle 'tpope/vim-eunuch'
+  Plug 'ervandew/supertab'
+  Plug 'mattn/emmet-vim'
+  Plug 'tpope/vim-eunuch'
   " Позволяет обрамлять текстовые объекты кавычками,
   " тегами, скобками
-  Bundle 'tpope/vim-surround'
+  Plug 'tpope/vim-surround'
 
   " Множественный выбор и изменение как в
   " sublime
-  Bundle 'terryma/vim-multiple-cursors'
+  Plug 'terryma/vim-multiple-cursors'
 
 " CSS/SASS
-  Bundle 'vim-scripts/SAS-Syntax'
+  Plug 'vim-scripts/SAS-Syntax'
 
 " Javascript
-  Bundle 'maksimr/vim-jsbeautify'
-  Bundle 'einars/js-beautify'
-  Bundle 'metakirby5/codi.vim'
-  Bundle 'ycm-core/YouCompleteMe'
+  Plug 'maksimr/vim-jsbeautify'
+  Plug 'einars/js-beautify'
+  Plug 'metakirby5/codi.vim'
+  Plug 'ycm-core/YouCompleteMe'
 
   " Подсветка для javascript-а
-  Bundle 'maksimr/vim-javascript'
+  Plug 'maksimr/vim-javascript'
 
 " Bash
   " Подсветка для basts
-  Bundle 'rosstimson/bats.vim'
+  Plug 'rosstimson/bats.vim'
 
 " Clojure
-  Bundle 'guns/vim-clojure-static'
-  Bundle 'tpope/vim-fireplace'
-  Bundle 'kovisoft/slimv'
-  Bundle 'paredit.vim'
+  Plug 'guns/vim-clojure-static'
+  Plug 'tpope/vim-fireplace'
+  Plug 'kovisoft/slimv'
+  Plug 'vim-scripts/paredit.vim'
 
 " Vim
-  Bundle 'kana/vim-vspec'
+  Plug 'kana/vim-vspec'
 
 " Other
   " extended % matching for HTML
-  Bundle 'tmhedberg/matchit'
+  Plug 'tmhedberg/matchit'
   " need vim with +python feature
   " define indent for different files
   " http://editorconfig.org/
-  Bundle 'editorconfig/editorconfig-vim'
+  Plug 'editorconfig/editorconfig-vim'
   " подсветка для dart-а
-  Bundle 'bartlomiejdanek/vim-dart'
-  Bundle 'dart-lang/dart-vim-plugin'
-  Bundle 'mhinz/vim-startify'
-  Bundle 'udalov/kotlin-vim'
-  Bundle 'tpope/vim-projectionist'
+  Plug 'bartlomiejdanek/vim-dart'
+  Plug 'dart-lang/dart-vim-plugin'
+  Plug 'mhinz/vim-startify'
+  Plug 'udalov/kotlin-vim'
+  Plug 'tpope/vim-projectionist'
+call plug#end()
 
 
-" @description Настройки для плагинов
-" @type plugins settings
-" 2012-04-22
-
-" XXX То что использую
-"  Bundle Lucius
-if exists(':LuciusDark')
-    LuciusDark
-endif
-colorscheme lucius         " Устанавливаем цветовую схему
+colorscheme lucius
 
 "  Bundle 'garbas/vim-snipmate'
 " переопределение основной клавиши
