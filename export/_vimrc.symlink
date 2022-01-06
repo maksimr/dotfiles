@@ -154,6 +154,25 @@ call plug#begin()
   Plug 'tpope/vim-eunuch'
   Plug 'tpope/vim-surround'
   Plug 'terryma/vim-multiple-cursors'
+
+  Plug 'maksimr/vim-jsbeautify'
+  Plug 'einars/js-beautify'
+  augroup plugin_vim_jsbeautify
+     autocmd!
+
+     autocmd FileType javascript nnoremap <buffer>  <c-f> :call JsxBeautify()<cr>
+     autocmd BufEnter *.jsx nnoremap <buffer>  <c-f> :call JsxBeautify()<cr>
+     autocmd BufEnter *.json nnoremap <buffer>  <c-f> :call JsonBeautify()<cr>
+     autocmd FileType html nnoremap <buffer> <c-f> :call HtmlBeautify()<cr>
+     autocmd FileType css nnoremap <buffer> <c-f> :call CSSBeautify()<cr>
+
+     autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
+     autocmd BufEnter *.jsx vnoremap <buffer>  <c-f> :call RangeJsxBeautify()<cr>
+     autocmd BufEnter *.json vnoremap <buffer>  <c-f> :call RangeJsonBeautify()<cr>
+     autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
+     autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
+  augroup END
+
   Plug 'metakirby5/codi.vim'
 
   Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-json coc-tsserver'}
@@ -176,7 +195,6 @@ call plug#begin()
   nmap <silent> gd <Plug>(coc-definition)
   nmap <silent> gy <Plug>(coc-type-definition)
   nmap <silent> gi <Plug>(coc-implementation)
-  nmap <silent> <C-f> <Plug>(coc-format)
   nmap <silent> gr <Plug>(coc-references)
   nmap <leader>rn <Plug>(coc-rename)
   nmap <leader>ac  <Plug>(coc-codeaction)
