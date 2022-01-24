@@ -572,7 +572,7 @@ export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 export DVM_DIR="$HOME/.dvm"
 export PATH="$DVM_DIR/bin:$PATH"
-export PATH="$HOME/Developer/depot_tools:$PATH"
+#export PATH="$HOME/Developer/depot_tools:$PATH"
 
 #### FIG ENV VARIABLES ####
 # Please make sure this block is at the end of this file.
