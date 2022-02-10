@@ -43,6 +43,7 @@ if [ "$(command -v zgen)"  ]; then
         zgen oh-my-zsh plugins/vi-mode
         zgen oh-my-zsh plugins/command-not-found
 
+        zgen load Aloxaf/fzf-tab
         zgen load zsh-users/zsh-history-substring-search
         zgen load zsh-users/zsh-syntax-highlighting
         zgen load "zsh-users/zsh-autosuggestions" "zsh-autosuggestions.zsh"
