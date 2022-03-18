@@ -117,16 +117,6 @@ alias v="vim"
 alias vl='vim "$(ls -t | head -1)"' # open last modified file in vim
 # open nested last modified file, exclude dotfiles and ot directories
 alias vll='vim "$(find . ! \( -path "./.*" -o  -path "*/.*" \) -type f -printf "%T@ %p\n" | sort -n | tail -1 | cut -f2- -d" " )"'
-alias vrc='vim ~/.vimrc'
-
-function kotrun() {
- _jar=$(basename $1 .kt).jar
-
- case "$1" in
-     *.kts) kotlinc -script $1 ;;
-     *.kt) kotlinc $1 -include-runtime -d $_jar && java -jar $_jar ;;
- esac
-}
 
 # change some aliases if grc installed
 if [ "$(command -v grc)"  ]
@@ -148,71 +138,9 @@ then
   alias kk="grc karma"
 fi
 
-# googlecl
-if [ "$(command -v google)"  ]
-then
-  alias gdoc="google docs"
-  alias gcal="google calendar"
-fi
-
 alias zshprofiling="/usr/bin/time zsh -i -c exit"
 alias xm="xmodmap ~/.xmodmap"
 alias iie="curl -s https://raw.githubusercontent.com/xdissent/ievms/master/ievms.sh | bash"
-
-# load local aliases
-# it can be rewrited aliases from .local/zsh
-. $HOME/.local/alias 2>/dev/null
-
-# autojump
-# vim: ft=zsh
-if [[ -s "/usr/share/autojump/autojump.sh" || -s "$HOME/.autojump/etc/profile.d/autojump.sh" ]]
-then
-  source /usr/share/autojump/autojump.sh 2>/dev/null
-  source ~/.autojump/etc/profile.d/autojump.sh 2>/dev/null
-
-  autoload -U compinit; compinit
-  export AUTOJUMP_IGNORE_CASE=1
-  export AUTOJUMP_KEEP_ALL_ENTRIES=1
-  export AUTOJUMP_KEEP_SYMLINKS=1
-  export AUTOJUMP_AUTOCOMPLETE_CMDS='cp vim'
-
-  # more coolest autojump
-  function j(){
-    # if we pass directory path
-    # then call 'cd'
-    if [ -d "$1" ]
-    then
-      cd "$1"
-      return
-    fi
-
-    if [ $# -le 1 ]
-    then
-      # XX
-      # split by '/'
-      # 'foo/bar' -> 'foo bar'
-      local ARGUMENTS="${1//\// }"
-      jj ${(s/ /)ARGUMENTS}
-      return
-    fi
-
-    jj $@
-  }
-
-  # source of j command form autojump.sh `which j`
-  function jj () {
-    local new_path="$(autojump $@)"
-    if [ -d "${new_path}" ]
-    then
-      echo -e "\\033[31m${new_path}\\033[0m"
-      cd "${new_path}"
-    else
-      echo "autojump: directory '${@}' not found"
-      echo "Try \`autojump --help\` for more information."
-      false
-    fi
-  }
-fi
 
 # Global bindkey file
 # vim: ft=zsh
@@ -235,10 +163,6 @@ bindkey -M vicmd '\C-r' history-incremental-search-backward
 bindkey -M vicmd '\C-a' beginning-of-line
 bindkey -M vicmd '\C-e' end-of-line
 bindkey -M vicmd '?' history-incremental-search-forward
-
-# load local bindkey
-# it can be rewrited bindkey from .local/zsh
-. $HOME/.local/bindkey 2>/dev/null
 
 # XXX optimization loading fasd
 fasd_cache="$HOME/.fasd-init-bash"
@@ -357,8 +281,6 @@ then
   alias nise="npm install --save --save-exact"
   alias nisd="npm install --save-dev"
   alias nisde="npm install --save-dev"
-  alias nu="npm uninstall"
-  alias nug="npm uninstall -g"
 fi
 
 # Different configuration for oh-my-zsh plugins
