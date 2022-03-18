@@ -100,30 +100,16 @@ PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n(%m):%~ %{$fg_
 # Global alias for zsh
 # vim: ft=zsh
 
-alias zshrc="vim ~/.zshrc"
-alias zrc="vim ~/.zshrc"
-alias zr="source ~/.zshrc"
-alias upd="sudo apt-get update && sudo apt-get upgrade"
-alias i="sudo apt-get install "
-alias u="sudo apt-get remove "
 alias mk="mkdir -p"
 alias t="touch"
 alias q="exit"
 alias rm="rm -rf"
-alias nd="node --debug-brk"
 alias pl="sudo"
 
-alias l="ls"
-
-alias gg="git grep"
 alias mimimi="git pull --rebase"
 alias frfrfr="g br --merged $(current_branch) | grep -v '\*\|master'"
 
 alias c="cd"
-alias f="find"
-alias e="echo"
-alias s="sudo"
-alias sa="sudo apt-get"
 alias k9="kill -9"
 alias disc='df -h'
 
