@@ -410,56 +410,9 @@ then
     bindkey '^T' autosuggest-toggle
 fi
 
-# Selecta
-# A fuzzy text selector for files and anything else you need to select.
-# @link https://github.com/garybernhardt/selecta
-if [ "$(command -v selecta)"  ]
-then
-    # By default, ^S freezes terminal output and ^Q resumes it. Disable that so
-    # that those keys can be used for other things.
-    unsetopt flowcontrol
-    # Run Selecta in the current working directory, appending the selected path, if
-    # any, to the current command.
-    function insert-selecta-path-in-command-line() {
-        local selected_path
-        # Print a newline or we'll clobber the old prompt.
-        echo
-        # Find the path; abort if the user doesn't select anything.
-        selected_path=$(find * -type f | selecta) || return
-        # Append the selection to the current command buffer.
-        eval 'LBUFFER="$LBUFFER$selected_path"'
-        # Redraw the prompt since Selecta has drawn several new lines of text.
-        zle reset-prompt
-    }
-    # Create the zle widget
-    zle -N insert-selecta-path-in-command-line
-    # Bind the key to the newly created widget
-    bindkey "^S" "insert-selecta-path-in-command-line"
-
-    # Select git branch
-    function sgb(){
-        git branch $@ | cut -c 3- | selecta | xargs git checkout
-    }
-
-    function scat(){
-        if [ $# -eq 1 ]
-        then
-            cat $(find * -type f -name $@ | selecta)
-        else
-            cat $(find * -type f -name \* | selecta)
-        fi
-    }
-fi
-
 # Fix problem with intelliji window focus
 if [[ `uname` -ne 'Darwin' ]]; then
     export _JAVA_AWT_WM_NONREPARENTING=1;
-fi
-
-# Oracle JDK for WebStorm
-if [ -d "$HOME/.local/jdk1.8.0_25" ]; then
-    export WEBIDE_JDK=$HOME/.local/jdk1.8.0_25
-    export JAVA_HOME=$HOME/.local/jdk1.8.0_25
 fi
 
 # https://github.com/junegunn/fzf
@@ -506,10 +459,10 @@ if [ -d "$HOME/.local/zsh" ]; then
   done
 fi
 
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/Users/maksimrv/.sdkman"
-[[ -s "/Users/maksimrv/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/maksimrv/.sdkman/bin/sdkman-init.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
@@ -518,4 +471,3 @@ export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 export DVM_DIR="$HOME/.dvm"
 export PATH="$DVM_DIR/bin:$PATH"
-#export PATH="$HOME/Developer/depot_tools:$PATH"
