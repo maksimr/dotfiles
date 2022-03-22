@@ -201,9 +201,11 @@ call plug#begin()
 
   Plug 'maksimr/vim-javascript'
   Plug 'rosstimson/bats.vim', { 'for': 'bat' }
-  Plug 'guns/vim-clojure-static', {'for': 'clojure'}
   Plug 'tpope/vim-fireplace', {'for': 'clojure'}
-  Plug 'kovisoft/slimv', {'for': 'clojure'}
+  augroup vim_fireplace
+     autocmd!
+     autocmd FileType clojure nnoremap <buffer> cpP :Eval<cr>
+  augroup END
   Plug 'vim-scripts/paredit.vim', {'for': 'clojure'}
   Plug 'kana/vim-vspec'
   Plug 'tmhedberg/matchit'
