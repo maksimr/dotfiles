@@ -103,10 +103,6 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
 endif
 
 call plug#begin()
-  Plug 'wincent/Command-T', { 'do': 'cd ruby/command-t/ext/command-t && { make clean; ruby extconf.rb && make }' }
-  nnoremap <leader>, :CommandT<cr>
-  let g:CommandTFileScanner="git"
-
   Plug 'kshenoy/vim-signature'
   Plug 'sjl/gundo.vim'
 
@@ -120,6 +116,7 @@ call plug#begin()
   Plug 'kana/vim-textobj-user'
   Plug 'glts/vim-textobj-comment'
   Plug 'junegunn/fzf'
+  nnoremap <leader>, :FZF<cr>
 
   Plug 'Lokaltog/vim-powerline'
   set encoding=utf-8
@@ -217,8 +214,6 @@ call plug#begin()
       autocmd BufEnter * silent EditorConfigReload
   augroup END
 
-  Plug 'mhinz/vim-startify'
-  Plug 'udalov/kotlin-vim'
   Plug 'tpope/vim-projectionist'
   nnoremap <Leader>a :A<cr>
 call plug#end()
