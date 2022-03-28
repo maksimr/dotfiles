@@ -12,6 +12,7 @@ set noeb                 " Turn off error bell
 set novb                 " Turn off visual error bell
 set mouse=a              " Enable mouse
 set bs=2                 " Enable backspace
+set nofixeol
 
 set guifont=Terminus\ 14 " Set font (sudo apt-get install xfonts-terminus)
 set t_Co=256             " Extended color support
