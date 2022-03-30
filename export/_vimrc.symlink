@@ -183,6 +183,7 @@ call plug#begin()
   inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
   augroup clojure
     autocmd!
+    autocmd FileType clojure nnoremap <buffer> F :call CocActionAsync('format')<cr>
     autocmd FileType clojure nnoremap <buffer> <c-f> :call CocActionAsync('format')<cr>
   augroup end
   nmap <silent> [g <Plug>(coc-diagnostic-prev)

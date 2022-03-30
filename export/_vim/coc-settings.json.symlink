@@ -1,5 +1,6 @@
 {
   "coc.preferences.useQuickfixForLocations": true,
+  "diagnostic.checkCurrentLine": true,
   "languageserver": {
     "clojure-lsp": {
       "command": "clojure-lsp",
