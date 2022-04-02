@@ -110,9 +110,6 @@ call plug#begin()
   nnoremap <C-e> :Explore<cr>
   nnoremap <S-e> :BufExplorer<cr>
 
-  Plug 'Lokaltog/vim-easymotion'
-  let g:EasyMotion_leader_key = "<space>"
-
   Plug 'kana/vim-textobj-user'
   Plug 'glts/vim-textobj-comment'
   Plug 'junegunn/fzf'
