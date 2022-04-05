@@ -206,11 +206,18 @@ call plug#begin()
 
   Plug 'maksimr/vim-javascript'
   Plug 'rosstimson/bats.vim', { 'for': 'bat' }
-  Plug 'tpope/vim-fireplace', {'for': 'clojure'}
-  augroup vim_fireplace
-     autocmd!
-     autocmd FileType clojure nnoremap <buffer> cpP :Eval<cr>
-  augroup END
+  if has('nvim')
+    Plug 'Olical/conjure', {'for': 'clojure'}
+    autocmd FileType clojure nnoremap <buffer> cpr :ConjureEvalBuf<cr>
+    autocmd FileType clojure nnoremap <buffer> cpp :ConjureEvalCurrentForm<cr>
+    autocmd FileType clojure nnoremap <buffer> cpP :ConjureEvalRootForm<cr>
+  else
+    Plug 'tpope/vim-fireplace', {'for': 'clojure'}
+    augroup vim_fireplace
+       autocmd!
+       autocmd FileType clojure nnoremap <buffer> cpP :Eval<cr>
+    augroup END
+  endif
   Plug 'vim-scripts/paredit.vim', {'for': 'clojure'}
   Plug 'kana/vim-vspec'
   Plug 'tmhedberg/matchit'
@@ -227,15 +234,6 @@ call plug#end()
 
 
 colorscheme lucius
-
-" <esc> - Alt
-let c='l'
-
-while c <= 'z'
-    exec "set <A-".c.">=\e".c
-    exec "inoremap \e".c." <A-".c.">"
-    let c = nr2char(1+char2nr(c))
-endw
 
 " Если находимся внутри 'quickfix'
 " тогда вызываем lclose иначе quit
