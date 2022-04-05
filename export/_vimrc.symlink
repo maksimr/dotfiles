@@ -40,6 +40,7 @@ set smartcase            " Переписывает ignorecase когда осу
 
 set laststatus=2         " Включение строки состояния внизу редактора
 set statusline=%<%f%h%m%r%{fugitive#statusline()}\ %b\ %{&encoding}\ 0x\ \ %l,%c%V\ %P " Формат строки состояния ( использует расширение git-fugitive )
+set encoding=utf-8
 
 
 set smartindent          " Умный автоматический отступ (ai - обычный автоматичексий отступ)
@@ -114,9 +115,6 @@ call plug#begin()
   Plug 'glts/vim-textobj-comment'
   Plug 'junegunn/fzf'
   nnoremap <leader>, :FZF<cr>
-
-  Plug 'Lokaltog/vim-powerline'
-  set encoding=utf-8
 
   Plug 'maksimr/Lucius2'
 
