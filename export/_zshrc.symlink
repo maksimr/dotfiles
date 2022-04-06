@@ -113,7 +113,7 @@ alias c="cd"
 alias k9="kill -9"
 alias disc='df -h'
 
-alias v="vim"
+alias v="$([ "$(command -v nvim)" ] && echo "nvim" || echo "vim")"
 alias vl='vim "$(ls -t | head -1)"' # open last modified file in vim
 # open nested last modified file, exclude dotfiles and ot directories
 alias vll='vim "$(find . ! \( -path "./.*" -o  -path "*/.*" \) -type f -printf "%T@ %p\n" | sort -n | tail -1 | cut -f2- -d" " )"'
