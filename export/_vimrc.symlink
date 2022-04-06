@@ -207,6 +207,8 @@ call plug#begin()
   Plug 'maksimr/vim-javascript'
   Plug 'rosstimson/bats.vim', { 'for': 'bat' }
   if has('nvim')
+    let g:conjure#log#hud#border = "none"
+    let g:conjure#log#hud#anchor = "SE"
     Plug 'Olical/conjure', {'for': 'clojure'}
     autocmd FileType clojure nnoremap <buffer> cpr :ConjureEvalBuf<cr>
     autocmd FileType clojure nnoremap <buffer> cpp :ConjureEvalCurrentForm<cr>
