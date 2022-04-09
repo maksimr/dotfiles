@@ -7,3 +7,18 @@ vnoremap <C-c> "+yy
 set clipboard+=unnamed
 set surround
 set ideajoin
+
+let mapleader = ","
+nnoremap <leader>sv :source ~/.ideavimrc<cr>
+nnoremap <leader>W :action :cursive.actions.paredit/wrap-paren<cr>
+nnoremap <leader>w( :action :cursive.actions.paredit/wrap-paren<cr>
+nnoremap <leader>w[ :action :cursive.actions.paredit/wrap-square<cr>
+nnoremap <leader>w{ :action :cursive.actions.paredit/wrap-curly<cr>
+nnoremap <leader>< :action :cursive.actions.paredit/barf-forwards<cr>
+nnoremap <leader>> :action :cursive.actions.paredit/slurp-forwards<cr>
+nnoremap <leader>S :action :cursive.actions.paredit/splice<cr>
+nnoremap <leader>pp :action :cursive.repl.actions/run-last-sexp<cr>
+nnoremap <leader>pP :action :cursive.repl.actions/run-top-sexp<cr>
+nnoremap <leader>pr :action :cursive.repl.actions/sync-files<cr>
+nnoremap <leader>pR :action :cursive.repl.actions/sync-files<cr>
+nnoremap <leader>, :action GotoFile<cr>
