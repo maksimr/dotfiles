@@ -4,7 +4,7 @@ inoremap jk <esc>
 " clipboard (копирование во внешний буфер, позволяет использовать дальше
 " везде не только в виме)
 vnoremap <C-c> "+yy
-set clipboard+=unnamed
+set clipboard=unnamedplus,unnamed,ideaput
 set surround
 set ideajoin
 
