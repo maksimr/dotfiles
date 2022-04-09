@@ -27,4 +27,5 @@ nnoremap <leader>ri :action Inline<CR>
 nnoremap <leader>b :action ToggleLineBreakpoint<cr>
 nnoremap gr :action ShowUsages<cr>
 nnoremap E :action RecentFiles<cr>
+nnoremap F :action ReformatCode<cr>
 nnoremap <leader>, :action GotoFile<cr>
