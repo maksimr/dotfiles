@@ -10,6 +10,7 @@ set ideajoin
 
 let mapleader = ","
 nnoremap <leader>sv :source ~/.ideavimrc<cr>
+" To get actions list you can run `:actionlist [search]`
 nnoremap <leader>W :action :cursive.actions.paredit/wrap-paren<cr>
 nnoremap <leader>w( :action :cursive.actions.paredit/wrap-paren<cr>
 nnoremap <leader>w[ :action :cursive.actions.paredit/wrap-square<cr>
