@@ -25,4 +25,5 @@ nnoremap cpR :action :cursive.repl.actions/sync-files<cr>
 nnoremap <leader>rn :action RenameElement<cr>
 nnoremap <leader>ri :action Inline<CR>
 nnoremap gr :action ShowUsages<cr>
+nnoremap E :action RecentFiles<cr>
 nnoremap <leader>, :action GotoFile<cr>
