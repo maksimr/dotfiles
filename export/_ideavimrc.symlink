@@ -21,4 +21,6 @@ nnoremap <leader>pp :action :cursive.repl.actions/run-last-sexp<cr>
 nnoremap <leader>pP :action :cursive.repl.actions/run-top-sexp<cr>
 nnoremap <leader>pr :action :cursive.repl.actions/sync-files<cr>
 nnoremap <leader>pR :action :cursive.repl.actions/sync-files<cr>
+nnoremap <leader>rn :action RenameElement<cr>
+nnoremap gr :action ShowUsages<cr>
 nnoremap <leader>, :action GotoFile<cr>
