@@ -18,7 +18,7 @@ nnoremap <leader>w{ :action :cursive.actions.paredit/wrap-curly<cr>
 nnoremap <leader>< :action :cursive.actions.paredit/barf-forwards<cr>
 nnoremap <leader>> :action :cursive.actions.paredit/slurp-forwards<cr>
 nnoremap <leader>S :action :cursive.actions.paredit/splice<cr>
-nnoremap cpp :action :cursive.repl.actions/run-top-sexp<cr>
+nnoremap cpp :action :cursive.repl.actions/run-last-sexp<cr>
 nnoremap cpP :action :cursive.repl.actions/run-top-sexp<cr>
 nnoremap cpr :action :cursive.repl.actions/load-file<cr>
 nnoremap cpR :action :cursive.repl.actions/sync-files<cr>
