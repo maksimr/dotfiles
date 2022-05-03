@@ -338,6 +338,8 @@ let g:vimrcps_loaded = 1
 
 autocmd BufNewFile,BufRead *.gradle setf groovy
 
+nnoremap <c-w>> :resize +3<cr>
+nnoremap <c-w>< :resize -3<cr>
 nnoremap <c-w>" :belowright split %<cr>
 nnoremap <s-f> mngg=G`n
 nnoremap \ff :vim /\<<c-r>=expand("<cword>")<cr>\>/ **/*.
