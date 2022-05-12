@@ -156,6 +156,7 @@ call plug#begin()
      autocmd BufEnter *.jsx nnoremap <buffer>  <c-f> :call JsxBeautify()<cr>
      autocmd BufEnter *.json nnoremap <buffer>  <c-f> :call JsonBeautify()<cr>
      autocmd FileType html nnoremap <buffer> <c-f> :call HtmlBeautify()<cr>
+     autocmd FileType html nnoremap <buffer> F :call HtmlBeautify()<cr>
      autocmd FileType css nnoremap <buffer> <c-f> :call CSSBeautify()<cr>
 
      autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
