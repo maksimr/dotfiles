@@ -81,7 +81,7 @@ bind-key -r < resize-pane -L 3
 bind-key -r > resize-pane -R 3
 
 # buffer
-bind a choose-buffer
+bind b choose-buffer
 
 # Working with the system clipboard
 # http://joncairns.com/2013/06/copying-between-tmux-buffers-and-the-system-clipboard/
