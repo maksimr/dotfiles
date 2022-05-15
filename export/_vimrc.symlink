@@ -271,8 +271,11 @@ fun! s:GetNodeModulesAbsPath ()
 endfun
 
 fun! s:GetEslintExec (node_modules)
-    let eslint_guess = a:node_modules is '' ? '' : a:node_modules . '.bin/eslint'
-    return exepath(eslint_guess)
+    if a:node_modules isnot ''
+      let eslint_guess = a:node_modules is '' ? '' : a:node_modules . '.bin/eslint'
+      return exepath(eslint_guess)
+    endif
+    return ''
 endfun
 
 fun! s:LetEslintExec (eslint_exec)
