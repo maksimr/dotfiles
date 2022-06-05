@@ -11,9 +11,11 @@
 export USE_PATCHED_FONT="false"
 if [ "$(command -v tmux)"  ]; then
     if [ -z "$INSIDE_EMACS" ]; then
+      if [ "$TERM_PROGRAM" != "vscode" ]; then
         if [ -z "$TMUX" ]; then
             tmux -2 &>/dev/null && exit # exit from shell after exit tmux
         fi
+      fi
     fi
 fi
 
