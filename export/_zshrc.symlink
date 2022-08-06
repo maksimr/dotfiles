@@ -6,6 +6,7 @@
 
 
 export USE_PATCHED_FONT="false"
+export EDITOR=vim
 if [[ $- == *i* ]]; then # only if we are in interactive mode
   if [ "$(command -v tmux)"  ]; then # tmux installed
       if [ -z "$INSIDE_EMACS" ]; then # not inside emacs
@@ -58,50 +59,30 @@ if [ "$(command -v zgen)"  ]; then
     fi
 fi
 
-# Устанавливаем размер истории команд и файл в котором
-# история будет хранится
-HISTSIZE=1000
-SAVEHIST=1000
+HISTSIZE=10000
+SAVEHIST=10000
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
-# Добавляем домашнюю директори
-# если ее еще нет в переменной $PATH
-case ":$PATH:" in
-  *:"$HOME/bin":*) ;;
-  *) PATH="$HOME/bin:$PATH" ;;
-esac
-
-case ":$PATH:" in
-  *:"$HOME/local/bin":*) ;;
-  *) PATH="$HOME/local/bin:$PATH" ;;
-esac
-
-case ":$NODE_PATH:" in
-  *:"/usr/local/lib/jsctags/":*) ;;
-  *) export NODE_PATH=/usr/local/lib/jsctags/:$NODE_PATH ;;
-esac
-
-case ":$PATH:" in
-  *:"$HOME/.gem/ruby/2.2.0/bin":*) ;;
-  *) PATH="$HOME/.gem/ruby/2.2.0/bin:$PATH" ;;
-esac
-
-case ":$PATH:" in
-  *:"$HOME/.go/bin":*) ;;
-  *) PATH="$HOME/.go/bin:$PATH" ;;
-esac
-
-export EDITOR=vim
-
 PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n(%m):%~ %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
+
+CUSTOM_BIN_PATH_LIST=(
+  "$HOME/bin"
+  "$HOME/local/bin"
+  "$HOME/.go/bin"
+)
+for BPATH in CUSTOM_BIN_PATH_LIST; do
+  case ":$PATH:" in
+    *:"$BPATH":*) ;;
+    *) PATH="$BPATH:$PATH" ;;
+  esac
+done
 
 # load dotfiles
 . ~/.dotfiles/dot.bash 2>/dev/null
 
 # Global alias for zsh
 # vim: ft=zsh
-
 alias mk="mkdir -p"
 alias t="touch"
 alias q="exit"
@@ -346,9 +327,6 @@ if [ -f "$HOME/.fzf.zsh"  ]; then
     bindkey "^F" "insert-fzf-path-in-command-line"
 fi
 
-export GOPATH=$HOME/.go
-export ANDROID_HOME=/usr/local/opt/android-sdk
-
 # https://minikube.sigs.k8s.io/docs/commands/completion/
 if [ -f "$HOME/.minikube-completion" ]; then
   . $HOME/.minikube-completion
@@ -369,15 +347,14 @@ if [ -d "$HOME/.local/zsh" ]; then
   done
 fi
 
+export GOPATH=$HOME/.go
+export ANDROID_HOME=/usr/local/opt/android-sdk
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 export DVM_DIR="$HOME/.dvm"
 export PATH="$DVM_DIR/bin:$PATH"
+export PATH="$PATH:$HOME/.rvm/bin"
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
