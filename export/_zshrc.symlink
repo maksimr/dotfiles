@@ -5,18 +5,18 @@
 # zshrc file and `zprof` in the end of file
 
 
-# Run tmux immediately after enter to terminal
-# -2 for supporting colors (256)
-# I Don't use patched font in terminal
 export USE_PATCHED_FONT="false"
-if [ "$(command -v tmux)"  ]; then
-    if [ -z "$INSIDE_EMACS" ]; then
-      if [ "$TERM_PROGRAM" != "vscode" ]; then
-        if [ -z "$TMUX" ]; then
+if [[ $- == *i* ]]; then # only if we are in interactive mode
+  if [ "$(command -v tmux)"  ]; then # tmux installed
+      if [ -z "$INSIDE_EMACS" ]; then # not inside emacs
+        if [ "$TERM_PROGRAM" != "vscode" ]; then # not inside vscode
+          if [ -z "$TMUX" ]; then # not inside tmux
+            # -2 for supporting colors (256)
             tmux -2 &>/dev/null && exit # exit from shell after exit tmux
+          fi
         fi
       fi
-    fi
+  fi
 fi
 
 
