@@ -348,6 +348,7 @@ if [ -d "$HOME/.local/zsh" ]; then
   done
 fi
 
+export HOMEBREW_NO_AUTO_UPDATE=1
 export GOPATH=$HOME/.go
 export ANDROID_HOME=/usr/local/opt/android-sdk
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
