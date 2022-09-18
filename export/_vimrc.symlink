@@ -250,7 +250,7 @@ call plug#begin()
     autocmd FileType javascript nnoremap <buffer> <leader>dp" <Cmd>lua require'dap'.step_out()<CR>
     autocmd FileType javascript nnoremap <buffer> <leader>dpb <Cmd>lua require'dap'.toggle_breakpoint()<CR>
     autocmd FileType javascript nnoremap <buffer> <leader>dpr <Cmd>lua require'dap'.repl.open()<CR>
-    autocmd FileType javascript nnoremap <buffer> <leader>dpt <Cmd>lua require'dap'.launch()<CR>
+    autocmd FileType javascript nnoremap <buffer> <leader>dpt <Cmd>lua require'dap'.continue()<CR>
     nnoremap <silent> <F5> <Cmd>lua require'dap'.continue()<CR>
     nnoremap <silent> <F10> <Cmd>lua require'dap'.step_over()<CR>
     nnoremap <silent> <F11> <Cmd>lua require'dap'.step_into()<CR>
@@ -421,9 +421,8 @@ lua <<EOF
   require("dap-vscode-js").setup({
     debugger_path = utils.join_paths(utils.get_runtime_dir(), "plugged/vscode-js-debug"),
     adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' }, -- which adapters to register in nvim-dap
-  })
-
-  local dap = require('dap')
+  });
+  local dap = require('dap');
   for _, language in ipairs({ "typescript", "javascript" }) do
     dap.configurations[language] = {
      {
@@ -433,10 +432,10 @@ lua <<EOF
         program = "${file}",
         cwd = "${workspaceFolder}",
       }
-    }
+    };
   end
 
-  local dapui = require("dapui")
-  dapui.setup()
+  local dapui = require("dapui");
+  dapui.setup();
 EOF
 endif
