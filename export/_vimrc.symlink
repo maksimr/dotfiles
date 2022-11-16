@@ -152,16 +152,10 @@ call plug#begin()
   augroup plugin_vim_jsbeautify
      autocmd!
 
-     autocmd FileType javascript nnoremap <buffer>  <c-f> :call JsxBeautify()<cr>
-     autocmd BufEnter *.jsx nnoremap <buffer>  <c-f> :call JsxBeautify()<cr>
-     autocmd BufEnter *.json nnoremap <buffer>  <c-f> :call JsonBeautify()<cr>
      autocmd FileType html nnoremap <buffer> <c-f> :call HtmlBeautify()<cr>
      autocmd FileType html nnoremap <buffer> F :call HtmlBeautify()<cr>
      autocmd FileType css nnoremap <buffer> <c-f> :call CSSBeautify()<cr>
 
-     autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
-     autocmd BufEnter *.jsx vnoremap <buffer>  <c-f> :call RangeJsxBeautify()<cr>
-     autocmd BufEnter *.json vnoremap <buffer>  <c-f> :call RangeJsonBeautify()<cr>
      autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
      autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
   augroup END
@@ -175,10 +169,16 @@ call plug#begin()
   inoremap <silent><expr> <tab> coc#pum#visible() ? coc#_select_confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
   inoremap <expr><S-TAB> coc#pum#visible() ? "\<C-p>" : "\<C-h>"
-  augroup clojure
+  augroup coc_clojure
     autocmd!
     autocmd FileType clojure nnoremap <buffer> F :call CocActionAsync('format')<cr>
     autocmd FileType clojure nnoremap <buffer> <c-f> :call CocActionAsync('format')<cr>
+  augroup end
+  augroup coc_javascript
+    autocmd FileType javascript,typescript,json nnoremap <buffer> F <Plug>(coc-format)
+    autocmd FileType javascript,typescript,json nnoremap <buffer> <c-f> <Plug>(coc-format)
+    autocmd FileType javascript,typescript,json vnoremap <buffer> F <Plug>(coc-format-selected)
+    autocmd FileType javascript,typescript,json vnoremap <buffer> <c-f> <Plug>(coc-format-selected)
   augroup end
   nmap <silent> [g <Plug>(coc-diagnostic-prev)
   nmap <silent> ]g <Plug>(coc-diagnostic-next)
