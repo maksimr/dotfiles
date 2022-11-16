@@ -1,0 +1,18 @@
+{
+  "coc.preferences.useQuickfixForLocations": true,
+  "diagnostic.checkCurrentLine": true,
+  "languageserver": {
+    "clojure-lsp": {
+      "command": "clojure-lsp",
+      "filetypes": ["clojure"],
+      "rootPatterns": ["project.clj", "deps.edn"],
+      "additionalSchemes": ["jar", "zipfile"],
+      "trace.server": "verbose",
+      "initializationOptions": {
+        "log-path": "/tmp/lsp.out",
+        "ignore-classpath-directories": true,
+        "cljfmt-config-path": ".cljfmt.clj"
+      }
+    }
+  }
+}
