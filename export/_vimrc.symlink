@@ -176,10 +176,10 @@ call plug#begin()
     autocmd FileType clojure nnoremap <buffer> <c-f> :call CocActionAsync('format')<cr>
   augroup end
   augroup coc_javascript
-    autocmd FileType javascript,typescript,json nnoremap <buffer> F <Plug>(coc-format)
-    autocmd FileType javascript,typescript,json nnoremap <buffer> <c-f> <Plug>(coc-format)
-    autocmd FileType javascript,typescript,json vnoremap <buffer> F <Plug>(coc-format-selected)
-    autocmd FileType javascript,typescript,json vnoremap <buffer> <c-f> <Plug>(coc-format-selected)
+    autocmd FileType javascript,typescript,typescriptreact,json nnoremap <buffer> F <Plug>(coc-format)
+    autocmd FileType javascript,typescript,typescriptreact,json nnoremap <buffer> <c-f> <Plug>(coc-format)
+    autocmd FileType javascript,typescript,typescriptreact,json vnoremap <buffer> F <Plug>(coc-format-selected)
+    autocmd FileType javascript,typescript,typescriptreact,json vnoremap <buffer> <c-f> <Plug>(coc-format-selected)
   augroup end
   nmap <silent> [g <Plug>(coc-diagnostic-prev)
   nmap <silent> ]g <Plug>(coc-diagnostic-next)
@@ -189,6 +189,7 @@ call plug#begin()
   nmap <silent> gr <Plug>(coc-references)
   nmap <leader>rn <Plug>(coc-rename)
   nmap <leader>ac  <Plug>(coc-codeaction)
+  nmap <leader>.  <Plug>(coc-codeaction)
   nmap <leader>kl  <Plug>(coc-codelens-action)
   " Apply AutoFix to problem on the current line.
   nmap <leader>qf  <Plug>(coc-fix-current)
