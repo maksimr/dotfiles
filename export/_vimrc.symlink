@@ -260,7 +260,7 @@ call plug#begin()
     Plug 'mxsdev/nvim-dap-vscode-js'
     Plug 'microsoft/vscode-js-debug', {'do': 'npm install --legacy-peer-deps && npm run compile'}
 
-    Plug 'rcarriga/nvim-dap-ui'
+    Plug 'rcarriga/nvim-dap-ui', { 'tag': 'v2.5.0' }
     nnoremap <leader>dpp <Cmd>lua require("dapui").eval()<CR>
   endif
 call plug#end()
