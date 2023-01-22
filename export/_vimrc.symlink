@@ -429,18 +429,29 @@ lua <<EOF
     adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' }, -- which adapters to register in nvim-dap
   });
   local dap = require('dap');
-  for _, language in ipairs({ "typescript", "javascript" }) do
-    dap.configurations[language] = {
-     {
-        type = "pwa-node",
-        request = "launch",
-        name = "Launch Program",
-        program = "${file}",
-        cwd = "${workspaceFolder}",
-        sourceMaps = true,
-      }
-    };
-  end
+  dap.configurations["javascript"] = {
+   {
+      type = "pwa-node",
+      request = "launch",
+      name = "Launch Program",
+      program = "${file}",
+      cwd = "${workspaceFolder}",
+    }
+  };
+
+  dap.configurations["typescript"] = {
+   {
+      type = "pwa-node",
+      request = "launch",
+      name = "Launch Program",
+      runtimeExecutable = "npx",
+      runtimeArgs = { "ts-node", },
+      program = "${file}",
+      cwd = "${workspaceFolder}",
+      sourceMaps = true,
+      resolveSourceMapLocations = { "${workspaceFolder}/dist/**/*.js", "${workspaceFolder}/**", "!**/node_modules/**" },
+    }
+  };
 
   local dapui = require("dapui");
   dapui.setup();
