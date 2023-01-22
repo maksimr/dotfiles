@@ -260,6 +260,8 @@ call plug#begin()
     nnoremap <silent> <F11> <Cmd>lua require'dap'.step_into()<CR>
     nnoremap <silent> <F12> <Cmd>lua require'dap'.step_out()<CR>
     Plug 'mxsdev/nvim-dap-vscode-js'
+    "Use version 1.x for vscode-js-debug to prevent error
+    "https://github.com/mxsdev/nvim-dap-vscode-js/issues/23
     Plug 'microsoft/vscode-js-debug', {'do': 'npm install --legacy-peer-deps && npm run compile', 'tag': 'v1.*'}
 
     Plug 'rcarriga/nvim-dap-ui', { 'tag': 'v2.5.0' }
