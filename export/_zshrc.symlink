@@ -330,6 +330,27 @@ if [ -f "$HOME/.fzf.zsh"  ]; then
     bindkey "^F" "insert-fzf-path-in-command-line"
 fi
 
+
+function idea() {
+  declare -a ideargs=()
+  declare -- wait=""
+
+  for o in "$@"; do
+    if [[ "$o" = "--wait" || "$o" = "-w" ]]; then
+      wait="-W"
+      o="--wait"
+    fi
+    if [[ "$o" =~ " " ]]; then
+      ideargs+=("\"$o\"")
+    else
+      ideargs+=("$o")
+    fi
+  done
+
+  idea_script=$(find "$HOME/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0" -name "idea" | tail -n 1)
+  open -na "$idea_script" $wait --args "${ideargs[@]}"
+}
+
 # https://minikube.sigs.k8s.io/docs/commands/completion/
 if [ -f "$HOME/.minikube-completion" ]; then
   . $HOME/.minikube-completion
