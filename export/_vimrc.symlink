@@ -429,6 +429,7 @@ lua <<EOF
     adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' }, -- which adapters to register in nvim-dap
   });
   local dap = require('dap');
+
   dap.configurations["javascript"] = {
    {
       type = "pwa-node",
