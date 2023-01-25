@@ -437,6 +437,10 @@ lua <<EOF
       name = "Launch Program",
       program = "${file}",
       cwd = "${workspaceFolder}",
+      resolveSourceMapLocations = {
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      },
     }
   };
 
