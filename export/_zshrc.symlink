@@ -9,30 +9,30 @@ export USE_PATCHED_FONT="false"
 export EDITOR=vim
 if [[ $- == *i* ]]; then # only if we are in interactive mode
   if [ "$(command -v tmux)"  ]; then # tmux installed
-      if [ -z "$INSIDE_EMACS" ]; then # not inside emacs
-        if [ "$TERM_PROGRAM" != "vscode" ]; then # not inside vscode
-          if [ -z "$TMUX" ]; then # not inside tmux
-            if [ -z "$WARP_IS_LOCAL_SHELL_SESSION" ]; then # not inside warp terminal
-              # -2 for supporting colors (256)
-              tmux -2 &>/dev/null && exit # exit from shell after exit tmux
-            fi
+    if [ -z "$INSIDE_EMACS" ]; then # not inside emacs
+      if [ "$TERM_PROGRAM" != "vscode" ]; then # not inside vscode
+        if [ -z "$TMUX" ]; then # not inside tmux
+          if [ -z "$WARP_IS_LOCAL_SHELL_SESSION" ]; then # not inside warp terminal
+            # -2 for supporting colors (256)
+            tmux -2 &>/dev/null && exit # exit from shell after exit tmux
           fi
         fi
       fi
+    fi
   fi
 fi
 
 
 # Load zgen
 if [ -f ~/.zgen/zgen.zsh ]; then
-    . ~/.zgen/zgen.zsh 2>/dev/null
+  . ~/.zgen/zgen.zsh 2>/dev/null
 fi
 
 
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=black,bold"
 
 if [ "$(command -v zgen)"  ]; then
-    if ! zgen saved; then
+  if ! zgen saved; then
 
         # Load various lib files
         zgen load robbyrussell/oh-my-zsh lib/
@@ -58,7 +58,7 @@ if [ "$(command -v zgen)"  ]; then
         # Theme
         zgen oh-my-zsh themes/robbyrussell
         zgen save
-    fi
+  fi
 fi
 
 HISTSIZE=10000
@@ -223,18 +223,18 @@ fi
 # vim: ft=zsh
 
 function {
-  local scripts
-  scripts=(
-    # XXX TODO optimize loading nvm.sh
-    # 10ms loading nvm.sh
-    ~/.nvm/nvm.sh
-    ~/.vvm/etc/login
-  )
+local scripts
+scripts=(
+  # XXX TODO optimize loading nvm.sh
+  # 10ms loading nvm.sh
+  ~/.nvm/nvm.sh
+  ~/.vvm/etc/login
+)
 
-  for src in $scripts
-  do
-    . $src 2>/dev/null
-  done
+for src in $scripts
+do
+  . $src 2>/dev/null
+done
 }
 
 if [ "$(command -v nvm)" ]
@@ -242,19 +242,19 @@ then
   autoload -U add-zsh-hook
   add-zsh-hook chpwd load-nvmrc
   load-nvmrc() {
-      local node_version="$(nvm version)"
-      local nvmrc_path="$(nvm_find_nvmrc)"
+  local node_version="$(nvm version)"
+  local nvmrc_path="$(nvm_find_nvmrc)"
 
-      if [ -n "$nvmrc_path" ]; then
-        local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
-        if [ "$nvmrc_node_version" = "N/A" ]; then
-          nvm install
-        elif [ "$nvmrc_node_version" != "$node_version" ]; then
-          nvm use
-        fi
-      fi
-  }
-  load-nvmrc
+  if [ -n "$nvmrc_path" ]; then
+    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+    if [ "$nvmrc_node_version" = "N/A" ]; then
+      nvm install
+    elif [ "$nvmrc_node_version" != "$node_version" ]; then
+      nvm use
+    fi
+  fi
+}
+load-nvmrc
 fi
 
 # npm
@@ -293,11 +293,11 @@ bindkey '^N' history-substring-search-down
 # Setup zsh-autosuggestions
 if [ "$(command -v autosuggest_start)"  ]
 then
-    # Enable autosuggestions automatically
-    zle-line-init() {
-            autosuggest_start
-    }
-    zle -N zle-line-init
+  # Enable autosuggestions automatically
+  zle-line-init() {
+  autosuggest_start
+}
+zle -N zle-line-init
 
     # use ctrl+t to toggle autosuggestions(hopefully this wont be needed as
     # zsh-autosuggestions is designed to be unobtrusive)
@@ -306,12 +306,12 @@ fi
 
 # Fix problem with intelliji window focus
 if [[ `uname` -ne 'Darwin' ]]; then
-    export _JAVA_AWT_WM_NONREPARENTING=1;
+  export _JAVA_AWT_WM_NONREPARENTING=1;
 fi
 
 # https://github.com/junegunn/fzf
 if [ -f "$HOME/.fzf.zsh"  ]; then
-    source ~/.fzf.zsh
+  source ~/.fzf.zsh
 
     # aliases
     # fkill - kill process
@@ -320,14 +320,14 @@ if [ -f "$HOME/.fzf.zsh"  ]; then
     }
 
     function insert-fzf-path-in-command-line() {
-        local selected_path
-        echo
-        selected_path=$(find * -type f | fzf > selected) || return
-        eval 'LBUFFER="$LBUFFER$selected_path"'
-        zle reset-prompt
-    }
-    zle -N insert-fzf-path-in-command-line
-    bindkey "^F" "insert-fzf-path-in-command-line"
+    local selected_path
+    echo
+    selected_path=$(find * -type f | fzf > selected) || return
+    eval 'LBUFFER="$LBUFFER$selected_path"'
+    zle reset-prompt
+  }
+  zle -N insert-fzf-path-in-command-line
+  bindkey "^F" "insert-fzf-path-in-command-line"
 fi
 
 
@@ -353,6 +353,7 @@ function idea() {
 
 # https://minikube.sigs.k8s.io/docs/commands/completion/
 if [ -f "$HOME/.minikube-completion" ]; then
+  # eval $(minikube -p minikube docker-env) # use miniube docker
   . $HOME/.minikube-completion
 fi
 
