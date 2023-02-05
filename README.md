@@ -43,7 +43,7 @@ To install you could use the install script (requires Git) using Wget:
   ```
 
   ```bash
-  curl -s https://raw.github.com/maksimr/dotfiles/master/install.sh | bash
+  curl -s -L https://raw.github.com/maksimr/dotfiles/master/install.sh | bash
   ```
 
 
