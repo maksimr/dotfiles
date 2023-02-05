@@ -38,20 +38,28 @@ Load and run.
 
 To install you could use the install script (requires Git) using Wget:
 
-  ```wget -qO- https://raw.github.com/maksimr/dotfiles/master/install.sh | bash```
+  ```bash
+  wget -qO- https://raw.github.com/maksimr/dotfiles/master/install.sh | bash
+  ```
 
-  ```curl -s https://raw.github.com/maksimr/dotfiles/master/install.sh | bash```
+  ```bash
+  curl -s https://raw.github.com/maksimr/dotfiles/master/install.sh | bash
+  ```
 
 
 ### Manual install
 
 If you have git installed, then just clone it:
 
-  ```git clone --recurse-submodules git://github.com/maksimr/dotfiles.git ~/.dotfiles```
+  ```bash
+  git clone --recurse-submodules git://github.com/maksimr/dotfiles.git ~/.dotfiles
+  ```
 
 To activate dotfile, you need to source it from your bash shell
 
-  ```. ~/.dotfiles/dot.bash```
+  ```bash
+  . ~/.dotfiles/dot.bash
+  ```
 
 You can add this line to your '.bashrc' or '.zshrc' file to have it automatically sourced upon login.
 
@@ -61,37 +69,53 @@ You can add this line to your '.bashrc' or '.zshrc' file to have it automaticall
 
 Add symlink to home folder from dotfiles directory:
 
-  ```dot ln```
+  ```bash
+  dot ln
+  ```
 
 Show list of created symlinks(aliases):
 
-  ```dot alias```
+  ```bash
+  dot alias
+  ```
 
 Remove all created symlinks:
 
-  ```dot destroy```
+  ```bash
+  dot destroy
+  ```
 
 Remove specific symlink:
 
-  ```dot destroy .zshrc```
+  ```bash
+  dot destroy .zshrc
+  ```
 
 Upgrade dotfiles:
 
-  ```dot upgrade```
+  ```bash
+  dot upgrade
+  ```
 
 Save and add changes to remote server:
 
-  ```dot save```
+  ```bash
+  dot save
+  ```
 
 Create custom symlink and add it to alias list.
 It create symlink '_zshrc' on '.zshrc' to home directory, and add
 it to alias list where you can delete it using command 'dot destroy _zshrc':
 
-  ```dot alias .zshrc _zshrc```
+  ```bash
+  dot alias .zshrc _zshrc
+  ```
 
 Run tests for dotfiles manager:
 
-  ```dot test```
+  ```bash
+  dot test
+  ```
 
 
 ### What I use
