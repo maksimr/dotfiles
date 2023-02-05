@@ -40,6 +40,8 @@ To install you could use the install script (requires Git) using Wget:
 
   ```wget -qO- https://raw.github.com/maksimr/dotfiles/master/install.sh | bash```
 
+  ```curl -s https://raw.github.com/maksimr/dotfiles/master/install.sh | bash```
+
 
 ### Manual install
 
