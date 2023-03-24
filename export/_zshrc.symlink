@@ -69,11 +69,10 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n(%m):%~ %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
 
 CUSTOM_BIN_PATH_LIST=(
-  "$HOME/bin"
-  "$HOME/local/bin"
+  "$HOME/.local/bin"
   "$HOME/.go/bin"
 )
-for BPATH in CUSTOM_BIN_PATH_LIST; do
+for BPATH in $CUSTOM_BIN_PATH_LIST; do
   case ":$PATH:" in
     *:"$BPATH":*) ;;
     *) PATH="$BPATH:$PATH" ;;
