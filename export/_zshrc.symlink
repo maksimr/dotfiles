@@ -387,6 +387,10 @@ if [ "$(command -v github-copilot-cli)"  ]; then
  eval "$(github-copilot-cli alias -- "$0")"
 fi
 
+if [ "$(command -v node)" ]; then
+  alias chatgpt="npx chatgpt"
+fi
+
 export HOMEBREW_NO_AUTO_UPDATE=1
 export GOPATH=$HOME/.go
 export ANDROID_HOME=/usr/local/opt/android-sdk
