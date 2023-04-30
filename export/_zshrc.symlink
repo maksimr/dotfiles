@@ -388,7 +388,8 @@ if [ "$(command -v github-copilot-cli)"  ]; then
 fi
 
 if [ "$(command -v node)" ]; then
-  alias chatgpt="npx chatgpt"
+  chatgpt-shell() { npx chatgpt "$*" };
+  alias "???"="chatgpt-shell"
 fi
 
 export HOMEBREW_NO_AUTO_UPDATE=1
