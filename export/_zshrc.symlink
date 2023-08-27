@@ -91,7 +91,6 @@ alias rm="rm -rf"
 alias pl="sudo"
 
 alias mimimi="git pull --rebase"
-alias frfrfr="g br --merged $(current_branch) | grep -v '\*\|master'"
 
 alias c="cd"
 alias k9="kill -9"
@@ -109,9 +108,6 @@ then
   export EDITOR=nvim
 fi
 
-alias vl='vim "$(ls -t | head -1)"' # open last modified file in vim
-# open nested last modified file, exclude dotfiles and ot directories
-alias vll='vim "$(find . ! \( -path "./.*" -o  -path "*/.*" \) -type f -printf "%T@ %p\n" | sort -n | tail -1 | cut -f2- -d" " )"'
 alias co="$([ "$(command -v code-insiders)" ] && echo "code-insiders -n " || echo "code -n ")"
 
 # change some aliases if grc installed
@@ -127,15 +123,9 @@ then
   alias logc="grc cat"
   alias logt="grc tail"
   alias logh="grc head"
-  if [ "$(command -v jshint)"  ]
-  then
-    alias jshint="grc jshint"
-  fi
-  alias kk="grc karma"
 fi
 
 alias zshprofiling="/usr/bin/time zsh -i -c exit"
-alias xm="xmodmap ~/.xmodmap"
 alias iie="curl -s https://raw.githubusercontent.com/xdissent/ievms/master/ievms.sh | bash"
 
 # Global bindkey file
@@ -267,18 +257,6 @@ then
 load-nvmrc
 fi
 
-# npm
-if [ "$(command -v npm)"  ]
-then
-  alias n="npm"
-  alias ni="npm install"
-  alias nr="npm run"
-  alias nis="npm install --save"
-  alias nise="npm install --save --save-exact"
-  alias nisd="npm install --save-dev"
-  alias nisde="npm install --save-dev"
-fi
-
 # Different configuration for oh-my-zsh plugins
 # vim: ft=zsh
 
@@ -385,11 +363,6 @@ fi
 # https://www.npmjs.com/package/@githubnext/github-copilot-cli
 if [ "$(command -v github-copilot-cli)"  ]; then
  eval "$(github-copilot-cli alias -- "$0")"
-fi
-
-if [ "$(command -v node)" ]; then
-  chatgpt-shell() { npx chatgpt "$*" };
-  alias "???"="chatgpt-shell"
 fi
 
 export HOMEBREW_NO_AUTO_UPDATE=1
