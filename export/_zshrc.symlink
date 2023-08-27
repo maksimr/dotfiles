@@ -61,8 +61,8 @@ if [ "$(command -v zgen)"  ]; then
   fi
 fi
 
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=100000
+SAVEHIST=100000
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
