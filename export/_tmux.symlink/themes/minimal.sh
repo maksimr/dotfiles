@@ -32,11 +32,8 @@ fi
 if [ -z $TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS ]; then
 	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=(
 		"pwd 89 211" \
-		"mail_count_gmail 9 255" \
 		"battery 137 127" \
-		"weather 37 255" \
 		"date_day 235 136" \
-		"date_full 235 136 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}" \
 		"time 235 136 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}" \
 	)
 fi
