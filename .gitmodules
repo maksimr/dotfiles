@@ -1,9 +1,3 @@
-[submodule "export/_config/awesome.symlink/screenful"]
-	path = export/_config/awesome.symlink/screenful
-	url = https://github.com/dluksza/screenful.git
-[submodule "export/_tmux.symlink/tmux-powerline"]
-	path = export/_tmux.symlink/tmux-powerline
-	url = https://github.com/erikw/tmux-powerline.git
 [submodule "lib/bats"]
 	path = lib/bats
 	url = https://github.com/sstephenson/bats.git

@@ -7,7 +7,6 @@ set -g set-clipboard off
 
 set -g @tpm_plugins " \
   tmux-plugins/tpm \
-  tmux-plugins/tmux-resurrect \
 "
 
 # initializes tmux plugin manager
@@ -98,12 +97,3 @@ set-option -g display-panes-active-colour colour33 #blue
 set-option -g display-panes-colour colour166 #orange
 # clock
 set-window-option -g clock-mode-colour colour64 #green
-
-## tmux-powerline
-set-option -g status on
-set-option -g status-interval 2
-set-option -g status-justify "centre"
-set-option -g status-left-length 60
-set-option -g status-right-length 90
-set-option -g status-left "#(~/.tmux/tmux-powerline/powerline.sh left)"
-set-option -g status-right "#(~/.tmux/tmux-powerline/powerline.sh right)"
