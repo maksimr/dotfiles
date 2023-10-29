@@ -448,7 +448,7 @@ lua <<EOF
       request = "launch",
       name = "Launch Program",
       runtimeExecutable = "npx",
-      runtimeArgs = { "ts-node", },
+      runtimeArgs = { "ts-node", "-T", "--esm"},
       program = "${file}",
       cwd = "${workspaceFolder}",
       sourceMaps = true,
