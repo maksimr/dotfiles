@@ -9,7 +9,7 @@
 # @param {[Dir]} DIST The destination directory where will be created links
 # by default $HOME
 function dot_linking() {
-  local DIR="${1:-$DOTFILE_DIR}"
+  local DIR="${1:-$DOTFILE_DIR/export}"
   local DIST="${2:-$HOME}"
   local CURRENT_DIR="$(pwd)"
 
@@ -17,7 +17,7 @@ function dot_linking() {
   cd "$DIST"
 
   # iterate by source files and create links
-  for file in $(find $DIR -iname "*.symlink"); do
+  for file in $(find $DIR -type f -iname "*"); do
     # get directory name relative DIST directory
     local directory="$(dirname $file)"
     directory="${directory#"$DIR"}"
