@@ -37,12 +37,16 @@ Load and run.
 
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash \
-    && nvm use stable
+&& nvm use stable
 ```
 
 ```bash
 curl -s -L https://raw.github.com/maksimr/udot/master/index.mjs | \
-  node --input-type=module - \
-  --base-dir=~/dotfiles \
-  use https://github.com/maksimr/dotfiles
+node --input-type=module - use https://github.com/maksimr/dotfiles
+```
+
+```bash
+curl -s -L https://raw.github.com/maksimr/udot/master/index.mjs \
+  --output ~/.local/bin/udot \
+  && chmod +x ~/.local/bin/udot
 ```
