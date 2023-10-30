@@ -3,5 +3,5 @@
 *.swo
 *.swn
 *.swm
-/aliases
-node_modules
+.tern-port
+.tern-project
