@@ -4,6 +4,3 @@
 [submodule "export/_fzf.symlink"]
 	path = export/_fzf.symlink
 	url = https://github.com/junegunn/fzf.git
-[submodule "export/_zgen.symlink"]
-	path = export/_zgen.symlink
-	url = https://github.com/tarjoilija/zgen.git

@@ -23,7 +23,12 @@ if [[ $- == *i* ]]; then # only if we are in interactive mode
 fi
 
 
-# Load zgen
+# install zgen
+if [ ! -d ~/.zgen ]; then
+  git clone https://github.com/tarjoilija/zgen.git "${HOME}/.zgen"
+fi
+
+# load zgen
 if [ -f ~/.zgen/zgen.zsh ]; then
   . ~/.zgen/zgen.zsh 2>/dev/null
 fi
