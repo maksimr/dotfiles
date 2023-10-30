@@ -5,15 +5,3 @@
 *.swm
 /aliases
 node_modules
-
-# Tmux
-!/export/_tmux.symlink/plugins
-
-# Remove tmux plugins from git
-/export/_tmux.symlink/plugins/*
-
-# Put tmuxp plugin manager under git controll
-!/export/_tmux.symlink/plugins/tpm
-
-# Tmux session folder
-/export/_tmux.symlink/resurrect/
