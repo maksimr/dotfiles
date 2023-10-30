@@ -210,10 +210,7 @@ then
     cd "$(fasd -a $@)"
   }
 
-  # aliases
   alias f="ff"
-  alias fv="ff vim"
-  alias vv="fasd -t -e vim -b viminfo"
 fi
 
 # http://www.gitignore.io/cli
