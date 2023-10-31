@@ -84,9 +84,6 @@ for BPATH in $CUSTOM_BIN_PATH_LIST; do
   esac
 done
 
-# load dotfiles
-. ~/.dotfiles/dot.bash 2>/dev/null
-
 # Global alias for zsh
 # vim: ft=zsh
 alias mk="mkdir -p"
