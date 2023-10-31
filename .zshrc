@@ -38,7 +38,6 @@ if [ "$(command -v zgen)"  ]; then
         zgen oh-my-zsh plugins/git
         zgen oh-my-zsh plugins/vundle
         zgen oh-my-zsh plugins/vi-mode
-        zgen oh-my-zsh plugins/command-not-found
 
         zgen load Aloxaf/fzf-tab
         zgen load zsh-users/zsh-history-substring-search
@@ -46,21 +45,17 @@ if [ "$(command -v zgen)"  ]; then
         zgen load "zsh-users/zsh-autosuggestions" "zsh-autosuggestions.zsh"
         zgen load zsh-users/zsh-completions src
 
+        # Quickly go back to a specific parent directory
+        # instead of typing cd ../../.. redundantly
         zgen load Tarrasch/zsh-bd
 
-        # Node Plugins
         zgen oh-my-zsh plugins/npm
-        zgen oh-my-zsh plugins/node
 
         # Theme
         zgen oh-my-zsh themes/robbyrussell
         zgen save
   fi
 fi
-
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=black,bold"
-
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
 PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n(%m):%~ %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
 
@@ -69,15 +64,14 @@ alias t="touch"
 alias q="exit"
 alias rm="rm -rf"
 alias pl="sudo"
-
 alias mimimi="git pull --rebase"
-
 alias c="cd"
 alias k9="kill -9"
 alias disc='df -h'
-
 alias v="$([ "$(command -v nvim)" ] && echo "nvim" || echo "vim")"
-alias vo="v -c 'set filetype=bash' -n"
+alias co="$([ "$(command -v code-insiders)" ] && echo "code-insiders -n " || echo "code -n ")"
+alias zshprofiling="/usr/bin/time zsh -i -c exit"
+
 if [ "$(command -v nvim)" ]
 then
   autoload -U edit-command-line
@@ -87,10 +81,6 @@ then
   bindkey -M vicmd v edit-command-line
   export EDITOR=nvim
 fi
-
-alias co="$([ "$(command -v code-insiders)" ] && echo "code-insiders -n " || echo "code -n ")"
-
-alias zshprofiling="/usr/bin/time zsh -i -c exit"
 
 # vi-mode
 # add to vim mode some emacs key bindings
@@ -112,6 +102,7 @@ bindkey -M vicmd '\C-e' end-of-line
 bindkey -M vicmd '?' history-incremental-search-forward
 
 # zsh-syntax-highlighting
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[command]='fg=green,bold'
 ZSH_HIGHLIGHT_STYLES[alias]='fg=green,bold'
@@ -126,6 +117,7 @@ bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 
 # zsh-autosuggestions
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=black,bold"
 if [ "$(command -v autosuggest_start)"  ]; then
   # Enable autosuggestions automatically
   zle-line-init() {
