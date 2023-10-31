@@ -45,10 +45,6 @@ if [ "$(command -v zgen)"  ]; then
         zgen load "zsh-users/zsh-autosuggestions" "zsh-autosuggestions.zsh"
         zgen load zsh-users/zsh-completions src
 
-        # Quickly go back to a specific parent directory
-        # instead of typing cd ../../.. redundantly
-        zgen load Tarrasch/zsh-bd
-
         zgen oh-my-zsh plugins/npm
 
         # Theme
