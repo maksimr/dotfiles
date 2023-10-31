@@ -112,23 +112,7 @@ fi
 
 alias co="$([ "$(command -v code-insiders)" ] && echo "code-insiders -n " || echo "code -n ")"
 
-# change some aliases if grc installed
-if [ "$(command -v grc)"  ]
-then
-  alias ll='grc ls -lFh --color=yes'
-  alias ping="grc ping"
-  alias traceroute="grc traceroute"
-  alias make="grc make"
-  alias diff="grc diff"
-  alias cvs="grc cvs"
-  alias netstat="grc netstat"
-  alias logc="grc cat"
-  alias logt="grc tail"
-  alias logh="grc head"
-fi
-
 alias zshprofiling="/usr/bin/time zsh -i -c exit"
-alias iie="curl -s https://raw.githubusercontent.com/xdissent/ievms/master/ievms.sh | bash"
 
 # Global bindkey file
 # vim: ft=zsh
@@ -322,27 +306,6 @@ if [ -f "$HOME/.fzf.zsh"  ]; then
   bindkey "^F" "insert-fzf-path-in-command-line"
 fi
 
-
-function idea() {
-  declare -a ideargs=()
-  declare -- wait=""
-
-  for o in "$@"; do
-    if [[ "$o" = "--wait" || "$o" = "-w" ]]; then
-      wait="-W"
-      o="--wait"
-    fi
-    if [[ "$o" =~ " " ]]; then
-      ideargs+=("\"$o\"")
-    else
-      ideargs+=("$o")
-    fi
-  done
-
-  idea_script=$(find "$HOME/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0" -name "idea" | tail -n 1)
-  open -na "$idea_script" $wait --args "${ideargs[@]}"
-}
-
 # https://minikube.sigs.k8s.io/docs/commands/completion/
 if [ -f "$HOME/.minikube-completion" ]; then
   # eval $(minikube -p minikube docker-env) # use miniube docker
@@ -357,26 +320,24 @@ if [ -f "$HOME/.zshrc.local" ]; then
   . $HOME/.zshrc.local
 fi
 
-# load local zsh files
-if [ -d "$HOME/.local/zsh" ]; then
-  for lzsh in $(ls "$HOME/.local/zsh"); do
-    . $HOME/.local/zsh/$lzsh
-  done
-fi
-
 # https://www.npmjs.com/package/@githubnext/github-copilot-cli
 if [ "$(command -v github-copilot-cli)"  ]; then
  eval "$(github-copilot-cli alias -- "$0")"
 fi
 
-export GOPATH=$HOME/.go
-export ANDROID_HOME=/usr/local/opt/android-sdk
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+export GOPATH=$HOME/.go
+
+export ANDROID_HOME=/usr/local/opt/android-sdk
+
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
 export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
-export DVM_DIR="$HOME/.dvm"
-export PATH="$DVM_DIR/bin:$PATH"
+
 export PATH="$PATH:$HOME/.rvm/bin"
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+export HOMEBREW_NO_ANALYTICS=1
