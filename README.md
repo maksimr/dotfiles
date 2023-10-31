@@ -45,5 +45,5 @@ npx github:maksimr/udot use https://github.com/maksimr/dotfiles
 ```
 
 ```bash
-npx github:maksimr/udot upgrade --module-path=~/.local/bin
+npx github:maksimr/udot upgrade --module-path=~/.local/bin/udot
 ```
