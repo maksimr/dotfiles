@@ -41,12 +41,9 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash 
 ```
 
 ```bash
-curl -s -L https://raw.github.com/maksimr/udot/main/index.mjs | \
-node --input-type=module - use https://github.com/maksimr/dotfiles
+npx github:maksimr/udot use https://github.com/maksimr/dotfiles
 ```
 
 ```bash
-curl -s -L https://raw.github.com/maksimr/udot/main/index.mjs \
-  --output ~/.local/bin/udot \
-  && chmod +x ~/.local/bin/udot
+npx github:maksimr/udot upgrade --module-path=~/.local/bin
 ```
