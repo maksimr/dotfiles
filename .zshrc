@@ -8,6 +8,15 @@ export USE_PATCHED_FONT="false"
 export EDITOR=vim
 export HISTSIZE=100000
 export SAVEHIST=100000
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt SHARE_HISTORY
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt EXTENDED_HISTORY
+setopt HIST_EXPIRE_DUPS_FIRST
+unsetopt HIST_VERIFY
 
 if [[ $- == *i* ]]; then # only if we are in interactive mode
   if [ "$(command -v tmux)"  ]; then # tmux installed
