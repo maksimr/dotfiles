@@ -272,11 +272,11 @@ then
   }
 
   load-nvmrc
-fi
 
-# This loads nvm bash_completion
-[ -s "$NVM_DIR/bash_completion" ] && \
-  . "$NVM_DIR/bash_completion"
+  # This loads nvm bash_completion
+  [ -s "$NVM_DIR/bash_completion" ] && \
+    . "$NVM_DIR/bash_completion"
+fi
 
 # Is a tool for managing parallel versions of multiple
 # Java based Software Development Kits on systems.
