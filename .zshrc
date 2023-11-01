@@ -234,7 +234,14 @@ if [ -f "$HOME/.minikube-completion" ]; then
 fi
 
 # https://kubernetes.io/docs/reference/kubectl/cheatsheet/#zsh
-[[ $commands[kubectl]  ]] && source <(kubectl completion zsh)
+if [ "$(command -v kubectl)"  ]; then
+  KUBECTL_CACHE="$HOME/.kubectl-completion-zsh"
+  if [ "${commands[kubectl]}" -nt "$KUBECTL_CACHE" -o ! -f "$KUBECTL_CACHE" ]; then
+    kubectl completion zsh >! "$KUBECTL_CACHE"
+  fi
+  source "$KUBECTL_CACHE"
+  unset KUBECTL_CACHE
+fi
 
 # https://www.npmjs.com/package/@githubnext/github-copilot-cli
 if [ "$(command -v github-copilot-cli)"  ]; then
