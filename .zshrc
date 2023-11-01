@@ -162,6 +162,7 @@ then
       >! "$FASD_CACHE"
   fi
   source "$FASD_CACHE"
+  unset FASD_CACHE
 
   function ff(){
     local ARGUMENTS
@@ -229,7 +230,6 @@ fi
 
 # https://minikube.sigs.k8s.io/docs/commands/completion/
 if [ -f "$HOME/.minikube-completion" ]; then
-  # eval $(minikube -p minikube docker-env) # use miniube docker
   . $HOME/.minikube-completion
 fi
 
