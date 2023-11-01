@@ -206,6 +206,17 @@ call plug#begin()
       execute '!' . &keywordprg . " " . expand('<cword>')
     endif
   endfunction
+  " Highlight the symbol and its references when holding the cursor.
+  set updatetime=300
+  autocmd CursorHold * silent call CocActionAsync('highlight')
+  " Map function and class text objects
+  " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+  xmap if <Plug>(coc-funcobj-i)
+  omap if <Plug>(coc-funcobj-i)
+  xmap af <Plug>(coc-funcobj-a)
+  omap af <Plug>(coc-funcobj-a)
+  " Add `:Format` command to format current buffer.
+  command! -nargs=0 Format :call CocAction('format')
 
   Plug 'maksimr/vim-javascript'
   Plug 'rosstimson/bats.vim', { 'for': 'bat' }

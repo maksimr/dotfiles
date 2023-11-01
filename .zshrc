@@ -24,6 +24,17 @@ if [[ $- == *i* ]]; then # only if we are in interactive mode
   fi
 fi
 
+# add a directory to the PATH variable only if it's not already in it
+# $1: the directory to add
+# $2: "after" to add it at the end, otherwise it's added at the beginning
+pathmunge() {
+  [ -d "$1" ] && case ":$PATH:" in
+    *:$1:*) ;;
+    *) [ "$2" = "after" ] && PATH="$PATH:$1" || PATH="$1:$PATH"
+  esac
+  export PATH
+}
+
 # Instal and load zgen (zsh plugin manager)
 [[ ! -d ~/.zgen ]] && git clone https://github.com/tarjoilija/zgen.git "${HOME}/.zgen"
 [[ -f ~/.zgen/zgen.zsh ]] && source ~/.zgen/zgen.zsh 2>/dev/null
@@ -127,7 +138,7 @@ if [ "$(command -v autosuggest_start)"  ]; then
 fi
 
 # Add .local/bin to PATH
-export PATH="$HOME/.local/bin:$PATH"
+pathmunge "$HOME/.local/bin"
 
 # Fix problem with intelliji window focus
 if [[ `uname` -ne 'Darwin' ]]; then
@@ -145,10 +156,6 @@ unset fasd_cache
 
 if [ "$(command -v fasd)" ]
 then
-
-  #eval "$(fasd --init auto)"
-
-  # more coolest fasd
   function ff(){
     local ARGUMENTS
     local ARGV
@@ -272,10 +279,10 @@ export SDKMAN_DIR="$HOME/.sdkman"
   && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 export DENO_INSTALL="$HOME/.deno"
-export PATH="$DENO_INSTALL/bin:$PATH"
+pathmunge "$DENO_INSTALL/bin"
 
 # Ruby version manager
-export PATH="$PATH:$HOME/.rvm/bin"
+pathmunge "$HOME/.rvm/bin" after
 [[ -s "$HOME/.rvm/scripts/rvm" ]] \
   && source "$HOME/.rvm/scripts/rvm"
 
