@@ -145,17 +145,15 @@ if [[ `uname` -ne 'Darwin' ]]; then
   export _JAVA_AWT_WM_NONREPARENTING=1;
 fi
 
-# fasd
-# Optimization loading fasd
-fasd_cache="$HOME/.fasd-init-bash"
-if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache"  ]; then
-  fasd --init auto >| "$fasd_cache"
-fi
-source "$fasd_cache"
-unset fasd_cache
-
 if [ "$(command -v fasd)" ]
 then
+  FASD_CACHE="$HOME/.fasd-init-zsh"
+  if [ "${commands[fasd]}" -nt "$FASD_CACHE" -o ! -f "$FASD_CACHE" ]; then
+    fasd --init posix-alias zsh-{hook,ccomp,ccomp-install,wcomp,wcomp-install} \
+      >! "$FASD_CACHE"
+  fi
+  source "$FASD_CACHE"
+
   function ff(){
     local ARGUMENTS
     local ARGV
