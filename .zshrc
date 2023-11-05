@@ -87,6 +87,7 @@ alias disc='df -h'
 alias v="$([ "$(command -v nvim)" ] && echo "nvim" || echo "vim")"
 alias co="$([ "$(command -v code-insiders)" ] && echo "code-insiders -n " || echo "code -n ")"
 alias zshprofiling="/usr/bin/time zsh -i -c exit"
+alias n="npm"
 
 if [ "$(command -v nvim)" ]
 then
