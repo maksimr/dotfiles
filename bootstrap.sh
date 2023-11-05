@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
+
 cd "$(dirname "${BASH_SOURCE}")";
 
 if [ "$(command -v npx)" ]; then
-  npx github:maksimr/udot use https://github.com/maksimr/dotfiles
+  npx -y github:maksimr/udot apply --base-dir "$(dirname "${BASH_SOURCE}")"
   exit 0
 fi
 
