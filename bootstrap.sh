@@ -4,7 +4,7 @@
 cd "$(dirname "${BASH_SOURCE}")";
 
 if [ "$(command -v npx)" ]; then
-  npx -y github:maksimr/udot apply --base-dir "$(dirname "${BASH_SOURCE}")"
+  npx -y github:maksimr/udot apply --base-dir="$(dirname "${BASH_SOURCE}")"
   exit 0
 fi
 
