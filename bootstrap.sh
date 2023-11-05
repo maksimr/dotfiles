@@ -2,6 +2,11 @@
 
 cd "$(dirname "${BASH_SOURCE}")";
 
+if [ "$(command -v npx)" ]; then
+  npx github:maksimr/udot use https://github.com/maksimr/dotfiles
+  exit 0
+fi
+
 function doIt() {
   rsync \
     --exclude ".git/" \
