@@ -2,7 +2,7 @@
 .gitignore
 .DS_Store
 .vscode
-.dotignore
+.ignore
 node_modules
 package-lock.json
 package.json
