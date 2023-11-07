@@ -14,7 +14,7 @@ function doIt() {
     --exclude ".gitignore" \
     --exclude ".DS_Store" \
     --exclude ".osx" \
-    --exclude ".dotignore" \
+    --exclude ".ignore" \
     --exclude "bootstrap.sh" \
     --exclude "README.md" \
     -avh --no-perms . "$HOME";
