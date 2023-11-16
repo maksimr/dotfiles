@@ -310,5 +310,10 @@ pathmunge "$HOME/.rvm/bin" after
 # https://docs.brew.sh/Analytics
 export HOMEBREW_NO_ANALYTICS=1
 
-[[ -s "$HOME/.zsh.local" ]] && source "$HOME/.zsh.local"
+# Load custom zsh scripts
+[[ -d "$HOME/.local/share/zsh" ]] && \
+  for file in "$HOME/.local/share/zsh"/*.zsh; do
+    source "$file"
+  done
 
+[[ -s "$HOME/.zsh.local" ]] && source "$HOME/.zsh.local"
