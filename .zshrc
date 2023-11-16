@@ -6,6 +6,13 @@
 
 export USE_PATCHED_FONT="false"
 export EDITOR=vim
+
+#Unfortunately, zsh's default history file size is limited to 10000 lines by default and will truncate the history to this length by deduplicating entries and removing old data.
+#Adding the following lines to .zshrc will remove the limits and deduplication of the history file.
+export HISTSIZE=1000000000
+export SAVEHIST=$HISTSIZE
+setopt EXTENDED_HISTORY
+
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_SPACE
@@ -14,12 +21,6 @@ setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
 setopt HIST_EXPIRE_DUPS_FIRST
 unsetopt HIST_VERIFY
-
-#Unfortunately, zsh's default history file size is limited to 10000 lines by default and will truncate the history to this length by deduplicating entries and removing old data.
-#Adding the following lines to .zshrc will remove the limits and deduplication of the history file.
-export HISTSIZE=1000000000
-export SAVEHIST=$HISTSIZE
-setopt EXTENDED_HISTORY
 
 if [[ $- == *i* ]]; then # only if we are in interactive mode
   if [ "$(command -v tmux)"  ]; then # tmux installed
