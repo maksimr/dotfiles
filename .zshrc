@@ -248,11 +248,6 @@ if [ "$(command -v kubectl)"  ]; then
   unset KUBECTL_CACHE
 fi
 
-# https://www.npmjs.com/package/@githubnext/github-copilot-cli
-if [ "$(command -v github-copilot-cli)"  ]; then
-  eval "$(github-copilot-cli alias -- "$0")"
-fi
-
 # http://www.gitignore.io/cli
 if [ "$(command -v curl)" ]
 then
@@ -288,6 +283,11 @@ then
   # This loads nvm bash_completion
   [ -s "$NVM_DIR/bash_completion" ] && \
     . "$NVM_DIR/bash_completion"
+fi
+
+# https://www.npmjs.com/package/@githubnext/github-copilot-cli
+if [ "$(command -v github-copilot-cli)"  ]; then
+  eval "$(github-copilot-cli alias -- "$0")"
 fi
 
 # Is a tool for managing parallel versions of multiple
