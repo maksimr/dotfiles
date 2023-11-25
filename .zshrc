@@ -60,6 +60,8 @@ cacheandrun() {
   fi
   source "$CMD_CACHE"
   unset CMD_CACHE
+  unset CMD_CODE
+  unset CMD_NAME
 }
 
 # Instal and load zgen (zsh plugin manager)
