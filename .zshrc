@@ -48,6 +48,20 @@ pathmunge() {
   export PATH
 }
 
+# cache result of evaluation of passed command to speed up next execution
+# $1: command name
+# $2: comand source code
+cacheandrun() {
+  CMD_NAME="$1"
+  CMD_CODE="$2"
+  CMD_CACHE="$HOME/.$CMD_NAME-init"
+  if [ "${commands[$CMD_NAME]}" -nt "$CMD_CACHE" -o ! -f "$CMD_CACHE" ]; then
+    eval $CMD_CODE >! "$CMD_CACHE"
+  fi
+  source "$CMD_CACHE"
+  unset CMD_CACHE
+}
+
 # Instal and load zgen (zsh plugin manager)
 [[ ! -d ~/.zgen ]] && git clone https://github.com/tarjoilija/zgen.git "${HOME}/.zgen"
 [[ -f ~/.zgen/zgen.zsh ]] && source ~/.zgen/zgen.zsh 2>/dev/null
@@ -161,13 +175,8 @@ fi
 
 if [ "$(command -v fasd)" ]
 then
-  FASD_CACHE="$HOME/.fasd-init-zsh"
-  if [ "${commands[fasd]}" -nt "$FASD_CACHE" -o ! -f "$FASD_CACHE" ]; then
-    fasd --init posix-alias zsh-{hook,ccomp,ccomp-install,wcomp,wcomp-install} \
-      >! "$FASD_CACHE"
-  fi
-  source "$FASD_CACHE"
-  unset FASD_CACHE
+  cacheandrun 'fasd' \
+    'fasd --init posix-alias zsh-{hook,ccomp,ccomp-install,wcomp,wcomp-install}'
 
   function ff(){
     local ARGUMENTS
@@ -240,12 +249,7 @@ fi
 
 # https://kubernetes.io/docs/reference/kubectl/cheatsheet/#zsh
 if [ "$(command -v kubectl)"  ]; then
-  KUBECTL_CACHE="$HOME/.kubectl-completion-zsh"
-  if [ "${commands[kubectl]}" -nt "$KUBECTL_CACHE" -o ! -f "$KUBECTL_CACHE" ]; then
-    kubectl completion zsh >! "$KUBECTL_CACHE"
-  fi
-  source "$KUBECTL_CACHE"
-  unset KUBECTL_CACHE
+  cacheandrun 'kubectl' 'kubectl completion zsh'
 fi
 
 # http://www.gitignore.io/cli
