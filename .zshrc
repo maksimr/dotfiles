@@ -65,8 +65,8 @@ cacheandrun() {
 }
 
 # Instal and load zgen (zsh plugin manager)
-[[ ! -d ~/.zgen ]] && git clone https://github.com/tarjoilija/zgen.git "${HOME}/.zgen"
-[[ -f ~/.zgen/zgen.zsh ]] && source ~/.zgen/zgen.zsh 2>/dev/null
+[[ ! -d $HOME/.zgen ]] && git clone https://github.com/tarjoilija/zgen.git "${HOME}/.zgen"
+[[ -f $HOME/.zgen/zgen.zsh ]] && source $HOME/.zgen/zgen.zsh 2>/dev/null
 
 if [ "$(command -v zgen)"  ]; then
   if ! zgen saved; then
@@ -229,7 +229,7 @@ if [ ! -d "$HOME/.fzf"  ]; then
 fi
 
 if [ -f "$HOME/.fzf.zsh"  ]; then
-  source ~/.fzf.zsh
+  source "$HOME/.fzf.zsh"
 
   function insert-fzf-path-in-command-line() {
     local selected_path
