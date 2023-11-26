@@ -48,7 +48,7 @@ pathmunge() {
   export PATH
 }
 
-# cache result of evaluation of passed command to speed up next execution
+# save results of a command in a cache file and source it
 # $1: command name
 # $2: comand source code
 cacheandrun() {
@@ -224,8 +224,8 @@ fi
 
 # https://github.com/junegunn/fzf
 if [ ! -d "$HOME/.fzf"  ]; then
-  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-  ~/.fzf/install
+  git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+  $HOME/.fzf/install
 fi
 
 if [ -f "$HOME/.fzf.zsh"  ]; then
