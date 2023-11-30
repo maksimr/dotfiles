@@ -30,7 +30,7 @@ ANDROID_SDK_ROOT="$HOME/Library/Android/sdk/cmdline-tools"
 if [ -d "$ANDROID_SDK_ROOT" ]; then
   export ANDROID_SDK_ROOT="$ANDROID_SDK_ROOT"
   export ANDROID_HOME="$ANDROID_SDK_ROOT"
-  export PATH="$ANDROID_SDK_ROOT/tools/bin:$PATH"
+  export PATH="$ANDROID_SDK_ROOT/bin:$PATH"
   export PATH="$ANDROID_SDK_ROOT/platform-tools:$PATH"
   export PATH="$ANDROID_SDK_ROOT/emulator:$PATH"
 fi
