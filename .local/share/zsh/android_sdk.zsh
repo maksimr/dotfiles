@@ -9,6 +9,7 @@
 # - cd ~/Library/Android/sdk
 # - ./cmdline-tools/latest/bin/sdkmanager --list
 # - ./cmdline-tools/latest/bin/sdkmanager platform-tools emulator
+# - curl -o ~/Downloads/commandlinetools.zip https://dl.google.com/android/repository/commandlinetools-mac-10406996_latest.zip && unzip ~/Downloads/commandlinetools.zip && mkdir -p ~/Library/Android/sdk/cmdline-tools && mv ~/Downloads/cmdline-tools ~/Library/Android/sdk/cmdline-tools/latest
 #
 # Install android 28
 # - sdkmanager --install "platforms;android-33" "system-images;android-33;google_apis_playstore;arm64-v8a"
