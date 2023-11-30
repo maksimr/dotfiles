@@ -25,7 +25,7 @@
 # - rm -rf ~/Library/Android/sdk/system-images/android-28
 ##
 
-ANDROID_SDK_ROOT="~/Library/Android/sdk/cmdline-tools"
+ANDROID_SDK_ROOT="$HOME/Library/Android/sdk/cmdline-tools"
 
 if [ -d "$ANDROID_SDK_ROOT" ]; then
   export ANDROID_SDK_ROOT="$ANDROID_SDK_ROOT"
