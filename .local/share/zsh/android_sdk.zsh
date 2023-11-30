@@ -8,6 +8,21 @@
 # - cd ~/Library/Android/sdk/cmdline-tools/
 # - ./bin/sdkmanager --list --sdk_root=$(pwd)
 # - ./bin/sdkmanager platform-tools emulator --sdk_root=$(pwd)
+#
+# Install android 28
+# - sdkmanager "platforms;android-28"
+# - sdkmanager "build-tools;28.0.3"
+# - sdkmanager "system-images;android-28;google_apis;x86_64"
+# - avdmanager create avd — name android28 — package "system-images;android-28;default;x86"
+#
+# Start emulator
+# - emulator @android28
+# - adb devices
+#
+# Remove emulator
+# - avdmanager delete avd -n android28
+# - rm -rf ~/.android/avd/android28.avd
+# - rm -rf ~/Library/Android/sdk/system-images/android-28
 ##
 
 ANDROID_SDK_ROOT="~/Library/Android/sdk/cmdline-tools"
