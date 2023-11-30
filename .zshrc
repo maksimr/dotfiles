@@ -320,6 +320,6 @@ export HOMEBREW_NO_ANALYTICS=1
 [[ -d "$HOME/.local/share/zsh" ]] && \
   for file in "$HOME/.local/share/zsh"/*.zsh; do
     source "$file"
-  done
+  done 2>/dev/null
 
 [[ -s "$HOME/.zsh.local" ]] && source "$HOME/.zsh.local"
