@@ -12,6 +12,7 @@
 #
 # Install android 28
 # - sdkmanager --install "platforms;android-33" "system-images;android-33;google_apis_playstore;arm64-v8a"
+# - sdkmanager --list_installed
 # - sdkmanager "platforms;android-28"
 # - sdkmanager "build-tools;28.0.3"
 # - sdkmanager "system-images;android-28;google_apis;x86_64"
@@ -19,6 +20,7 @@
 # - avdmanager create avd --name android28 — package "system-images;android-28;default;x86"
 #
 # Start emulator
+# - emulator -list-avds
 # - emulator @android28
 # - adb devices
 #
