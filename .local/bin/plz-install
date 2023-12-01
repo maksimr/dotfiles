@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+function plzinstall() {
+  case $1 in
+    brew | homebrew)
+      if command -v brew &> /dev/null
+      then
+        echo "brew already installed"
+        return
+      fi
+
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      brew --version
+      ;;
+    sdkman)
+      if command -v sdk &> /dev/null
+      then
+        echo "sdkman already installed"
+        return
+      fi
+
+      curl -s "https://get.sdkman.io" | bash
+      source "$HOME/.sdkman/bin/sdkman-init.sh"
+      sdk version
+      ;;
+    nvm)
+      if command -v nvm &> /dev/null
+      then
+        echo "nvm already installed"
+        return
+      fi
+
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+      nvm --version
+      ;;
+    android)
+      if command -v sdkmanager &> /dev/null
+      then
+        echo "android already installed"
+        return
+      fi
+
+      plzinstall java
+      brew install --cask android-commandlinetools
+      sdkmanager --licenses
+      ;;
+    java)
+      if command -v java &> /dev/null
+      then
+        echo "java already installed"
+        return
+      fi
+
+      brew install --cask temurin
+      ;;
+  esac
+}
+
+plzinstall $@
