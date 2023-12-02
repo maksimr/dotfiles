@@ -70,6 +70,7 @@ cacheandrun() {
 
 if [ "$(command -v zgen)"  ]; then
   if ! zgen saved; then
+        # to reset zgen cache run `zgen reset`
 
         # Load various lib files
         zgen load robbyrussell/oh-my-zsh lib/
@@ -91,6 +92,11 @@ if [ "$(command -v zgen)"  ]; then
         zgen oh-my-zsh themes/robbyrussell
         zgen save
   fi
+fi
+
+if [ -d $HOME/.local/share/zsh/completion ]; then
+  fpath=($HOME/.local/share/zsh/completion $fpath)
+  compinit -u
 fi
 
 PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n(%m):%~ %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
