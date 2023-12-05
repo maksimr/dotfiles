@@ -29,7 +29,7 @@ if [[ $- == *i* ]]; then # only if we are in interactive mode
         if [ -z "$TMUX" ]; then # not inside tmux
           if [ -z "$WARP_IS_LOCAL_SHELL_SESSION" ]; then # not inside warp terminal
             # -2 for supporting colors (256)
-            tmux -2 &>/dev/null && exit # exit from shell after exit tmux
+            (tmux attach || tmux -2) &>/dev/null && exit # exit from shell after exit tmux
           fi
         fi
       fi
