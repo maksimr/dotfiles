@@ -101,6 +101,11 @@ fi
 
 PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n(%m):%~ %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
 
+# Custom PROMT when connecting via SSH
+if [[ ${SSH_TTY}  ]]; then
+  PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[yellow]%}%n(%m):%~ %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
+fi
+
 alias mk="mkdir -p"
 alias t="touch"
 alias q="exit"
