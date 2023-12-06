@@ -317,6 +317,10 @@ pathmunge "$HOME/.rvm/bin" after
 [[ -s "$HOME/.rvm/scripts/rvm" ]] \
   && source "$HOME/.rvm/scripts/rvm"
 
+# Run vim version manager
+[[ -s "$HOME/.vvm/etc/login" ]] \
+  && source "$HOME/.vvm/etc/login"
+
 # Opt-out of Homebrew's analytics
 # Learn more about what you are opting in to at
 # https://docs.brew.sh/Analytics
@@ -328,4 +332,4 @@ export HOMEBREW_NO_ANALYTICS=1
     source "$file"
   done 2>/dev/null
 
-[[ -s "$HOME/.zsh.local" ]] && source "$HOME/.zsh.local"
+[[ -s "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
