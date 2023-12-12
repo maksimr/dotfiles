@@ -304,7 +304,7 @@ fi
 
 # https://www.npmjs.com/package/@githubnext/github-copilot-cli
 if [ "$(command -v github-copilot-cli)"  ]; then
-  eval "$(github-copilot-cli alias -- "$0")"
+  cacheandrun 'github-copilot-cli' 'github-copilot-cli alias -- "$0"'
 fi
 
 # Is a tool for managing parallel versions of multiple
