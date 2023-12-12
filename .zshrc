@@ -51,9 +51,14 @@ pathmunge() {
 # save results of a command in a cache file and source it
 # $1: command name
 # $2: comand source code
-cacheandrun() {
+_eval_and_cache() {
   CMD_NAME="$1"
   CMD_CODE="$2"
+
+  if [ -z "$CMD_NAME" -o -z "$CMD_CODE" ]; then
+    return 1
+  fi
+
   CMD_CACHE="$HOME/.$CMD_NAME-init"
   if [ "${commands[$CMD_NAME]}" -nt "$CMD_CACHE" -o ! -f "$CMD_CACHE" ]; then
     eval $CMD_CODE >! "$CMD_CACHE"
@@ -188,7 +193,7 @@ fi
 
 if [ "$(command -v fasd)" ]
 then
-  cacheandrun 'fasd' \
+  _eval_and_cache 'fasd' \
     'fasd --init posix-alias zsh-{hook,ccomp,ccomp-install,wcomp,wcomp-install}'
 
   function ff(){
@@ -262,7 +267,7 @@ fi
 
 # https://kubernetes.io/docs/reference/kubectl/cheatsheet/#zsh
 if [ "$(command -v kubectl)"  ]; then
-  cacheandrun 'kubectl' 'kubectl completion zsh'
+  _eval_and_cache 'kubectl' 'kubectl completion zsh'
 fi
 
 # http://www.gitignore.io/cli
@@ -304,7 +309,7 @@ fi
 
 # https://www.npmjs.com/package/@githubnext/github-copilot-cli
 if [ "$(command -v github-copilot-cli)"  ]; then
-  cacheandrun 'github-copilot-cli' 'github-copilot-cli alias -- "$0"'
+  _eval_and_cache 'github-copilot-cli' 'github-copilot-cli alias -- "$0"'
 fi
 
 # Is a tool for managing parallel versions of multiple
