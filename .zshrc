@@ -310,6 +310,14 @@ fi
 # https://www.npmjs.com/package/@githubnext/github-copilot-cli
 if [ "$(command -v github-copilot-cli)"  ]; then
   _eval_and_cache 'github-copilot-cli' 'github-copilot-cli alias -- "$0"'
+else
+  copilot_lazy-init () {
+    npm install -g @githubnext/github-copilot-cli
+    unalias '??'
+    _eval_and_cache 'github-copilot-cli' 'github-copilot-cli alias -- "$0"'
+    copilot_what-the-shell "$@"
+  };
+  alias '??'='copilot_lazy-init'
 fi
 
 # Is a tool for managing parallel versions of multiple
