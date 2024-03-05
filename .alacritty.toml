@@ -1,0 +1,20 @@
+live_config_reload = true
+
+[window]
+decorations = "None"
+opacity = 0.8
+dynamic_padding = true
+
+[window.padding]
+x = 0
+y = 0
+
+[font]
+size = 28
+
+[font.normal]
+family = "JetBrains Mono Thin"
+
+[shell]
+args = ['--login']
+program = "/bin/zsh"
