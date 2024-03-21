@@ -67,7 +67,7 @@ fi
 
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;36m\]\u@\h\[\033[00m\]:\[\033[01;36m\]\w\[\033[00m\] '
+    PS1='\[\033[01;31m\]➜\[\033[00m\] ${debian_chroot:+($debian_chroot)}\[\033[01;36m\]\u@\h\[\033[00m\]:\[\033[01;36m\]\w\[\033[00m\] '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w '
 fi
@@ -237,6 +237,10 @@ fi
 if [ ! -d "$HOME/.fzf"  ] && [ -n "$FZF_AUTOINSTALL" ]; then
   git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
   $HOME/.fzf/install
+fi
+
+if [ -f "$HOME/.fzf.bash"  ]; then
+  source "$HOME/.fzf.bash"
 fi
 
 # https://minikube.sigs.k8s.io/docs/commands/completion/
