@@ -234,8 +234,7 @@ then
   alias f="ff"
 fi
 
-# https://github.com/junegunn/fzf
-if [ ! -d "$HOME/.fzf"  ]; then
+if [ ! -d "$HOME/.fzf"  ] && [ -n "$FZF_AUTOINSTALL" ]; then
   git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
   $HOME/.fzf/install
 fi
