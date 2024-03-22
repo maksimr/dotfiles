@@ -143,6 +143,12 @@ if [ -z "$BASH_COMPLETION" ]; then
   fi
 fi
 
+get_shell_name() {
+  SHELL_NAME="$(ps -p $$ -o comm=)"
+  SHELL_NAME="${SHELL_NAME/-/}"
+  echo "$SHELL_NAME"
+}
+
 # add a directory to the PATH variable only if it's not already in it
 # $1: the directory to add
 # $2: "after" to add it at the end, otherwise it's added at the beginning
@@ -165,7 +171,7 @@ _eval_and_cache() {
     return 1
   fi
 
-  SHELL_NAME="$(ps -p $$ -o comm=)"
+  SHELL_NAME="$(get_shell_name)"
   CMD_CACHE="$HOME/.$CMD_NAME-init-$SHELL_NAME.cache"
   if [ "${commands[$CMD_NAME]}" -nt "$CMD_CACHE" -o ! -f "$CMD_CACHE" ]; then
     eval "$CMD_CODE" > "$CMD_CACHE"
@@ -176,7 +182,7 @@ _eval_and_cache() {
   unset CMD_NAME
 }
 
-SHELL_NAME="$(ps -p $$ -o comm=)"
+SHELL_NAME="$(get_shell_name)"
 if [ "$SHELL_NAME" = "bash" ]; then
   for i in {1..10}; do
     VALUE=$(eval "printf '%0.s../' {1..$i}")
@@ -220,7 +226,7 @@ fi
 
 if [ "$(command -v fasd)" ]
 then
-  SHELL_NAME="$(ps -p $$ -o comm=)"
+  SHELL_NAME="$(get_shell_name)"
   _eval_and_cache 'fasd' \
     "fasd --init posix-alias $SHELL_NAME-{hook,ccomp,ccomp-install,wcomp,wcomp-install}"
 
@@ -271,7 +277,7 @@ if [ ! -d "$HOME/.fzf"  ] && [ -n "$FZF_AUTOINSTALL" ]; then
   $HOME/.fzf/install
 fi
 
-SHELL_NAME="$(ps -p $$ -o comm=)"
+SHELL_NAME="$(get_shell_name)"
 if [ -f "$HOME/.fzf.$SHELL_NAME"  ]; then
   source "$HOME/.fzf.$SHELL_NAME"
 fi
@@ -283,7 +289,7 @@ fi
 
 # https://kubernetes.io/docs/reference/kubectl/cheatsheet/#bash
 if [ "$(command -v kubectl)"  ]; then
-  SHELL_NAME="$(ps -p $$ -o comm=)"
+  SHELL_NAME="$(get_shell_name)"
   if [ "$SHELL_NAME" != "bash" ] || [ -n "$BASH_COMPLETION" ]; then
     _eval_and_cache "kubectl' 'kubectl completion $SHELL_NAME"
   fi
