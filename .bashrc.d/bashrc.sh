@@ -78,31 +78,16 @@ if [ "$color_prompt" = yes ]; then
   #11.   directory writable to others, without sticky
 fi
 
-if [ "$color_prompt" = yes ]; then
-    PS1='\[\033[01;31m\]➜\[\033[00m\]  ${debian_chroot:+($debian_chroot)}\[\033[01;36m\]\u@\h:\w\[\033[00m\] '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w '
-fi
-unset color_prompt force_color_prompt
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
-if [ -z "$(type -t __git_ps1)" ] && [ -f "$HOME/.git-prompt.sh" ]; then
-    . "$HOME/.git-prompt.sh"
-fi
-
+PS1='\[\]\u\[\] \[\]\w\[\]'
+[ -z "$(type -t __git_ps1)" ] && [ -f "$HOME/.git-prompt.sh" ] && source "$HOME/.git-prompt.sh"
 if [ "$(type -t __git_ps1)" = "function" ]; then
   export GIT_PS1_SHOWCOLORHINTS=1
   export GIT_PS1_SHOWDIRTYSTATE=1
-  PS1+='$(__git_ps1 "\[\033[01;34m\]git:(%s\[\033[01;34m\])\[\033[00m\]") '
+  PS1+='$(__git_ps1 " (%s)")'
 fi
+PS1+=' $ '
+
+unset color_prompt force_color_prompt
 
 alias ls='ls --color=auto'
 alias dir='dir --color=auto'
