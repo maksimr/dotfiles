@@ -65,7 +65,6 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-
 if [ "$color_prompt" = yes ]; then
     PS1='\[\033[01;31m\]➜\[\033[00m\] ${debian_chroot:+($debian_chroot)}\[\033[01;36m\]\u@\h\[\033[00m\]:\[\033[01;36m\]\w\[\033[00m\] '
 else
@@ -81,6 +80,16 @@ xterm*|rxvt*)
 *)
     ;;
 esac
+
+if [ -z "$(type -t __git_ps1)" ] && [ -f "$HOME/.git-prompt.sh" ]; then
+    . "$HOME/.git-prompt.sh"
+fi
+
+if [ "$(type -t __git_ps1)" = "function" ]; then
+  export GIT_PS1_SHOWCOLORHINTS=1
+  export GIT_PS1_SHOWDIRTYSTATE=1
+  PS1+='$(__git_ps1 "\[\033[01;34m\]git:(%s\[\033[01;34m\])\[\033[00m\]") '
+fi
 
 alias ls='ls --color=auto'
 alias dir='dir --color=auto'
