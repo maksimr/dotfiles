@@ -125,15 +125,17 @@ fi
 # sources /etc/bash.bashrc).
 # For MacOs use:
 # brew install bash-completion
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  elif [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
-    . /opt/homebrew/etc/profile.d/bash_completion.sh
-  elif [ -f $HOME/.local/share/bash-completion/bash_completion ]; then
-    . $HOME/.local/share/bash-completion/bash_completion
+if [ -z "$BASH_COMPLETION" ]; then
+  if ! shopt -oq posix; then
+    if [ -f /usr/share/bash-completion/bash_completion ]; then
+      . /usr/share/bash-completion/bash_completion
+    elif [ -f /etc/bash_completion ]; then
+      . /etc/bash_completion
+    elif [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
+      . /opt/homebrew/etc/profile.d/bash_completion.sh
+    elif [ -f $HOME/.local/share/bash-completion/bash_completion ]; then
+      . $HOME/.local/share/bash-completion/bash_completion
+    fi
   fi
 fi
 
