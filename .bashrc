@@ -170,6 +170,15 @@ _eval_and_cache() {
   unset CMD_NAME
 }
 
+SHELL_NAME="$(ps -p $$ -o comm=)"
+if [ "$SHELL_NAME" = "bash" ]; then
+  for i in {1..10}; do
+    VALUE=$(eval "printf '%0.s../' {1..$i}")
+    KEY=$(eval "printf '%0.s.' {1..$i}")
+    eval "alias '.$KEY'='cd $VALUE'"
+  done
+fi
+
 alias mk="mkdir -p"
 alias t="touch"
 alias q="exit"
