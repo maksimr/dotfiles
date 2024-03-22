@@ -189,8 +189,9 @@ fi
 
 if [ "$(command -v fasd)" ]
 then
+  SHELL_NAME="$(ps -p $$ -o comm=)"
   _eval_and_cache 'fasd' \
-    'fasd --init posix-alias bash-{hook,ccomp,ccomp-install,wcomp,wcomp-install}'
+    "fasd --init posix-alias $SHELL_NAME-{hook,ccomp,ccomp-install,wcomp,wcomp-install}"
 
   function ff(){
     local ARGUMENTS
@@ -239,8 +240,9 @@ if [ ! -d "$HOME/.fzf"  ] && [ -n "$FZF_AUTOINSTALL" ]; then
   $HOME/.fzf/install
 fi
 
-if [ -f "$HOME/.fzf.bash"  ]; then
-  source "$HOME/.fzf.bash"
+SHELL_NAME="$(ps -p $$ -o comm=)"
+if [ -f "$HOME/.fzf.$SHELL_NAME"  ]; then
+  source "$HOME/.fzf.$SHELL_NAME"
 fi
 
 # https://minikube.sigs.k8s.io/docs/commands/completion/
@@ -250,7 +252,8 @@ fi
 
 # https://kubernetes.io/docs/reference/kubectl/cheatsheet/#bash
 if [ "$(command -v kubectl)"  ]; then
-  _eval_and_cache 'kubectl' 'kubectl completion bash'
+  SHELL_NAME="$(ps -p $$ -o comm=)"
+  _eval_and_cache "kubectl' 'kubectl completion $SHELL_NAME"
 fi
 
 # http://www.gitignore.io/cli
