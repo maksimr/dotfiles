@@ -1,8 +1,13 @@
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
 esac
+
+[ -f "/opt/homebrew/bin/brew" ] && \
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 
 if [[ $- == *i* ]]; then # only if we are in interactive mode
   if [ "$(command -v tmux)"  ]; then # tmux installed
@@ -380,3 +385,5 @@ pathmunge "$HOME/.rvm/bin" after
 # Learn more about what you are opting in to at
 # https://docs.brew.sh/Analytics
 export HOMEBREW_NO_ANALYTICS=1
+
+[[ -s "$HOME/.sh.local" ]] && source "$HOME/.sh.local"

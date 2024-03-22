@@ -350,4 +350,5 @@ export HOMEBREW_NO_ANALYTICS=1
     source "$file"
   done 2>/dev/null
 
+[[ -s "$HOME/.sh.local" ]] && source "$HOME/.sh.local"
 [[ -s "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
