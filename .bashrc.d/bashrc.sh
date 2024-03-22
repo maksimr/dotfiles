@@ -81,7 +81,7 @@ fi
 
 PS1='\[\]\u\[\] \[\]\w\[\]'
 [ "$color_prompt" = yes ] && \
-  PS1='\[\033[1;32m\]\u\[\033[0m\] \[\]\w\[\]'
+  PS1='\[\033[1;32m\]\u\[\033[0m\] \[\033[1;36m\]\w\[\033[0m\]'
 [ -z "$(type -t __git_ps1)" ] && [ -f "$HOME/.git-prompt.sh" ] && source "$HOME/.git-prompt.sh"
 if [ "$(type -t __git_ps1)" = "function" ]; then
   export GIT_PS1_SHOWCOLORHINTS=1
