@@ -193,10 +193,10 @@ alias v="$([ "$(command -v nvim)" ] && echo "nvim" || echo "vim")"
 alias co="$([ "$(command -v code-insiders)" ] && echo "code-insiders -n " || echo "code -n ")"
 alias n="npm"
 
-#set -o vi
-#bind -x '"\C-l": clear'
-#bind '"\C-e": end-of-line'
-#bind '"\C-w": backward-delete-word'
+set -o vi
+bind -x '"\C-l": clear'
+bind '"\C-e": end-of-line'
+bind '"\C-w": backward-delete-word'
 
 if [ "$(command -v nvim)" ]
 then
