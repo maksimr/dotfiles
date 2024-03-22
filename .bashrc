@@ -253,7 +253,9 @@ fi
 # https://kubernetes.io/docs/reference/kubectl/cheatsheet/#bash
 if [ "$(command -v kubectl)"  ]; then
   SHELL_NAME="$(ps -p $$ -o comm=)"
-  _eval_and_cache "kubectl' 'kubectl completion $SHELL_NAME"
+  if [ "$SHELL_NAME" != "bash" ] || [ -n "$BASH_COMPLETION" ]; then
+    _eval_and_cache "kubectl' 'kubectl completion $SHELL_NAME"
+  fi
 fi
 
 # http://www.gitignore.io/cli
