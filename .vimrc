@@ -94,9 +94,7 @@ set includeexpr=substitute(substitute(v:fname,'^.','\\l\\0',''),'\\(\\u\\l\\+\\\
 syn on                     " Включаем синтаксис
 filetype plugin indent on  " Для некоторых типов файлов настройки отступов были перенесены из plugin в indent. Поэтому не забываем включить его
 
-if system('uname -s') == "Darwin\n"
-  set clipboard=unnamed " Копирование в сиситемный clipboard по нажатию на y(yank)
-endif
+set clipboard=unnamed " Копирование в сиситемный clipboard по нажатию на y(yank)
 
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
 if empty(glob(data_dir . '/autoload/plug.vim'))
