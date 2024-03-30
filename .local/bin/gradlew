@@ -1,0 +1,33 @@
+#!/bin/bash
+
+PROJECT_ROOT_DIR="$(pwd)"
+GRADLEW_SCRIPT_NAME="gradlew"
+
+function debug() {
+  if [ -n "$DEBUG" ]; then
+    echo "[DEBUG]: $1"
+  fi
+}
+
+while [ ! -f "$PROJECT_ROOT_DIR/$GRADLEW_SCRIPT_NAME" ]; do
+  if [ "$PROJECT_ROOT_DIR" == "/" ] || [ -d "$PROJECT_ROOT_DIR/.git" ]; then
+    echo "Error: Could not find gradlew wrapper" 1>&2
+    exit 1
+  fi
+  PROJECT_ROOT_DIR=$(dirname "$PROJECT_ROOT_DIR")
+  debug "Searching for gradlew wrapper in $PROJECT_ROOT_DIR"
+done
+
+PROJECT_DIR="$PROJECT_ROOT_DIR"
+GRADLEW_ARGS=()
+GRADLEW_ARGS+=("-p" "$PROJECT_DIR")
+for arg in "$@"; do
+  GRADLEW_ARGS+=("$arg")
+done
+
+debug "Executing gradlew script: $PROJECT_ROOT_DIR/$GRADLEW_SCRIPT_NAME ${GRADLEW_ARGS[*]}"
+if [ -n "$DRY_RUN" ]; then
+  echo "$PROJECT_ROOT_DIR/$GRADLEW_SCRIPT_NAME" "${GRADLEW_ARGS[@]}"
+  exit 0
+fi
+exec "$PROJECT_ROOT_DIR/$GRADLEW_SCRIPT_NAME" "${GRADLEW_ARGS[@]}"
