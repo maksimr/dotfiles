@@ -20,10 +20,10 @@ done
 
 PROJECT_DIR="$PROJECT_ROOT_DIR"
 GRADLEW_ARGS=()
-GRADLEW_ARGS+=("-p" "$PROJECT_DIR")
 for arg in "$@"; do
   GRADLEW_ARGS+=("$arg")
 done
+[[ "$*" != *"-p"* ]] && GRADLEW_ARGS+=("-p" "$PROJECT_DIR")
 
 debug "Executing gradlew script: $PROJECT_ROOT_DIR/$GRADLEW_SCRIPT_NAME ${GRADLEW_ARGS[*]}"
 if [ -n "$DRY_RUN" ]; then
