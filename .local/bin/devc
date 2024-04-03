@@ -56,7 +56,7 @@ if [ "$DEVCONTAINER_COMMAND" == "stop" ]; then
   exit 0
 fi
 
-if [[ "$*" != *"--workspace-folder"* ]]; then
+if [[ "$*" != *"--workspace-folder"* ]] && [ -n "$DEVCONTAINER_COMMAND" ]; then
   DEVCONTAINER_ARGS=("${DEVCONTAINER_ARGS[0]}" "--workspace-folder=$PROJECT_ROOT_DIR" "${DEVCONTAINER_ARGS[@]:1}")
 fi
 
