@@ -1,5 +1,5 @@
 #!/bin/bash
-# Wrapper script to run devcontainer commands
+# Wrapper script to run [devcontainer](https://github.com/devcontainers/cli) commands
 # This script is intended to be used in a project with a .devcontainer folder
 # It will search for the .devcontainer folder in the current directory or any parent directory
 # and execute the devcontainer command in the context of the project
