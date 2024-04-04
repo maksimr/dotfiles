@@ -5,8 +5,10 @@
 # and execute the devcontainer command in the context of the project
 #
 # Extend default devcontainer command with:
+# - init: Initializes the project with a default devcontainer configuration
 # - start: Starts the container for the project (alias for up)
 # - stop: Stops the running container for the project
+# - stop-all: Stops all running devcontainers
 # - shell: Starts a shell in the running container for the project
 # - code | code-insiders [<path>]: Launches VS Code with the project folder mounted in the container
 
@@ -18,6 +20,37 @@ function debug() {
     echo "[DEBUG]: $1"
   fi
 }
+
+function devcontainerx() {
+  LOCAL_DEVCONTAINER_ARGS=("$@")
+
+  if [ "$(command -v devcontainer)" ]; then
+    debug "Executing devcontainer command: devcontainer ${LOCAL_DEVCONTAINER_ARGS[*]}"
+    exec "devcontainer" "${LOCAL_DEVCONTAINER_ARGS[@]}"
+  fi
+
+  debug "Executing npx command: npx -y @devcontainers/cli ${LOCAL_DEVCONTAINER_ARGS[*]}"
+  exec "npx" "-y" "@devcontainers/cli" "${LOCAL_DEVCONTAINER_ARGS[@]}"
+}
+
+if [ "$1" == 'init' ]; then
+  set -e
+  devcontainerx templates apply -t ghcr.io/devcontainers/templates/ubuntu:latest
+  exit 0
+fi
+
+if [ "$1" == 'stop-all' ]; then
+  set -e
+  CONTAINER_IDS=$(docker ps -q --filter "label=devcontainer.local_folder")
+  if [ -n "$CONTAINER_IDS" ]; then
+    CONTAINER_IDS=$(echo "$CONTAINER_IDS" | tr '\n' ' ')
+    echo "Stopping containers: $CONTAINER_IDS"
+    docker stop $CONTAINER_IDS
+  else
+    debug "No containers found to stop"
+  fi
+  exit 0
+fi
 
 while [ ! -d "$PROJECT_ROOT_DIR/$DEVCONTAINER_FOLDER" ]; do
   if [ "$PROJECT_ROOT_DIR" == "/" ] || [ -d "$PROJECT_ROOT_DIR/.git" ]; then
@@ -44,6 +77,12 @@ for arg in "$@"; do
     DEVCONTAINER_ARGS+=("$arg")
   fi
 done
+
+if [ "$DEVCONTAINER_COMMAND" == "init" ]; then
+  set -e
+  npx -y @devcontainers/cli templates apply -t ghcr.io/devcontainers/templates/ubuntu:latest
+  exit 0
+fi
 
 if [ "$DEVCONTAINER_COMMAND" == "stop" ]; then
   set -e
@@ -89,10 +128,4 @@ if [[ "$*" != *"--workspace-folder"* ]] && [ -n "$DEVCONTAINER_COMMAND" ]; then
   DEVCONTAINER_ARGS=("${DEVCONTAINER_ARGS[0]}" "--workspace-folder=$PROJECT_ROOT_DIR" "${DEVCONTAINER_ARGS[@]:1}")
 fi
 
-if [ "$(command -v devcontainer)" ]; then
-  debug "Executing devcontainer command: devcontainer ${DEVCONTAINER_ARGS[*]}"
-  exec "devcontainer" "${DEVCONTAINER_ARGS[@]}"
-fi
-
-debug "Executing npx command: npx -y @devcontainers/cli ${DEVCONTAINER_ARGS[*]}"
-exec "npx" "-y" "@devcontainers/cli" "${DEVCONTAINER_ARGS[@]}"
+devcontainerx "${DEVCONTAINER_ARGS[@]}"
