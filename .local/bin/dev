@@ -8,6 +8,7 @@
 # - start: Starts the container for the project (alias for up)
 # - stop: Stops the running container for the project
 # - shell: Starts a shell in the running container for the project
+# - code | code-insiders [<path>]: Launches VS Code with the project folder mounted in the container
 
 PROJECT_ROOT_DIR="$(pwd)"
 DEVCONTAINER_FOLDER=".devcontainer"
