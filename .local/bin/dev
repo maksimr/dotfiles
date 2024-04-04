@@ -56,6 +56,34 @@ if [ "$DEVCONTAINER_COMMAND" == "stop" ]; then
   exit 0
 fi
 
+if [ "$DEVCONTAINER_COMMAND" == "code" ] || [  "$DEVCONTAINER_COMMAND" == "code-insiders"  ]; then
+  set -e
+  LAUNCH_PATH="$(pwd)"
+  LAUNCH_PATH_ENCODED=$(echo -n "$LAUNCH_PATH" | xxd -p | tr -d '\n')
+  WORKSPACE_MOUNT_DEFAULT_PATH="/workspaces"
+  WORKSPACE_MOUNT_CUSTOM_PATH=$(cat "$PROJECT_ROOT_DIR/$DEVCONTAINER_FOLDER/devcontainer.json" | grep '"workspaceFolder":' | sed 's/.*"\(.*\)".*/\1/')
+  WORKSPACE_MOUNT_PATH=${WORKSPACE_MOUNT_CUSTOM_PATH:-$WORKSPACE_MOUNT_DEFAULT_PATH}
+  PROJECT_PATH="$2"
+  if [ -z "$PROJECT_PATH" ]; then
+    PROJECT_PATH=$(echo "$LAUNCH_PATH" | sed "s|$PROJECT_ROOT_DIR||")
+  fi
+  PROJECT_NAME=$(basename "$PROJECT_ROOT_DIR")
+  WORKSPACE_PATH="$WORKSPACE_MOUNT_PATH/$PROJECT_NAME/$PROJECT_PATH"
+  LAUNCH_URI="vscode-remote://dev-container+${LAUNCH_PATH_ENCODED}${WORKSPACE_PATH}"
+  CODE_EXECUTABLE=$DEVCONTAINER_COMMAND
+
+  # Export DOCKER_HOST explicitly to avoid issues
+  # https://github.com/microsoft/vscode-remote-release/issues/5420
+  CURRENT_DOCKER_HOST=$(docker context inspect --format '{{.Endpoints.docker.Host}}')
+
+  debug "Exporting DOCKER_HOST: $CURRENT_DOCKER_HOST"
+  debug "Launching VS Code with URI: $LAUNCH_URI"
+
+  DOCKER_HOST=$CURRENT_DOCKER_HOST \
+    exec $CODE_EXECUTABLE "--folder-uri=$LAUNCH_URI"
+  exit 0
+fi
+
 if [[ "$*" != *"--workspace-folder"* ]] && [ -n "$DEVCONTAINER_COMMAND" ]; then
   DEVCONTAINER_ARGS=("${DEVCONTAINER_ARGS[0]}" "--workspace-folder=$PROJECT_ROOT_DIR" "${DEVCONTAINER_ARGS[@]:1}")
 fi
