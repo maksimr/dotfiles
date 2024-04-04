@@ -38,6 +38,13 @@ if [ "$#" -eq 0 ]; then
   exit 0
 fi
 
+if [ "$1" == 'ls' ]; then
+  docker ps -a \
+    --filter "label=devcontainer.local_folder" \
+    --format "table {{.ID}}\t{{.Label \"devcontainer.local_folder\"}}\t{{.Names}}"
+  exit 0
+fi
+
 if [ "$1" == 'init' ]; then
   set -e
   devcontainerx templates apply -t ghcr.io/devcontainers/templates/ubuntu:latest
