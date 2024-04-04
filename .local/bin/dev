@@ -33,6 +33,11 @@ function devcontainerx() {
   exec "npx" "-y" "@devcontainers/cli" "${LOCAL_DEVCONTAINER_ARGS[@]}"
 }
 
+if [ "$#" -eq 0 ]; then
+  devcontainerx
+  exit 0
+fi
+
 if [ "$1" == 'init' ]; then
   set -e
   devcontainerx templates apply -t ghcr.io/devcontainers/templates/ubuntu:latest
