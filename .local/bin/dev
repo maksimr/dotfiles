@@ -40,8 +40,8 @@ fi
 
 if [ "$1" == 'ls' ]; then
   docker ps -a \
-    --filter "label=devcontainer.local_folder" \
-    --format "table {{.ID}}\t{{.Label \"devcontainer.local_folder\"}}\t{{.Names}}"
+      --filter "label=devcontainer.local_folder" \
+      --format "table {{.ID}}\t{{.Label \"devcontainer.local_folder\"}}\t{{.State}}"
   exit 0
 fi
 
