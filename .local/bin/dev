@@ -11,9 +11,7 @@
 # - stop-all: Stops all running devcontainers
 # - shell: Starts a shell in the running container for the project
 # - code | code-insiders [<path>]: Launches VS Code with the project folder mounted in the container
-
-PROJECT_ROOT_DIR="$(pwd)"
-DEVCONTAINER_FOLDER=".devcontainer"
+set -e
 
 function debug() {
   if [ -n "$DEBUG" ]; then
@@ -21,7 +19,24 @@ function debug() {
   fi
 }
 
-function devcontainerx() {
+function _get_workspace_folder() {
+  EAT_VALUE=""
+  for arg in "$@"; do
+    if [[ "$arg" == "--workspace-folder="* ]]; then
+      WORKSPACE_FOLDER=$(echo "$arg" | sed 's/--workspace-folder=//')
+      echo "$WORKSPACE_FOLDER"
+      return
+    elif [ -n "$EAT_VALUE" ]; then
+      echo "$arg"
+      return
+    elif [[ "$arg" == "--workspace-folder" ]]; then
+      EAT_VALUE="true"
+      continue
+    fi
+  done
+}
+
+function devcontainer_exec() {
   LOCAL_DEVCONTAINER_ARGS=("$@")
 
   if [ "$(command -v devcontainer)" ]; then
@@ -33,26 +48,17 @@ function devcontainerx() {
   exec "npx" "-y" "@devcontainers/cli" "${LOCAL_DEVCONTAINER_ARGS[@]}"
 }
 
-if [ "$#" -eq 0 ]; then
-  devcontainerx
-  exit 0
-fi
-
-if [ "$1" == 'ls' ]; then
+function _list_devcontainers() {
   docker ps -a \
       --filter "label=devcontainer.local_folder" \
       --format "table {{.ID}}\t{{.Label \"devcontainer.local_folder\"}}\t{{.State}}"
-  exit 0
-fi
+}
 
-if [ "$1" == 'init' ]; then
-  set -e
-  devcontainerx templates apply -t ghcr.io/devcontainers/templates/ubuntu:latest
-  exit 0
-fi
+function _init_devcontainer() {
+  devcontainer_exec templates apply -t ghcr.io/devcontainers/templates/ubuntu:latest
+}
 
-if [ "$1" == 'stop-all' ]; then
-  set -e
+function _stop_all_devcontainers() {
   CONTAINER_IDS=$(docker ps -q --filter "label=devcontainer.local_folder")
   if [ -n "$CONTAINER_IDS" ]; then
     CONTAINER_IDS=$(echo "$CONTAINER_IDS" | tr '\n' ' ')
@@ -61,9 +67,35 @@ if [ "$1" == 'stop-all' ]; then
   else
     debug "No containers found to stop"
   fi
+}
+
+WORKING_DIR=$(_get_workspace_folder "$@")
+WORKING_DIR=${WORKING_DIR:-$(pwd)}
+DEVCONTAINER_FOLDER=".devcontainer"
+
+debug "Working directory: $WORKING_DIR"
+
+if [ "$#" -eq 0 ]; then
+  devcontainer_exec
   exit 0
 fi
 
+if [ "$1" == 'ls' ]; then
+  _list_devcontainers
+  exit 0
+fi
+
+if [ "$1" == 'init' ]; then
+  _init_devcontainer
+  exit 0
+fi
+
+if [ "$1" == 'stop-all' ]; then
+  _stop_all_devcontainers
+  exit 0
+fi
+
+PROJECT_ROOT_DIR="$WORKING_DIR"
 while [ ! -d "$PROJECT_ROOT_DIR/$DEVCONTAINER_FOLDER" ]; do
   if [ "$PROJECT_ROOT_DIR" == "/" ] || [ -d "$PROJECT_ROOT_DIR/.git" ]; then
     echo "Error: Could not find .devcontainer folder" 1>&2
@@ -73,6 +105,8 @@ while [ ! -d "$PROJECT_ROOT_DIR/$DEVCONTAINER_FOLDER" ]; do
   debug "Searching for .devcontainer folder in $PROJECT_ROOT_DIR"
 done
 
+debug "Passed arguments: $*"
+
 DEVCONTAINER_ARGS=()
 DEVCONTAINER_COMMAND=""
 for arg in "$@"; do
@@ -80,10 +114,10 @@ for arg in "$@"; do
     DEVCONTAINER_COMMAND="$arg"
   fi
 
-  if [ "$DEVCONTAINER_COMMAND" == "shell" ]; then
+  if [ "$arg" == "shell" ]; then
     DEVCONTAINER_ARGS+=("exec")
     DEVCONTAINER_ARGS+=("bash")
-  elif [ "$DEVCONTAINER_COMMAND" == "start" ]; then
+  elif [ "$arg" == "start" ]; then
     DEVCONTAINER_ARGS+=("up")
   else
     DEVCONTAINER_ARGS+=("$arg")
@@ -91,13 +125,11 @@ for arg in "$@"; do
 done
 
 if [ "$DEVCONTAINER_COMMAND" == "init" ]; then
-  set -e
   npx -y @devcontainers/cli templates apply -t ghcr.io/devcontainers/templates/ubuntu:latest
   exit 0
 fi
 
 if [ "$DEVCONTAINER_COMMAND" == "stop" ]; then
-  set -e
   CONTAINER_ID=$(docker ps -q --filter "label=devcontainer.local_folder=$PROJECT_ROOT_DIR")
   if [ -n "$CONTAINER_ID" ]; then
     echo "Stopping container: $CONTAINER_ID"
@@ -109,8 +141,7 @@ if [ "$DEVCONTAINER_COMMAND" == "stop" ]; then
 fi
 
 if [ "$DEVCONTAINER_COMMAND" == "code" ] || [  "$DEVCONTAINER_COMMAND" == "code-insiders"  ]; then
-  set -e
-  LAUNCH_PATH="$(pwd)"
+  LAUNCH_PATH="$WORKING_DIR"
   LAUNCH_PATH_ENCODED=$(echo -n "$LAUNCH_PATH" | xxd -p | tr -d '\n')
   WORKSPACE_MOUNT_DEFAULT_PATH="/workspaces"
   WORKSPACE_MOUNT_CUSTOM_PATH=$(cat "$PROJECT_ROOT_DIR/$DEVCONTAINER_FOLDER/devcontainer.json" | grep '"workspaceFolder":' | sed 's/.*"\(.*\)".*/\1/')
@@ -140,4 +171,4 @@ if [[ "$*" != *"--workspace-folder"* ]] && [ -n "$DEVCONTAINER_COMMAND" ]; then
   DEVCONTAINER_ARGS=("${DEVCONTAINER_ARGS[0]}" "--workspace-folder=$PROJECT_ROOT_DIR" "${DEVCONTAINER_ARGS[@]:1}")
 fi
 
-devcontainerx "${DEVCONTAINER_ARGS[@]}"
+devcontainer_exec "${DEVCONTAINER_ARGS[@]}"
