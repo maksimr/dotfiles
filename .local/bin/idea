@@ -1,0 +1,31 @@
+#!/bin/bash
+
+declare -a intellij_args=()
+declare -- wait=""
+
+for o in "$@"; do
+  if [[ "$o" = "--wait" || "$o" = "-w" ]]; then
+    wait="-W"
+    o="--wait"
+  fi
+  if [[ "$o" =~ " " ]]; then
+    intellij_args+=("\"$o\"")
+  else
+    intellij_args+=("$o")
+  fi
+done
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  APPLICATIONS_PATH="$HOME/Applications"
+  IDEA_APP_PATH="$(ls -d "$APPLICATIONS_PATH"/IntelliJ\ IDEA* 2>/dev/null | head -n 1)"
+  if [ -z "$IDEA_APP_PATH" ]; then
+    echo "IntelliJ IDEA not found in $APPLICATIONS_PATH"
+    exit 1
+  fi
+  open -na "$IDEA_APP_PATH/Contents/MacOS/idea" $wait --args "${intellij_args[@]}"
+  exit $?
+else
+  echo "IntelliJ IDEA is only supported on macOS"
+  exit 1
+fi
+
