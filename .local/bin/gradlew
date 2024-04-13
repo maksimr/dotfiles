@@ -26,7 +26,7 @@ done
 [[ "$*" != *"-p"* ]] && GRADLEW_ARGS+=("-p" "$PROJECT_DIR")
 
 debug "Executing gradlew script: $PROJECT_ROOT_DIR/$GRADLEW_SCRIPT_NAME ${GRADLEW_ARGS[*]}"
-if [ -n "$DRY_RUN" ]; then
+if [ -n "$DRYRUN" ]; then
   echo "$PROJECT_ROOT_DIR/$GRADLEW_SCRIPT_NAME" "${GRADLEW_ARGS[@]}"
   exit 0
 fi
