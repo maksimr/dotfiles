@@ -273,6 +273,7 @@ call plug#begin()
 
     Plug 'rcarriga/nvim-dap-ui', { 'tag': 'v2.5.0' }
     nnoremap <leader>dpp <Cmd>lua require("dapui").eval()<CR>
+    nnoremap <leader>dpe <Cmd>lua require("dapui").eval()<CR>
   endif
 call plug#end()
 
