@@ -1,6 +1,6 @@
 if [ "$(command -v wslpath)"  ]; then
   function code() {
-    VSCODE= [ "$(command -v code)" ] && echo 'code' || echo 'cmd.exe /c code'
+    VSCODE='cmd.exe /c code'
     WSL_DISTRO_NAME=$(wslpath -m / | awk -F/ '{print $4}')
 
     VSCODE_ARGS=()
