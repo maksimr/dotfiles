@@ -1,16 +1,26 @@
-" выход в нормальный режим из insert mode
-inoremap jk <esc>
-
-" clipboard (копирование во внешний буфер, позволяет использовать дальше
-" везде не только в виме)
-vnoremap <C-c> "+yy
 set clipboard=unnamedplus,unnamed,ideaput
 set surround
 set ideajoin
+set ideamarks " Sync marks and idea bookmarks
 
 let mapleader = ","
+" To get actions list you can run `:actionlist <search>`
+
+" General
+inoremap jk <esc>
 nnoremap <leader>sv :source ~/.ideavimrc<cr>
-" To get actions list you can run `:actionlist [search]`
+vnoremap <C-c> "+yy
+map p <Action>($Paste)
+
+" Actions
+nnoremap <c-o> :action Back<cr>
+nnoremap <c-i> :action Forward<cr>
+nnoremap <space>e :action SearchEverywhere<cr>
+nnoremap <space>E :action Switcher<cr>
+nnoremap <space>t :action GotoSymbol<cr>
+nnoremap <space>a :action GotoAction<cr>
+
+" Cursive
 nnoremap <leader>W :action :cursive.actions.paredit/wrap-paren<cr>
 nnoremap <leader>w( :action :cursive.actions.paredit/wrap-paren<cr>
 nnoremap <leader>w[ :action :cursive.actions.paredit/wrap-square<cr>
@@ -24,16 +34,18 @@ nnoremap cpr :action :cursive.repl.actions/load-file<cr>
 nnoremap cpR :action :cursive.repl.actions/sync-files<cr>
 
 " Debug
-nnoremap <leader>b :action ToggleLineBreakpoint<cr>
-nnoremap <leader>dpb :action ToggleLineBreakpoint<cr>
+nnoremap \d :action Debug<cr>
+nnoremap \r :action ChooseRunConfiguration<cr>
 nnoremap <leader>dp\ :action Debug<cr>
 nnoremap <leader>dp' :action StepOver<CR>
 nnoremap <leader>dp; :action StepInto<CR>
 nnoremap <leader>dp: :action StepOut<CR>
 nnoremap <leader>dpt :action Debug<CR>
-nnoremap <leader>dpr :action EvaluateExpression<CR>
+nnoremap <leader>dpr :action ActivateDebugToolWindow<CR>
 nnoremap <leader>dpp :action QuickEvaluateExpression<CR>
 nnoremap <leader>dpe :action QuickEvaluateExpression<CR>
+nnoremap <leader>b :action ToggleLineBreakpoint<cr>
+nnoremap <leader>dpb :action ToggleLineBreakpoint<cr>
 
 nnoremap <leader>rn :action RenameElement<cr>
 nnoremap <leader>ri :action Inline<CR>
