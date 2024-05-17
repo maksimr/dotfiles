@@ -34,6 +34,7 @@ nnoremap cpr :action :cursive.repl.actions/load-file<cr>
 nnoremap cpR :action :cursive.repl.actions/sync-files<cr>
 
 " Debug
+nnoremap \c :action Stop<cr>
 nnoremap \d :action Debug<cr>
 nnoremap \r :action ChooseRunConfiguration<cr>
 nnoremap <leader>dp\ :action Debug<cr>
