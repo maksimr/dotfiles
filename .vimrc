@@ -264,6 +264,7 @@ call plug#begin()
     autocmd FileType javascript,typescript nnoremap <buffer> <leader>dp; <Cmd>lua require'dap'.step_into()<CR>
     autocmd FileType javascript,typescript nnoremap <buffer> <leader>dp: <Cmd>lua require'dap'.step_out()<CR>
     autocmd FileType javascript,typescript nnoremap <buffer> <leader>dpb <Cmd>lua require'dap'.toggle_breakpoint()<CR>
+    autocmd FileType javascript,typescript nnoremap <buffer> <leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
     autocmd FileType javascript,typescript nnoremap <buffer> <leader>dpr <Cmd>lua require'dap'.repl.open()<CR>
     autocmd FileType javascript,typescript nnoremap <buffer> <leader>dpt <Cmd>lua require'dap'.continue()<CR>
     nnoremap <silent> <F5> <Cmd>lua require'dap'.continue()<CR>
