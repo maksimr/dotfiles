@@ -22,10 +22,21 @@ nnoremap cpp :action :cursive.repl.actions/run-last-sexp<cr>
 nnoremap cpP :action :cursive.repl.actions/run-top-sexp<cr>
 nnoremap cpr :action :cursive.repl.actions/load-file<cr>
 nnoremap cpR :action :cursive.repl.actions/sync-files<cr>
-nnoremap <leader>rn :action RenameElement<cr>
-nnoremap <leader>ri :action Inline<CR>
+
+" Debug
 nnoremap <leader>b :action ToggleLineBreakpoint<cr>
 nnoremap <leader>dpb :action ToggleLineBreakpoint<cr>
+nnoremap <leader>dp\ :action Debug<cr>
+nnoremap <leader>dp' :action StepOver<CR>
+nnoremap <leader>dp; :action StepInto<CR>
+nnoremap <leader>dp: :action StepOut<CR>
+nnoremap <leader>dpt :action Debug<CR>
+nnoremap <leader>dpr :action EvaluateExpression<CR>
+nnoremap <leader>dpp :action QuickEvaluateExpression<CR>
+nnoremap <leader>dpe :action QuickEvaluateExpression<CR>
+
+nnoremap <leader>rn :action RenameElement<cr>
+nnoremap <leader>ri :action Inline<CR>
 nnoremap gr :action ShowUsages<cr>
 nnoremap E :action RecentFiles<cr>
 nnoremap F :action ReformatCode<cr>
