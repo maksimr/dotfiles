@@ -113,6 +113,7 @@ call plug#begin()
   Plug 'glts/vim-textobj-comment'
   Plug 'junegunn/fzf'
   nnoremap <leader>, :FZF<cr>
+  nnoremap <space>e :FZF<cr>
 
   Plug 'maksimr/Lucius2'
 
