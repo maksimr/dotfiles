@@ -432,6 +432,10 @@ endif
 
 if has('nvim')
 lua <<EOF
+  vim.api.nvim_set_hl(0, 'DapStopped', { ctermbg = 58, bg = Not })
+  vim.fn.sign_define('DapBreakpoint', {text='○'})
+  vim.fn.sign_define('DapStopped', {text='→', texthl='DapStopped', linehl='DapStopped', numhl='DapStopped'})
+
   local utils = require("dap-vscode-js.utils");
   require("dap-vscode-js").setup({
     debugger_path = utils.join_paths(utils.get_runtime_dir(), "plugged/vscode-js-debug"),
