@@ -260,7 +260,7 @@ call plug#begin()
     Plug 'mfussenegger/nvim-dap'
     autocmd FileType javascript,typescript nnoremap <buffer> \c <Cmd>lua require'dap'.terminate()<CR>
     autocmd FileType javascript,typescript nnoremap <buffer> \d <Cmd>lua require'dap'.continue()<CR>
-    autocmd FileType javascript,typescript nnoremap <buffer> <leader>dp\ <Cmd>lua require'dap'.continue()<CR>
+    autocmd FileType javascript,typescript nnoremap <buffer> <leader>d\ <Cmd>lua require'dap'.continue()<CR>
     autocmd FileType javascript,typescript nnoremap <buffer> <leader>d' <Cmd>lua require'dap'.step_over()<CR>
     autocmd FileType javascript,typescript nnoremap <buffer> <leader>d; <Cmd>lua require'dap'.step_into()<CR>
     autocmd FileType javascript,typescript nnoremap <buffer> <leader>d: <Cmd>lua require'dap'.step_out()<CR>

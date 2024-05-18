@@ -40,6 +40,7 @@ nnoremap \d :action Debug<cr>
 nnoremap \D :action ChooseDebugConfiguration<cr>
 nnoremap \r :action Run<cr>
 nnoremap \R :action ChooseRunConfiguration<cr>
+nnoremap <leader>d\ :action Resume<CR>
 nnoremap <leader>d' :action StepOver<CR>
 nnoremap <leader>d; :action StepInto<CR>
 nnoremap <leader>d: :action StepOut<CR>
