@@ -260,13 +260,12 @@ call plug#begin()
     autocmd FileType javascript,typescript nnoremap <buffer> \c <Cmd>lua require'dap'.terminate()<CR>
     autocmd FileType javascript,typescript nnoremap <buffer> \d <Cmd>lua require'dap'.continue()<CR>
     autocmd FileType javascript,typescript nnoremap <buffer> <leader>dp\ <Cmd>lua require'dap'.continue()<CR>
-    autocmd FileType javascript,typescript nnoremap <buffer> <leader>dp' <Cmd>lua require'dap'.step_over()<CR>
-    autocmd FileType javascript,typescript nnoremap <buffer> <leader>dp; <Cmd>lua require'dap'.step_into()<CR>
-    autocmd FileType javascript,typescript nnoremap <buffer> <leader>dp: <Cmd>lua require'dap'.step_out()<CR>
-    autocmd FileType javascript,typescript nnoremap <buffer> <leader>dpb <Cmd>lua require'dap'.toggle_breakpoint()<CR>
+    autocmd FileType javascript,typescript nnoremap <buffer> <leader>d' <Cmd>lua require'dap'.step_over()<CR>
+    autocmd FileType javascript,typescript nnoremap <buffer> <leader>d; <Cmd>lua require'dap'.step_into()<CR>
+    autocmd FileType javascript,typescript nnoremap <buffer> <leader>d: <Cmd>lua require'dap'.step_out()<CR>
+    autocmd FileType javascript,typescript nnoremap <buffer> <leader>db <Cmd>lua require'dap'.toggle_breakpoint()<CR>
     autocmd FileType javascript,typescript nnoremap <buffer> <leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
-    autocmd FileType javascript,typescript nnoremap <buffer> <leader>dpr <Cmd>lua require'dap'.repl.open()<CR>
-    autocmd FileType javascript,typescript nnoremap <buffer> <leader>dpt <Cmd>lua require'dap'.continue()<CR>
+    autocmd FileType javascript,typescript nnoremap <buffer> <leader>dr <Cmd>lua require'dap'.repl.open()<CR>
     nnoremap <silent> <F5> <Cmd>lua require'dap'.continue()<CR>
     nnoremap <silent> <F10> <Cmd>lua require'dap'.step_over()<CR>
     nnoremap <silent> <F11> <Cmd>lua require'dap'.step_into()<CR>
@@ -275,8 +274,7 @@ call plug#begin()
     Plug 'microsoft/vscode-js-debug', {'do': 'npm ci --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out'}
 
     Plug 'rcarriga/nvim-dap-ui', { 'tag': 'v2.5.0' }
-    nnoremap <leader>dpp <Cmd>lua require("dapui").eval()<CR>
-    nnoremap <leader>dpe <Cmd>lua require("dapui").eval()<CR>
+    nnoremap <leader>de <Cmd>lua require("dapui").eval()<CR>
   endif
 call plug#end()
 
