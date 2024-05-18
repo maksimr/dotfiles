@@ -19,6 +19,7 @@ nnoremap <space>e :action SearchEverywhere<cr>
 nnoremap <space>E :action Switcher<cr>
 nnoremap <space>t :action GotoSymbol<cr>
 nnoremap <space>a :action GotoAction<cr>
+nnoremap <space>t :action ActivateTerminalToolWindow<cr>
 
 " Cursive
 nnoremap <leader>W :action :cursive.actions.paredit/wrap-paren<cr>
