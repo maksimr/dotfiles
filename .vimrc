@@ -397,7 +397,7 @@ nnoremap <leader>s g]
 nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 nnoremap <leader>sv :so ~/.vimrc<cr>
 nnoremap <leader>nt :tabnew %<cr>
-nnoremap <space>to :bel 8split<cr>:term<cr>i
+nnoremap <leader>to :bel 8split<cr>:term<cr>i
 
 inoremap jk <esc>
 vnoremap <C-c> "+yy
