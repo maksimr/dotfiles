@@ -13,6 +13,7 @@ map p <Action>($Paste)
 vnoremap <C-c> "+yy
 
 " Actions
+nnoremap E :action RecentFiles<cr>
 nnoremap <c-o> :action Back<cr>
 nnoremap <c-i> :action Forward<cr>
 nnoremap <space>e :action SearchEverywhere<cr>
