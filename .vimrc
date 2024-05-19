@@ -108,6 +108,7 @@ call plug#begin()
   Plug 'preservim/nerdtree'
   nnoremap <leader>bb :NERDTreeFind<CR>
   nnoremap <leader>bt :NERDTreeToggle<CR>
+  let g:NERDTreeHijackNetrw=0 " Don't open NERDTree when vim starts
 
   Plug 'thisivan/vim-bufexplorer'
   nnoremap <C-e> :Explore<cr>
