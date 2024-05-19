@@ -9,8 +9,9 @@ let mapleader = ","
 " General
 inoremap jk <esc>
 nnoremap <leader>sv :source ~/.ideavimrc<cr>
-vnoremap <C-c> "+yy
 map p <Action>($Paste)
+vnoremap <C-c> "+yy
+nnoremap <leader>bb :action SelectInProjectView<cr>
 
 " Actions
 nnoremap <c-o> :action Back<cr>
@@ -47,7 +48,6 @@ nnoremap <leader>d: :action StepOut<CR>
 nnoremap <leader>dt :action Debug<CR>
 nnoremap <leader>dr :action ActivateDebugToolWindow<CR>
 nnoremap <leader>de :action QuickEvaluateExpression<CR>
-nnoremap <leader>b :action ToggleLineBreakpoint<cr>
 nnoremap <leader>db :action ToggleLineBreakpoint<cr>
 
 nnoremap <leader>rn :action RenameElement<cr>
