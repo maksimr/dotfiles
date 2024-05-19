@@ -12,6 +12,7 @@ nnoremap <leader>sv :source ~/.ideavimrc<cr>
 map p <Action>($Paste)
 vnoremap <C-c> "+yy
 nnoremap <leader>bb :action SelectInProjectView<cr>
+nnoremap <leader>bt :action ActivateProjectToolWindow<cr>
 
 " Actions
 nnoremap <c-o> :action Back<cr>
