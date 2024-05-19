@@ -105,6 +105,10 @@ endif
 call plug#begin()
   Plug 'sjl/gundo.vim'
 
+  Plug 'preservim/nerdtree'
+  nnoremap <leader>bb :NERDTreeFind<CR>
+  nnoremap <leader>bt :NERDTreeToggle<CR>
+
   Plug 'thisivan/vim-bufexplorer'
   nnoremap <C-e> :Explore<cr>
   nnoremap <S-e> :BufExplorer<cr>
@@ -399,7 +403,6 @@ nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 nnoremap <leader>sv :so ~/.vimrc<cr>
 nnoremap <leader>nt :tabnew %<cr>
 nnoremap <space>to :bel 8split<cr>:term<cr>i
-nnoremap <leader>bb :35Vex<cr>
 
 inoremap jk <esc>
 vnoremap <C-c> "+yy
