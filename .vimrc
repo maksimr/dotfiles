@@ -111,7 +111,7 @@ call plug#begin()
 
   Plug 'kana/vim-textobj-user'
   Plug 'glts/vim-textobj-comment'
-  Plug 'junegunn/fzf'
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   nnoremap <leader>, :FZF<cr>
   nnoremap <space>e :FZF<cr>
 
@@ -399,6 +399,7 @@ nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 nnoremap <leader>sv :so ~/.vimrc<cr>
 nnoremap <leader>nt :tabnew %<cr>
 nnoremap <space>to :bel 8split<cr>:term<cr>i
+nnoremap <leader>bb :35Vex<cr>
 
 inoremap jk <esc>
 vnoremap <C-c> "+yy
