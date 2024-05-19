@@ -11,8 +11,6 @@ inoremap jk <esc>
 nnoremap <leader>sv :source ~/.ideavimrc<cr>
 map p <Action>($Paste)
 vnoremap <C-c> "+yy
-nnoremap <leader>bb :action SelectInProjectView<cr>
-nnoremap <leader>bt :action ActivateProjectToolWindow<cr>
 
 " Actions
 nnoremap <c-o> :action Back<cr>
@@ -22,6 +20,9 @@ nnoremap <space>E :action Switcher<cr>
 nnoremap <space>t :action GotoSymbol<cr>
 nnoremap <space>a :action GotoAction<cr>
 nnoremap <space>to :action ActivateTerminalToolWindow<cr>
+nnoremap <leader>bb :action SelectInProjectView<cr>
+nnoremap <leader>bt :action ActivateProjectToolWindow<cr>
+nnoremap \F :action FindInPath<cr>
 
 " Cursive
 nnoremap <leader>W :action :cursive.actions.paredit/wrap-paren<cr>
