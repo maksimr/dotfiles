@@ -155,12 +155,10 @@ call plug#begin()
   augroup plugin_vim_jsbeautify
      autocmd!
 
-     autocmd FileType html nnoremap <buffer> <c-f> :call HtmlBeautify()<cr>
      autocmd FileType html nnoremap <buffer> F :call HtmlBeautify()<cr>
-     autocmd FileType css nnoremap <buffer> <c-f> :call CSSBeautify()<cr>
-
-     autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
-     autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
+     autocmd FileType css nnoremap <buffer> F :call CSSBeautify()<cr>
+     autocmd FileType html vnoremap <buffer> F :call RangeHtmlBeautify()<cr>
+     autocmd FileType css vnoremap <buffer> F :call RangeCSSBeautify()<cr>
   augroup END
 
   Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-json coc-tsserver coc-eslint coc-html coc-sh coc-vimlsp coc-docker'}
@@ -176,13 +174,10 @@ call plug#begin()
   augroup coc_clojure
     autocmd!
     autocmd FileType clojure nnoremap <buffer> F :call CocActionAsync('format')<cr>
-    autocmd FileType clojure nnoremap <buffer> <c-f> :call CocActionAsync('format')<cr>
   augroup end
   augroup coc_javascript
     autocmd FileType javascript,typescript,typescriptreact,json nnoremap <buffer> F <Plug>(coc-format)
-    autocmd FileType javascript,typescript,typescriptreact,json nnoremap <buffer> <c-f> <Plug>(coc-format)
     autocmd FileType javascript,typescript,typescriptreact,json vnoremap <buffer> F <Plug>(coc-format-selected)
-    autocmd FileType javascript,typescript,typescriptreact,json vnoremap <buffer> <c-f> <Plug>(coc-format-selected)
   augroup end
   nmap <silent> [g <Plug>(coc-diagnostic-prev)
   nmap <silent> ]g <Plug>(coc-diagnostic-next)
