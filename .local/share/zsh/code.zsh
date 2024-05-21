@@ -1,6 +1,5 @@
 if [ "$(command -v wslpath)"  ]; then
   function code() {
-    VSCODE='cmd.exe /c code'
     WSL_DISTRO_NAME=$(wslpath -m / | awk -F/ '{print $4}')
 
     VSCODE_ARGS=()
@@ -12,6 +11,6 @@ if [ "$(command -v wslpath)"  ]; then
       fi
     done
 
-    $VSCODE --remote wsl+$WSL_DISTRO_NAME "${VSCODE_ARGS[@]}"
+    cmd.exe /c code --remote wsl+$WSL_DISTRO_NAME "${VSCODE_ARGS[@]}"
   }
 fi
