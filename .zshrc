@@ -358,5 +358,9 @@ export HOMEBREW_NO_ANALYTICS=1
     source "$file"
   done 2>/dev/null
 
+if [ "$(command -v mise)"  ]; then
+  export PATH="$HOME/.local/share/mise/shims:$PATH"
+fi
+
 [[ -s "$HOME/.sh.local" ]] && source "$HOME/.sh.local"
 [[ -s "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
