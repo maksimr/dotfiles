@@ -358,6 +358,7 @@ export HOMEBREW_NO_ANALYTICS=1
     source "$file"
   done 2>/dev/null
 
+# https://mise.jdx.dev
 if [ "$(command -v mise)"  ]; then
   export PATH="$HOME/.local/share/mise/shims:$PATH"
 fi
