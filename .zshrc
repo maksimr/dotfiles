@@ -288,7 +288,14 @@ fi
 
 # This loads nvm
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  source "$NVM_DIR/nvm.sh" --no-use
+  # setup default node version manually to speed up shell loading
+  if [ -f "$NVM_DIR/alias/default" ]; then
+     NODE_VERSION=$(cat "$NVM_DIR/alias/default")
+     PATH="$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH"
+  fi
+fi
 
 if [ "$(command -v nvm)" ]
 then
