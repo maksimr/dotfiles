@@ -55,6 +55,7 @@ nnoremap <leader>dt :action Debug<CR>
 nnoremap <leader>dr :action ActivateDebugToolWindow<CR>
 nnoremap <leader>de :action QuickEvaluateExpression<CR>
 nnoremap <leader>db :action ToggleLineBreakpoint<cr>
+nnoremap <leader>dB :action ViewBreakpoints<cr>
 
 nnoremap <leader>rn :action RenameElement<cr>
 nnoremap <leader>ri :action Inline<CR>
