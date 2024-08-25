@@ -90,7 +90,6 @@ if [ "$(command -v zgen)"  ]; then
 
         # Bundles
         zgen oh-my-zsh plugins/git
-        zgen oh-my-zsh plugins/vundle
         zgen oh-my-zsh plugins/vi-mode
 
         zgen load Aloxaf/fzf-tab
