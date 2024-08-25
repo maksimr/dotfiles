@@ -199,7 +199,19 @@ if [[ `uname` -ne 'Darwin' ]]; then
   export _JAVA_AWT_WM_NONREPARENTING=1;
 fi
 
-if [ "$(command -v fasd)" ]
+# https://github.com/ajeetdsouza/zoxide
+if [ "$(command -v zoxide)" ]
+then
+  _eval_and_cache 'zoxide' 'zoxide init zsh --cmd z --hook pwd'
+  function ff(){
+    # translate `f d/ui` -> `z d ui`
+    z $(echo $@ | sed 's/\// /g')
+  }
+  alias f="ff"
+fi
+
+# prefer zoxide over fasd
+if [ "$(command -v fasd)" ] && [ ! "$(command -v zoxide)" ]
 then
   _eval_and_cache 'fasd' \
     'fasd --init posix-alias zsh-{hook,ccomp,ccomp-install,wcomp,wcomp-install}'
