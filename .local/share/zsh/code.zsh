@@ -11,6 +11,13 @@ if [ "$(command -v wslpath)"  ]; then
       fi
     done
 
-    cmd.exe /c code --remote wsl+$WSL_DISTRO_NAME "${VSCODE_ARGS[@]}"
+    # prefer code-insiders over code if it's installed
+    CODE_EXE_NAME=$(\
+      cmd.exe /c code-insiders --version > /dev/null 2>&1 \
+      && echo "code-insiders" \
+      || echo "code" \
+    )
+
+    cmd.exe /c $CODE_EXE_NAME --remote wsl+$WSL_DISTRO_NAME "${VSCODE_ARGS[@]}"
   }
 fi
