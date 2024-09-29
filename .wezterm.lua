@@ -46,6 +46,7 @@ config.cursor_blink_ease_in = 'Constant'
 config.cursor_blink_ease_out = 'Constant'
 config.cursor_blink_rate = 500
 
+local cursor_bg = '#c7c7c7'
 config.colors = {
   -- The default text color
   foreground = '#c7c7c7',
@@ -54,13 +55,13 @@ config.colors = {
 
   -- Overrides the cell background color when the current cell is occupied by the
   -- cursor and the cursor style is set to Block
-  cursor_bg = '#c7c7c7',
+  cursor_bg = cursor_bg,
   -- Overrides the text color when the current cell is occupied by the cursor
   cursor_fg = '#111111',
   -- Specifies the border color of the cursor when the cursor style is set to Block,
   -- or the color of the vertical or horizontal bar when the cursor style is set to
   -- Bar or Underline.
-  cursor_border = '#c7c7c7',
+  cursor_border = cursor_bg,
 
   -- the foreground color of selected text
   selection_fg = 'black',
