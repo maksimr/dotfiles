@@ -2,20 +2,19 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
 config.switch_to_last_active_tab_when_closing_tab = true
-
 config.use_fancy_tab_bar = false
-
-config.font = wezterm.font 'JetBrains Mono Thin'
-config.font_size = 28.0
-config.command_palette_font_size = 28.0
-
 config.enable_scroll_bar = false
 config.enable_tab_bar = false
 
+local font_size = 28.0
+config.font = wezterm.font 'JetBrains Mono Thin'
+config.font_size = font_size
+config.command_palette_font_size = font_size
+
 local opacity = 0.65
+local blur = 7
 config.window_background_opacity = opacity
 config.text_background_opacity = opacity
-local blur = 7
 config.macos_window_background_blur = blur
 
 wezterm.on("toggle-opacity", function(window, _)
@@ -125,5 +124,11 @@ config.colors = {
 config.keys = {
   {key="u", mods="CMD", action=wezterm.action.EmitEvent("toggle-opacity")},
 }
+
+-- maximize the window right away
+wezterm.on('gui-startup', function()
+ local tab, pane, window = wezterm.mux.spawn_window({})
+ window:gui_window():maximize()
+end)
 
 return config
