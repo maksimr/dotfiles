@@ -42,6 +42,8 @@ config.window_padding = {
 }
 config.window_close_confirmation = "NeverPrompt"
 
+config.default_cursor_style = "SteadyBlock"
+
 config.colors = {
   -- The default text color
   foreground = '#c7c7c7',
