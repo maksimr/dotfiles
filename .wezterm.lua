@@ -54,7 +54,7 @@ config.colors = {
 
   -- Overrides the cell background color when the current cell is occupied by the
   -- cursor and the cursor style is set to Block
-  cursor_bg = '#feffff',
+  cursor_bg = '#c7c7c7',
   -- Overrides the text color when the current cell is occupied by the cursor
   cursor_fg = '#111111',
   -- Specifies the border color of the cursor when the cursor style is set to Block,
