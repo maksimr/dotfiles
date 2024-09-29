@@ -1,6 +1,7 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
+config.window_close_confirmation = "NeverPrompt"
 config.switch_to_last_active_tab_when_closing_tab = true
 config.use_fancy_tab_bar = false
 config.enable_scroll_bar = false
@@ -39,9 +40,11 @@ config.window_padding = {
   top = 0,
   bottom = 0,
 }
-config.window_close_confirmation = "NeverPrompt"
 
-config.default_cursor_style = "SteadyBlock"
+config.default_cursor_style = "BlinkingUnderline"
+config.cursor_blink_ease_in = 'Constant'
+config.cursor_blink_ease_out = 'Constant'
+config.cursor_blink_rate = 500
 
 config.colors = {
   -- The default text color
@@ -51,13 +54,13 @@ config.colors = {
 
   -- Overrides the cell background color when the current cell is occupied by the
   -- cursor and the cursor style is set to Block
-  cursor_bg = '#52ad70',
+  cursor_bg = '#feffff',
   -- Overrides the text color when the current cell is occupied by the cursor
-  cursor_fg = '#feffff',
+  cursor_fg = '#111111',
   -- Specifies the border color of the cursor when the cursor style is set to Block,
   -- or the color of the vertical or horizontal bar when the cursor style is set to
   -- Bar or Underline.
-  cursor_border = '#52ad70',
+  cursor_border = '#c7c7c7',
 
   -- the foreground color of selected text
   selection_fg = 'black',
