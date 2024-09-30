@@ -41,10 +41,26 @@ config.window_padding = {
   bottom = 0,
 }
 
+local cursor_blink_rate = 500
 config.default_cursor_style = "BlinkingUnderline"
 config.cursor_blink_ease_in = 'Constant'
 config.cursor_blink_ease_out = 'Constant'
-config.cursor_blink_rate = 500
+config.cursor_blink_rate = cursor_blink_rate
+
+-- disable blinking when on battery power to save energy
+wezterm.on("update-status", function(window, pane)
+  local battery = wezterm.battery_info()
+  local state = battery and battery.state or "Unknown"
+  local overrides = window:get_config_overrides() or {}
+
+  if state == "Charging" then
+    overrides.cursor_blink_rate = cursor_blink_rate
+  else
+    overrides.cursor_blink_rate = 0
+  end
+
+  window:set_config_overrides(overrides)
+end);
 
 local cursor_bg = '#c7c7c7'
 config.colors = {
@@ -131,8 +147,8 @@ config.keys = {
 
 -- maximize the window right away
 wezterm.on('gui-startup', function()
- local tab, pane, window = wezterm.mux.spawn_window({})
- window:gui_window():maximize()
+  local tab, pane, window = wezterm.mux.spawn_window({})
+  window:gui_window():maximize()
 end)
 
 return config
