@@ -140,10 +140,36 @@ config.colors = {
   quick_select_match_fg = { Color = '#ffffff' },
 }
 
--- override opacity by cmd+u
+local is_windows = wezterm.target_triple == 'x86_64-pc-windows-msvc'
+local act = wezterm.action
 config.keys = {
-  {key="u", mods="CMD", action=wezterm.action.EmitEvent("toggle-opacity")},
+  -- override opacity by cmd+u
+  {key="u", mods= (is_windows and "ALT") or "CMD", action=act.EmitEvent("toggle-opacity")},
+  -- paste from the clipboard
+  { key = 'v', mods = (is_windows and 'CTRL') or "CMD", action = act.PasteFrom 'Clipboard' },
+  -- paste from the primary selection
+  { key = 'v', mods = (is_windows and 'CTRL') or "CMD", action = act.PasteFrom 'PrimarySelection' },
 }
+
+if is_windows then
+  -- tmux like keybindings for windows
+  config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
+  config.keys = {
+    table.unpack(config.keys),
+    -- open windows navigation menu
+    {key='w', mods="LEADER", action=act.ShowTabNavigator},
+    -- create new tab
+    {key='c', mods="LEADER", action=act.SpawnTab 'CurrentPaneDomain'},
+    -- split pane
+    {key='"', mods="LEADER|SHIFT", action=act.SplitVertical {domain = "CurrentPaneDomain"}},
+    {key='|', mods="LEADER|SHIFT", action=act.SplitHorizontal {domain = "CurrentPaneDomain"}},
+    -- navigation between panes
+    {key='h', mods="LEADER", action=act.ActivatePaneDirection 'Left'},
+    {key='l', mods="LEADER", action=act.ActivatePaneDirection 'Right'},
+    {key='k', mods="LEADER", action=act.ActivatePaneDirection 'Up'},
+    {key='j', mods="LEADER", action=act.ActivatePaneDirection 'Down'},
+  }
+end
 
 -- maximize the window right away
 wezterm.on('gui-startup', function()
