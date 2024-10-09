@@ -7,6 +7,8 @@ Set-PSReadLineOption -Colors @{ Command = "green" }
 
 Set-PSReadLineOption -EditMode Vi
 
+Set-Variable -Name MaximumHistoryCount -Value 30000
+
 Set-PSReadLineKeyHandler -Chord "Ctrl+r" -Function ReverseSearchHistory
 Set-PSReadLineKeyHandler -Chord "Ctrl+f" -Function ForwardChar
 Set-PSReadLineKeyHandler -Chord "Ctrl+e" -Function EndOfLine
