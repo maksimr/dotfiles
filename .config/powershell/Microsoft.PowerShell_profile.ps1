@@ -28,8 +28,8 @@ Set-PSReadLineKeyHandler -Chord "RightArrow" -Function ForwardWord
 Set-PSReadlineOption -BellStyle None
 
 if (Get-Command "fzf" -errorAction SilentlyContinue) {
-  Set-PSReadLineKeyHandler -Chord Ctrl+r -ScriptBlock {
-    $command = Get-Content (Get-PSReadlineOption).HistorySavePath | awk '!a[$0]++' | fzf --tac
+  Set-PSReadLineKeyHandler -Chord "Ctrl+r" -ScriptBlock {
+    $command = Get-Content (Get-PSReadlineOption).HistorySavePath | awk '!a[$0]++' | fzf --tac --no-sort
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert($command)
   }
 }
