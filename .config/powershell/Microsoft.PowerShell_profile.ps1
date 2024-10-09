@@ -1,5 +1,10 @@
 $env:EDITOR = $env:VISUAL = 'vim'
 
+$PSStyle.FileInfo.Directory = $PSStyle.Foreground.BrightCyan
+
+Set-PSReadLineOption -Colors @{ InlinePrediction = '#676767' }
+Set-PSReadLineOption -Colors @{ Command = "green" }
+
 Set-PSReadLineOption -EditMode Vi
 
 Set-PSReadLineKeyHandler -Chord "Ctrl+r" -Function ReverseSearchHistory
@@ -15,26 +20,28 @@ Set-PSReadLineKeyHandler -ViMode Command -Chord "Ctrl+w" -Function BackwardDelet
 
 # execute EndOfLine or AcceptSuggestion by single Ctrl+e
 Set-PSReadLineKeyHandler -Chord "Ctrl+e" -ScriptBlock {
-    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptSuggestion()
-    [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine()
+  [Microsoft.PowerShell.PSConsoleReadLine]::AcceptSuggestion()
+  [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine()
 }
 Set-PSReadLineKeyHandler -Chord "RightArrow" -Function ForwardWord
 
 Set-PSReadlineOption -BellStyle None
 
-Set-PSReadLineKeyHandler -Chord Ctrl+r -ScriptBlock {
-  $command = Get-Content (Get-PSReadlineOption).HistorySavePath | awk '!a[$0]++' | fzf --tac
+if (Get-Command "fzf" -errorAction SilentlyContinue) {
+  Set-PSReadLineKeyHandler -Chord Ctrl+r -ScriptBlock {
+    $command = Get-Content (Get-PSReadlineOption).HistorySavePath | awk '!a[$0]++' | fzf --tac
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert($command)
+  }
 }
 
 Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
-    param($wordToComplete, $commandAst, $cursorPosition)
-        [Console]::InputEncoding = [Console]::OutputEncoding = $OutputEncoding = [System.Text.Utf8Encoding]::new()
-        $Local:word = $wordToComplete.Replace('"', '""')
-        $Local:ast = $commandAst.ToString().Replace('"', '""')
-        winget complete --word="$Local:word" --commandline "$Local:ast" --position $cursorPosition | ForEach-Object {
-            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-        }
+  param($wordToComplete, $commandAst, $cursorPosition)
+  [Console]::InputEncoding = [Console]::OutputEncoding = $OutputEncoding = [System.Text.Utf8Encoding]::new()
+  $Local:word = $wordToComplete.Replace('"', '""')
+  $Local:ast = $commandAst.ToString().Replace('"', '""')
+  winget complete --word="$Local:word" --commandline "$Local:ast" --position $cursorPosition | ForEach-Object {
+    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+  }
 }
 
 function Register-GitCompletion {
@@ -71,7 +78,7 @@ function Register-GitCompletion {
         $switchableBranches
       }
       else {
-        $gitCommands = (git --list-cmds=main,others,alias,nohelpers)
+        $gitCommands = (git --list-cmds=main, others, alias, nohelpers)
         if (!$gitCommands.Contains($command)) {
           $gitCommands
         }
@@ -108,15 +115,17 @@ Set-Alias t 'touch'
 Set-Alias htop 'ntop'
 Set-Alias top 'ntop'
 
-# https://github.com/ajeetdsouza/zoxide?tab=readme-ov-file#configuration
-Invoke-Expression (& { (zoxide init --cmd f --hook pwd powershell | Out-String) })
+if (Get-Command "zoxide" -errorAction SilentlyContinue) {
+  # https://github.com/ajeetdsouza/zoxide?tab=readme-ov-file#configuration
+  Invoke-Expression (& { (zoxide init --cmd f --hook pwd powershell | Out-String) })
+}
 
 <#
 .SYNOPSIS
 # Runs Github Copilot CLI with shell template
 #>
 function ?? { 
-    gh copilot suggest -t shell $args
+  gh copilot suggest -t shell $args
 }
 
 <#
@@ -124,7 +133,7 @@ function ?? {
 # Runs Github Copilot CLI with powershell template
 #>
 function ps? { 
-    gh copilot suggest -t shell ('Use powershell to ' + $args)
+  gh copilot suggest -t shell ('Use powershell to ' + $args)
 }
 
 <#
