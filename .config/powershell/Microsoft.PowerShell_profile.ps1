@@ -1,5 +1,9 @@
 $env:EDITOR = $env:VISUAL = 'vim'
 
+[System.Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("utf-8")
+[System.Console]::InputEncoding = [System.Text.Encoding]::GetEncoding("utf-8")
+$env:LESSCHARSET = "utf-8"
+
 $PSStyle.FileInfo.Directory = $PSStyle.Foreground.BrightCyan
 
 Set-PSReadLineOption -Colors @{ InlinePrediction = '#676767' }
@@ -30,8 +34,89 @@ Set-PSReadLineKeyHandler -Chord "RightArrow" -Function ForwardWord
 Set-PSReadlineOption -BellStyle None
 
 if (Get-Command "fzf" -errorAction SilentlyContinue) {
+  function Find-FzfExe() {
+    if ($IsWindows) { $AppNames = @('fzf-*-windows_*.exe', 'fzf.exe') }
+    if ($IsMacOS) { $AppNames = @('fzf-*-darwin_*', 'fzf') }
+    if ($IsLinux) { $AppNames = @('fzf-*-linux_*', 'fzf') }
+    # find it in our path:
+    $AppNames | ForEach-Object {
+      $Private:FzfLocation = Get-Command $_ -ErrorAction Ignore | Select-Object -ExpandProperty Source
+      if ($null -ne $FzfLocation) {
+        return Resolve-Path $FzfLocation
+      }
+    }
+  }
+
+  function Invoke-Fzf {
+    param(
+      [string]$Arguments
+    )
+
+    Begin {
+      $process = New-Object System.Diagnostics.Process
+      $process.StartInfo.FileName = Find-FzfExe
+      $process.StartInfo.Arguments = $Arguments
+      $process.StartInfo.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+      $process.StartInfo.RedirectStandardInput = $true
+      $process.StartInfo.RedirectStandardOutput = $true
+      $process.StartInfo.UseShellExecute = $false
+      if ($pwd.Provider.Name -eq 'FileSystem') {
+        $process.StartInfo.WorkingDirectory = $pwd.ProviderPath
+      }
+  
+      $process.Start() | Out-Null
+    }
+  
+    Process { 
+      function ConvertTo-String {
+        param ($item)
+        $str = $null
+        if ($item -is [System.String]) { 
+          $str = $item 
+        }
+        elseif ( 
+          $null -eq $item.FullName && 
+          $null -eq $item.FullName.Name
+        ) {
+          $str = $item.FullName.Name.ToString()
+        }
+        return $str
+      }
+
+      foreach ($item in $Input) {
+        $strItem = ConvertTo-String $item
+        if (![System.String]::IsNullOrWhiteSpace($strItem)) {
+          $process.StandardInput.WriteLine($strItem) 
+        }
+      }
+    }
+  
+    End { 
+      $output = $process.StandardOutput.ReadToEnd().Trim();
+      $process.WaitForExit()
+      $output
+    }
+  }
+
   Set-PSReadLineKeyHandler -Chord "Ctrl+r" -ScriptBlock {
-    $command = Get-Content (Get-PSReadlineOption).HistorySavePath | awk '!a[$0]++' | fzf --tac --no-sort
+    $command = ""
+
+    if ($IsMacOS) {
+      # On macOS we need to use separate process for fzf
+      # otherwise it will run as background process and won't be able to read input
+      # and show output
+      $command = `
+        Get-Content (Get-PSReadlineOption).HistorySavePath |`
+        Select-Object -Unique |`
+        Invoke-Fzf -Arguments "--tac --no-sort"
+    }
+    else {
+      $command = `
+        Get-Content (Get-PSReadlineOption).HistorySavePath |`
+        awk '!a[$0]++' |`
+        fzf --tac --no-sort
+    }
+
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert($command)
   }
 }
