@@ -111,12 +111,7 @@ if [ -d $HOME/.local/share/zsh/completion ]; then
   compinit -u
 fi
 
-PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%n(%m):%~ %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
-
-# Custom PROMT when connecting via SSH
-if [[ ${SSH_TTY}  ]]; then
-  PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[yellow]%}%n(%m):%~ %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
-fi
+PROMPT='%/> '
 
 alias mk="mkdir -p"
 alias t="touch"
@@ -164,11 +159,11 @@ bindkey -M vicmd '?' history-incremental-search-forward
 # zsh-syntax-highlighting
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[command]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[alias]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[builtin]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[function]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[command]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[command]='fg=green'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=green'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=green'
+ZSH_HIGHLIGHT_STYLES[function]='fg=green'
+ZSH_HIGHLIGHT_STYLES[command]='fg=green'
 
 # zsh-history-substring-search
 bindkey -M vicmd 'k' history-substring-search-up
@@ -177,7 +172,7 @@ bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 
 # zsh-autosuggestions
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=black,bold"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#676768"
 if [ "$(command -v autosuggest_start)"  ]; then
   # Enable autosuggestions automatically
   zle-line-init() {
