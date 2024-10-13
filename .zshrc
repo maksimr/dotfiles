@@ -159,11 +159,10 @@ bindkey -M vicmd '?' history-incremental-search-forward
 # zsh-syntax-highlighting
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[command]='fg=green'
-ZSH_HIGHLIGHT_STYLES[alias]='fg=green'
-ZSH_HIGHLIGHT_STYLES[builtin]='fg=green'
-ZSH_HIGHLIGHT_STYLES[function]='fg=green'
-ZSH_HIGHLIGHT_STYLES[command]='fg=green'
+ZSH_HIGHLIGHT_STYLES[command]='fg=10'
+ZSH_HIGHLIGHT_STYLES[alias]=$ZSH_HIGHLIGHT_STYLES[command]
+ZSH_HIGHLIGHT_STYLES[builtin]=$ZSH_HIGHLIGHT_STYLES[command]
+ZSH_HIGHLIGHT_STYLES[function]=$ZSH_HIGHLIGHT_STYLES[command]
 
 # zsh-history-substring-search
 bindkey -M vicmd 'k' history-substring-search-up
@@ -172,7 +171,7 @@ bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 
 # zsh-autosuggestions
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#676768"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
 if [ "$(command -v autosuggest_start)"  ]; then
   # Enable autosuggestions automatically
   zle-line-init() {
@@ -325,19 +324,6 @@ then
   # This loads nvm bash_completion
   [ -s "$NVM_DIR/bash_completion" ] && \
     . "$NVM_DIR/bash_completion"
-fi
-
-# https://www.npmjs.com/package/@githubnext/github-copilot-cli
-if [ "$(command -v github-copilot-cli)"  ]; then
-  _eval_and_cache 'github-copilot-cli' 'github-copilot-cli alias -- "$0"'
-else
-  copilot_lazy-init () {
-    npm install -g @githubnext/github-copilot-cli
-    unalias '??'
-    _eval_and_cache 'github-copilot-cli' 'github-copilot-cli alias -- "$0"'
-    copilot_what-the-shell "$@"
-  };
-  alias '??'='copilot_lazy-init'
 fi
 
 # Is a tool for managing parallel versions of multiple
