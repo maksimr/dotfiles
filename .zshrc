@@ -126,6 +126,7 @@ alias v="$([ "$(command -v nvim)" ] && echo "nvim" || echo "vim")"
 alias co="$([ "$(command -v code-insiders)" ] && echo "code-insiders -n " || echo "code -n ")"
 alias zshprofiling="time zsh -i -c exit"
 alias n="npm"
+alias '??'='gh copilot suggest -t shell'
 
 if [ "$(command -v nvim)" ]
 then
