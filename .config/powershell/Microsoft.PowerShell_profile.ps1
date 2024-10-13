@@ -223,10 +223,20 @@ function ps? {
   gh copilot suggest -t shell ('Use powershell to ' + $args)
 }
 
+function Add-Alias($name, $alias) {
+  $func = @"
+function global:$name {
+  `$expr = ('$alias ' + (( `$args | % { if (`$_.GetType().FullName -eq "System.String") { "``"`$(`$_.Replace('``"','````"').Replace("'","``'"))``"" } else { `$_ } } ) -join ' '))
+  Invoke-Expression `$expr
+}
+"@
+  $func | Invoke-Expression
+}
+
 <#
 .SYNOPSIS
 # Use bat instead of cat
 #>
 if (Get-Command "bat" -errorAction SilentlyContinue) {
-  Set-Alias cat 'bat -p'
+  Add-Alias cat 'bat -p'
 }
