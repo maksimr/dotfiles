@@ -160,7 +160,7 @@ bindkey -M vicmd '?' history-incremental-search-forward
 # zsh-syntax-highlighting
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 ZSH_HIGHLIGHT_STYLES[path]='fg=white'
-ZSH_HIGHLIGHT_STYLES[command]='fg=10,bold'
+ZSH_HIGHLIGHT_STYLES[command]='fg=green,bold'
 ZSH_HIGHLIGHT_STYLES[alias]=$ZSH_HIGHLIGHT_STYLES[command]
 ZSH_HIGHLIGHT_STYLES[builtin]=$ZSH_HIGHLIGHT_STYLES[command]
 ZSH_HIGHLIGHT_STYLES[function]=$ZSH_HIGHLIGHT_STYLES[command]
@@ -172,7 +172,7 @@ bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 
 # zsh-autosuggestions
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=black"
 if [ "$(command -v autosuggest_start)"  ]; then
   # Enable autosuggestions automatically
   zle-line-init() {
