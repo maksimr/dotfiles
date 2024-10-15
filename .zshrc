@@ -2,7 +2,7 @@
 #
 # For profiling loading time of zsh we can use
 # zprof. We should add `zmodload zsh/zprof` in to the beginning of
-# zshrc file and `zprof` in the end of file
+# zshrc file and `zprof` in the end of fileg
 
 export USE_PATCHED_FONT="false"
 export EDITOR=vim
@@ -172,7 +172,7 @@ bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 
 # zsh-autosuggestions
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=black"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=black,bold"
 if [ "$(command -v autosuggest_start)"  ]; then
   # Enable autosuggestions automatically
   zle-line-init() {
