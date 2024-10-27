@@ -111,7 +111,7 @@ if [ -d $HOME/.local/share/zsh/completion ]; then
   compinit -u
 fi
 
-PROMPT='%/> '
+PROMPT='ZSH %/> '
 
 alias mk="mkdir -p"
 alias t="touch"
