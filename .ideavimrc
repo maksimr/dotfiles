@@ -47,6 +47,7 @@ nnoremap \D :action ChooseDebugConfiguration<cr>
 nnoremap \r :action Run<cr>
 nnoremap \R :action ChooseRunConfiguration<cr>
 nnoremap <leader>d\ :action Resume<CR>
+nnoremap <leader>d. :action RunToCursor<CR>
 nnoremap <leader>d' :action StepOver<CR>
 nnoremap <leader>d; :action StepInto<CR>
 nnoremap <leader>d, :action SmartStepInto<CR>
@@ -59,6 +60,7 @@ nnoremap <leader>dB :action ViewBreakpoints<cr>
 
 nnoremap <leader>rn :action RenameElement<cr>
 nnoremap <leader>ri :action Inline<CR>
+nnoremap <leader>r. :action RefactoringMenu<CR>
 nnoremap gr :action ShowUsages<cr>
 nnoremap E :action RecentFiles<cr>
 nnoremap F :action ReformatCode<cr>
