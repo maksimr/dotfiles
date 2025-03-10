@@ -20,6 +20,8 @@ nnoremap <space>e :action SearchEverywhere<cr>
 nnoremap <space>E :action Switcher<cr>
 nnoremap <space>t :action GotoSymbol<cr>
 nnoremap <space>a :action GotoAction<cr>
+nnoremap <space>pn :action SwitcherNextProblem<cr>
+nnoremap <space>pp :action SwitcherPreviousProblem<cr>
 nnoremap <leader>to :action ActivateTerminalToolWindow<cr>
 nnoremap <leader>bb :action SelectInProjectView<cr>
 nnoremap <leader>bt :action ActivateProjectToolWindow<cr>
@@ -55,6 +57,7 @@ nnoremap <leader>d: :action StepOut<CR>
 nnoremap <leader>dt :action Debug<CR>
 nnoremap <leader>dr :action ActivateDebugToolWindow<CR>
 nnoremap <leader>de :action QuickEvaluateExpression<CR>
+nnoremap <leader>dE :action EvaluateExpression<CR>
 nnoremap <leader>db :action ToggleLineBreakpoint<cr>
 nnoremap <leader>dB :action ViewBreakpoints<cr>
 
@@ -62,6 +65,8 @@ nnoremap <leader>rn :action RenameElement<cr>
 nnoremap <leader>ri :action Inline<CR>
 nnoremap <leader>r. :action RefactoringMenu<CR>
 nnoremap gr :action ShowUsages<cr>
+nnoremap gD :action GotoSuperMethod<cr>
+nnoremap gi :action GotoImplementation<cr>
 nnoremap E :action RecentFiles<cr>
 nnoremap F :action ReformatCode<cr>
 nnoremap <space>o :action FileStructurePopup<cr>
