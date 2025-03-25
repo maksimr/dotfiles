@@ -56,6 +56,12 @@ function plzinstall() {
     zoxide)
       brew install zoxide
       ;;
+    wezterm)
+      brew install wezterm
+      ;;
+    jetbrains-mono)
+      brew install --cask font-jetbrains-mono
+      ;;
   esac
 }
 
