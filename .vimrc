@@ -271,8 +271,7 @@ call plug#begin()
     nnoremap <silent> <F10> <Cmd>lua require'dap'.step_over()<CR>
     nnoremap <silent> <F11> <Cmd>lua require'dap'.step_into()<CR>
     nnoremap <silent> <F12> <Cmd>lua require'dap'.step_out()<CR>
-    Plug 'mxsdev/nvim-dap-vscode-js'
-    Plug 'microsoft/vscode-js-debug', {'do': 'npm ci --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out'}
+    Plug 'microsoft/vscode-js-debug', {'do': 'npm ci --legacy-peer-deps && npx gulp dapDebugServer'}
 
     Plug 'rcarriga/nvim-dap-ui', { 'tag': 'v2.5.0' }
     nnoremap <leader>de <Cmd>lua require("dapui").eval()<CR>
@@ -438,12 +437,28 @@ lua <<EOF
   vim.fn.sign_define('DapBreakpoint', {text='○'})
   vim.fn.sign_define('DapStopped', {text='→', texthl='DapStopped', linehl='DapStopped', numhl='DapStopped'})
 
-  local utils = require("dap-vscode-js.utils");
-  require("dap-vscode-js").setup({
-    debugger_path = utils.join_paths(utils.get_runtime_dir(), "plugged/vscode-js-debug"),
-    adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' }, -- which adapters to register in nvim-dap
-  });
-  local dap = require('dap');
+  local lvim_runtime_dir = os.getenv("NVIM_RUNTIME_DIR")
+  if not lvim_runtime_dir then
+    lvim_runtime_dir = vim.call("stdpath", "data")
+  end
+
+  local uv = vim.loop
+  local path_sep = uv.os_uname().version:match("Windows") and "\\" or "/"
+  local dap = require('dap')
+  local debugger_path = table.concat({lvim_runtime_dir, "plugged", "vscode-js-debug", "dist", "src", "dapDebugServer.js"}, path_sep)
+
+  dap.adapters["pwa-node"] = {
+    type = "server",
+    host = "localhost",
+    port = "${port}",
+    executable = {
+      command = "node",
+      args = {
+        debugger_path,
+        "${port}",
+      }
+    }
+  }
 
   dap.configurations["javascript"] = {
    {
