@@ -53,6 +53,9 @@ function plzinstall() {
 
       brew install --cask temurin
       ;;
+    zoxide)
+      brew install zoxide
+      ;;
   esac
 }
 
