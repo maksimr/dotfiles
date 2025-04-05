@@ -111,8 +111,6 @@ if [ -d $HOME/.local/share/zsh/completion ]; then
   compinit -u
 fi
 
-PROMPT='%/> '
-
 alias mk="mkdir -p"
 alias t="touch"
 alias q="exit"
