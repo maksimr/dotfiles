@@ -45,6 +45,12 @@ if [[ $- == *i* ]]; then # only if we are in interactive mode
   fi
 fi
 
+get_shell_name() {
+  SHELL_NAME="$(ps -p $$ -o comm=)"
+  SHELL_NAME="${SHELL_NAME/-/}"
+  echo "$SHELL_NAME"
+}
+
 # add a directory to the PATH variable only if it's not already in it
 # $1: the directory to add
 # $2: "after" to add it at the end, otherwise it's added at the beginning
@@ -67,9 +73,10 @@ _eval_and_cache() {
     return 1
   fi
 
-  CMD_CACHE="$HOME/.$CMD_NAME-init"
+  SHELL_NAME="$(get_shell_name)"
+  CMD_CACHE="$HOME/.$CMD_NAME-init-$SHELL_NAME.cache"
   if [ "${commands[$CMD_NAME]}" -nt "$CMD_CACHE" -o ! -f "$CMD_CACHE" ]; then
-    eval $CMD_CODE >! "$CMD_CACHE"
+    eval "$CMD_CODE" > "$CMD_CACHE"
   fi
   source "$CMD_CACHE"
   unset CMD_CACHE
