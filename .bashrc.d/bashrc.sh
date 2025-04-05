@@ -221,7 +221,20 @@ if [[ `uname` -ne 'Darwin' ]]; then
   export _JAVA_AWT_WM_NONREPARENTING=1;
 fi
 
-if [ "$(command -v fasd)" ]
+
+# https://github.com/ajeetdsouza/zoxide
+if [ "$(command -v zoxide)" ]
+then
+  SHELL_NAME="$(get_shell_name)"
+  _eval_and_cache 'zoxide' "zoxide init ${SHELL_NAME} --cmd z --hook pwd"
+  function ff(){
+    # translate `f d/ui` -> `z d ui`
+    z $(echo $@ | sed 's/\// /g')
+  }
+  alias f="ff"
+fi
+
+if [ "$(command -v fasd)" ] && [ ! "$(command -v zoxide)" ]
 then
   SHELL_NAME="$(get_shell_name)"
   _eval_and_cache 'fasd' \
