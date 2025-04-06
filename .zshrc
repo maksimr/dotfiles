@@ -47,6 +47,9 @@ fi
 
 get_shell_name() {
   SHELL_NAME="$(ps -p $$ -o comm=)"
+  # /bin/zsh -> zsh
+  SHELL_NAME="${SHELL_NAME##*/}"
+  # -zsh -> zsh
   SHELL_NAME="${SHELL_NAME/-/}"
   echo "$SHELL_NAME"
 }
