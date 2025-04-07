@@ -7,7 +7,7 @@ config.use_fancy_tab_bar = false
 config.enable_scroll_bar = false
 config.enable_tab_bar = false
 
-local font_size = 28.0
+local font_size = 32.0
 config.font = wezterm.font 'JetBrains Mono Thin'
 config.font_size = font_size
 config.command_palette_font_size = font_size
