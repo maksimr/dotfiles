@@ -162,7 +162,7 @@ call plug#begin()
      autocmd FileType css vnoremap <buffer> F :call RangeCSSBeautify()<cr>
   augroup END
 
-  Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-json coc-tsserver coc-eslint coc-html coc-sh coc-vimlsp coc-docker'}
+  Plug 'neoclide/coc.nvim', {'commit': '3857588', 'do': ':CocInstall coc-json coc-tsserver coc-eslint coc-html coc-sh coc-vimlsp coc-docker'}
   let g:coc_default_semantic_highlight_groups = 1
   " brew install clojure-lsp/brew/clojure-lsp-native
   " Make <CR> auto-select the first completion item and notify coc.nvim to
