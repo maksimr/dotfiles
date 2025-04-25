@@ -23,7 +23,7 @@ set nu                   " Line number
 set numberwidth=3        " Line number width
 
 set lz
-set guioptions=a
+set guioptions=
 set guioptions-=T
 set guioptions-=r        " Remove right scrollbar
 
