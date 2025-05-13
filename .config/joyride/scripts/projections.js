@@ -36,12 +36,15 @@ async function main() {
   }
 
   function getDefaultConfiguration() {
-    return {
-      '**/*.js': { alternate: '{}.test.js' },
-      '**/*.test.js': { alternate: '{}.js' },
-      '**/*.ts': { alternate: '{}.test.ts' },
-      '**/*.test.ts': { alternate: '{}.ts' }
-    };
+    return ['js', 'ts', 'tsx'].reduce((acc, ext) => {
+      return {
+        ...acc,
+        [`**/*.${ext}`]: { alternate: `{}.test.${ext}` },
+        [`**/*.${ext}`]: { alternate: `{}.spec.${ext}` },
+        [`**/*.test.${ext}`]: { alternate: `{}.${ext}` },
+        [`**/*.spec.${ext}`]: { alternate: `{}.${ext}` },
+      };
+    }, {});
   }
 
   /**
