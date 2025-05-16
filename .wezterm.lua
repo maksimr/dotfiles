@@ -95,7 +95,7 @@ config.colors = {
     '#b83019', -- Red
     '#51bf37', -- Green
     '#c6c43d', -- Yellow
-    '#0c24bf', -- Blue
+    '#6a71f6', -- Blue
     '#b93ec1', -- Magenta
     '#53c2c5', -- Cyan
     '#c7c7c7', -- White
