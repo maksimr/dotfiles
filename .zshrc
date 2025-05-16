@@ -136,6 +136,11 @@ alias zshprofiling="time zsh -i -c exit"
 alias n="npm"
 alias '??'='gh copilot suggest -t shell'
 
+if [ "$(command -v bat)" ]
+then
+  alias cat="bat --style=plain"
+fi
+
 if [ "$(command -v nvim)" ]
 then
   autoload -U edit-command-line
