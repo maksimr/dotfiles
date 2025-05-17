@@ -24,8 +24,8 @@ async function main() {
     const candidatePaths = getCandidatePaths(file, projections);
     if (candidatePaths.length) {
       const message = i18n('Create New File?');
-      const createNewFile = await vscode.window.showInformationMessage(message, 'Yes', 'No');
-      if (createNewFile === 'Yes') {
+      const createNewFile = await vscode.window.showInformationMessage(message, i18n('Yes'), i18n('No'));
+      if (createNewFile === i18n('Yes')) {
         const selectedPath = await showFileQuickPick(candidatePaths);
         if (selectedPath) {
           const newFileUri = selectedPath.resourceUri;
