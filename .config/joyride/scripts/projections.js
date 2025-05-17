@@ -12,14 +12,14 @@ async function main() {
     return openSelectedFileItem(await showFileQuickPick(relatedFiles));
   }
 
-  await createNewFileSuggestion(file, projections);
+  await createNewFileSuggest(file, projections);
   return null;
 
   /**
    * @param {string} file 
    * @param {{ [pattern: string]: { "alternate"?: string | string[] } }} projections 
    */
-  async function createNewFileSuggestion(file, projections) {
+  async function createNewFileSuggest(file, projections) {
     // Ask user if they want to create a new file
     const candidatePaths = getCandidatePaths(file, projections);
     if (candidatePaths.length) {
