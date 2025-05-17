@@ -23,7 +23,7 @@ async function main() {
     // Ask user if they want to create a new file
     const candidatePaths = getCandidatePaths(file, projections);
     if (candidatePaths.length) {
-      const message = i18n('Create new file');
+      const message = i18n('Create New File?');
       const createNewFile = await vscode.window.showInformationMessage(message, 'Yes', 'No');
       if (createNewFile === 'Yes') {
         const selectedPath = await showFileQuickPick(candidatePaths);
