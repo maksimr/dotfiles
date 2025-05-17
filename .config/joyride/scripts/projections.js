@@ -6,11 +6,35 @@ async function main() {
   const uri = vscode.window.activeTextEditor?.document.uri;
   const file = uri?.path ?? '';
   const projections = await getConfiguration(uri);
-  const candidates = await findRelatedFiles(file, projections);
-  if (candidates.length) {
-    return await showQuickPick(candidates);
+  const relatedFiles = await findRelatedFiles(file, projections);
+
+  if (relatedFiles.length) {
+    return openSelectedFileItem(await showFileQuickPick(relatedFiles));
   }
+
+  await createNewFileSuggestion(file, projections);
   return null;
+
+  /**
+   * @param {string} file 
+   * @param {{ [pattern: string]: { "alternate"?: string | string[] } }} projections 
+   */
+  async function createNewFileSuggestion(file, projections) {
+    // Ask user if they want to create a new file
+    const candidatePaths = getCandidatePaths(file, projections);
+    if (candidatePaths.length) {
+      const message = i18n('Create new file');
+      const createNewFile = await vscode.window.showInformationMessage(message, 'Yes', 'No');
+      if (createNewFile === 'Yes') {
+        const selectedPath = await showFileQuickPick(candidatePaths);
+        if (selectedPath) {
+          const newFileUri = selectedPath.resourceUri;
+          await vscode.workspace.fs.writeFile(newFileUri, Buffer.from(''));
+          return openSelectedFileItem(selectedPath);
+        }
+      }
+    }
+  }
 
   async function getConfiguration(/**@type {vscode.Uri | undefined}*/ file) {
     const userProjectionsJson = JSON.parse(JSON.stringify(vscode.workspace.getConfiguration('projections.json')));
@@ -39,8 +63,9 @@ async function main() {
     return ['js', 'ts', 'tsx'].reduce((acc, ext) => {
       return {
         ...acc,
-        [`**/*.${ext}`]: { alternate: `{}.test.${ext}` },
-        [`**/*.${ext}`]: { alternate: `{}.spec.${ext}` },
+        [`**/*.${ext}`]: {
+          alternate: [`{}.test.${ext}`, `{}.spec.${ext}`]
+        },
         [`**/*.test.${ext}`]: { alternate: `{}.${ext}` },
         [`**/*.spec.${ext}`]: { alternate: `{}.${ext}` },
       };
@@ -52,7 +77,24 @@ async function main() {
    * @param {{ [pattern: string]: { "alternate"?: string | string[] } }} projections 
    */
   async function findRelatedFiles(file, projections) {
-    const candidates = Array.from(Object.entries(projections).reduce((candidates, [pattern, { alternate }]) => {
+    const candidatePaths = getCandidatePaths(file, projections);
+    const resolvedCandidatePaths = await Promise.allSettled(candidatePaths.map(async (uri) => {
+      await vscode.workspace.fs.stat(uri);
+      return uri;
+    }));
+
+    return resolvedCandidatePaths
+      .filter((it) => it.status === 'fulfilled')
+      .map((it) => it.value);
+  }
+
+  /**
+   * @param {string} file 
+   * @param {{ [pattern: string]: { "alternate"?: string | string[] } }} projections 
+   */
+  function getCandidatePaths(file, projections) {
+    const projectionEntries = Object.entries(projections);
+    const candidates = projectionEntries.reduce((candidates, [pattern, { alternate }]) => {
       const patternMatch = match(file, pattern);
       if (alternate && patternMatch) {
         [alternate].flat(1).forEach((alternate) => {
@@ -61,22 +103,19 @@ async function main() {
         });
       }
       return candidates;
-    }, new Set())).map((path) => vscode.Uri.file(path));
+    }, new Set());
 
-    return (await Promise.allSettled(candidates.map(async (uri) => {
-      await vscode.workspace.fs.stat(uri);
-      return uri;
-    })))
-      .filter((it) => {
-        return it.status === 'fulfilled';
-      })
-      .map((it) => it.value);
+    return Array
+      .from(candidates)
+      .map((path) => {
+        return vscode.Uri.file(path);
+      });
   }
 
   /**
    * @param {vscode.Uri[]} candidates 
    */
-  async function showQuickPick(candidates) {
+  async function showFileQuickPick(candidates) {
     const quickPickItems = candidates.map((uri) => {
       const relativePath = vscode.workspace.asRelativePath(uri);
       // VSCode doesn't support file type icon for the quick pick dialog
@@ -87,15 +126,15 @@ async function main() {
       };
     });
     if (quickPickItems.length === 1) {
-      return onDidSelectItem(quickPickItems[0]);
+      return quickPickItems[0];
     }
-    return vscode.window.showQuickPick(quickPickItems).then(onDidSelectItem);
+    return vscode.window.showQuickPick(quickPickItems);
   }
 
   /**
    * @param {(vscode.QuickPickItem & { resourceUri: vscode.Uri }) | undefined} value 
    */
-  async function onDidSelectItem(value) {
+  async function openSelectedFileItem(value) {
     if (value) {
       const uri = value.resourceUri;
       const document = await vscode.workspace.openTextDocument(uri);
@@ -170,6 +209,10 @@ async function main() {
       }
       return value;
     });
+  }
+
+  function i18n(key) {
+    return key;
   }
 }
 
