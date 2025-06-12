@@ -217,3 +217,14 @@ async function main() {
 }
 
 main();
+
+/**
+ * @debug
+ * > Start Debugging Extension Host in New Window in VScode (W1)
+ * > VScode would be restarted in debug mode (W1)
+ * > Open joyride scripts in the NEW vscode window (W2)
+ * > Set breakpoints in W2
+ * > Run "Debug: Attach to Node Process" in W2
+ * > Select the SECOND process before "Electron"
+ * > Run command user script in W1
+ */
