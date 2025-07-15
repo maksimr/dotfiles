@@ -43,9 +43,9 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash 
 ```
 
 ```bash
-npx github:maksimr/udot use https://github.com/maksimr/dotfiles
+npx -y github:maksimr/udot use https://github.com/maksimr/dotfiles
 ```
 
 ```bash
-npx github:maksimr/udot install --module-path=~/.local/bin/udot
+npx -y github:maksimr/udot install --module-path=~/.local/bin/udot
 ```
