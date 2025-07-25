@@ -135,6 +135,7 @@ alias co="$([ "$(command -v code-insiders)" ] && echo "code-insiders -n " || ech
 alias zshprofiling="time zsh -i -c exit"
 alias n="npm"
 alias '??'='gh copilot suggest -t shell'
+alias 'denv'='npx -y @devcontainers/cli'
 
 if [ "$(command -v bat)" ]
 then
