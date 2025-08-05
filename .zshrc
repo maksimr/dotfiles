@@ -118,6 +118,7 @@ fi
 
 if [ -d $HOME/.local/share/zsh/completion ]; then
   fpath=($HOME/.local/share/zsh/completion $fpath)
+  autoload -Uz compinit
   compinit -u
 fi
 
