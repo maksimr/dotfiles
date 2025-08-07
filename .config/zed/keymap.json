@@ -7,8 +7,8 @@
 // from the command palette.
 [
   {
-    "context": "Workspace",
     "bindings": {
+      "cmd-shift-c": "agent::ToggleFocus"
       // "shift shift": "file_finder::Toggle"
     }
   },
