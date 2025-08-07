@@ -22,6 +22,8 @@
     "light": "One Light",
     "dark": "One Dark"
   },
+  // https://github.com/zed-industries/zed/blob/main/assets/themes/one/one.json
+  // https://zed.dev/docs/extensions/languages#syntax-highlighting
   "experimental.theme_overrides": {
     "editor.foreground": "#e0e0e0",
     "text": "#e0e0e0",
