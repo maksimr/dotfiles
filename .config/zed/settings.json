@@ -411,5 +411,27 @@
         "font_weight": null
       }
     }
-  }
+  },
+  "ssh_connections": [
+    {
+      "host": "localhost",
+      "username": "vscode",
+      // password: "vscode",
+      "port": 2222,
+      "args": [
+        "-o",
+        "StrictHostKeyChecking=no",
+        "-o",
+        "UserKnownHostsFile=/dev/null",
+        "-o",
+        "GlobalKnownHostsFile=/dev/null"
+      ],
+      "projects": [
+        {
+          "paths": ["/workspaces/empty-cpp-project"]
+        }
+      ],
+      "nickname": "empty-cpp-project"
+    }
+  ]
 }

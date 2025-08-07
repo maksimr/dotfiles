@@ -8,7 +8,8 @@
 [
   {
     "bindings": {
-      "cmd-shift-c": "agent::ToggleFocus"
+      "cmd-shift-c": "agent::ToggleFocus",
+      "alt-]": "copilot::NextSuggestion"
       // "shift shift": "file_finder::Toggle"
     }
   },
@@ -58,6 +59,12 @@
     "context": "Editor",
     "bindings": {
       "ctrl-w": "pane::CloseActiveItem"
+    }
+  },
+  {
+    "context": "(VimControl && !menu)",
+    "bindings": {
+      "ctrl-q": "editor::Hover"
     }
   }
 ]
