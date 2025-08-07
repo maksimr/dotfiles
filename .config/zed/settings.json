@@ -39,10 +39,11 @@
     "coloring": "fixed", // disabled, fixed, indent_aware
     "background_coloring": "disabled" // disabled, indent_aware
   },
+  "ensure_final_newline_on_save": false,
   "unnecessary_code_fade": 0.8,
   "vim_mode": true,
   "ui_font_size": 16,
-  "buffer_font_size": 28,
+  "buffer_font_size": 32,
   "buffer_font_family": "JetBrains Mono Thin",
   "theme": {
     "mode": "system",
