@@ -53,5 +53,11 @@
       "g shift-d": "editor::GoToDeclaration",
       "shift-E": "file_finder::Toggle"
     }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-w": "pane::CloseActiveItem"
+    }
   }
 ]
