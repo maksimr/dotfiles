@@ -13,9 +13,45 @@
     }
   },
   {
+    "context": "Editor && vim_mode == visual",
+    "bindings": {
+      "F": "editor::FormatSelections"
+    }
+  },
+  {
     "context": "Editor && vim_mode == insert",
     "bindings": {
       "j k": "vim::NormalBefore"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "shift-f": "editor::Format",
+      "space p p": "editor::GoToDiagnostic",
+      "space p n": "editor::GoToPreviousDiagnostic",
+      "space o": "outline::Toggle",
+      "\\ shift-r": "task::Spawn",
+      "\\ r": "task::Rerun",
+      "\\ d": "debugger::Start",
+      "\\ c": "debugger::Stop",
+      ", d \\": "debugger::Continue",
+      ", d .": "debugger::RunToCursor",
+      ", d '": "debugger::StepOver",
+      ", d ;": "debugger::StepInto",
+      ", d :": "debugger::StepOut",
+      ", d r": "debugger::FocusConsole",
+      ", d e": "debugger::EvaluateSelectedText",
+      ", d b": "editor::ToggleBreakpoint",
+      ", d shift-b": "debugger::FocusBreakpointList",
+      ", b b": "project_panel::ToggleFocus",
+      ", f": "workspace::NewSearch",
+      ", r n": "editor::Rename",
+      "g r": "editor::FindAllReferences",
+      "g s": "editor::GoToDefinition",
+      "g i": "editor::GoToImplementation",
+      "g shift-d": "editor::GoToDeclaration",
+      "shift-E": "file_finder::Toggle"
     }
   }
 ]

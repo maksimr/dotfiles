@@ -21,5 +21,24 @@
     "mode": "system",
     "light": "One Light",
     "dark": "One Dark"
+  },
+  "experimental.theme_overrides": {
+    "editor.foreground": "#e0e0e0",
+    "text": "#e0e0e0",
+    "editor.background": "#262626",
+    "elevated_surface.background": "#262626",
+    "surface.background": "#262626",
+    "tab_bar.background": "#262626",
+    "tab.inactive_background": "#262626",
+    "panel.background": "#262626",
+    "editor.subheader.background": "#262626",
+    "editor.highlighted_line.background": "#262626",
+    "toolbar.background": "#262626",
+    "tab.active_background": "#262626",
+    "editor.gutter.background": "#262626",
+    "terminal.background": "#262626",
+    "terminal.dim_foreground": "#262626",
+    "terminal.ansi.black": "#262626",
+    "border": "#303030"
   }
 }
