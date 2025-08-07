@@ -16,7 +16,8 @@
   {
     "context": "Editor && vim_mode == visual",
     "bindings": {
-      "F": "editor::FormatSelections"
+      "F": "editor::FormatSelections",
+      ", d e": "debugger::EvaluateSelectedText"
     }
   },
   {
