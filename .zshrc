@@ -26,17 +26,19 @@ if [[ $- == *i* ]]; then # only if we are in interactive mode
   if [ "$(command -v tmux)"  ]; then # tmux installed
     if [ -z "$INSIDE_EMACS" ]; then # not inside emacs
       if [ "$TERM_PROGRAM" != "vscode" ]; then # not inside vscode
-        if [ -z "$TMUX" ]; then # not inside tmux
-          if [ -z "$WARP_IS_LOCAL_SHELL_SESSION" ]; then # not inside warp terminal
-            N=$(tmux ls 2>/dev/null | grep -v attached | head -1 | cut -d: -f1)
-            if [[ -z $N ]]; then
-              # if all sessions are attached or no any session
-              # create a new one. This allow us to open several terminals
-              # with own sessions
-              tmux -2 &>/dev/null && exit
-            else
-              # -2 for supporting colors (256)
-              (tmux attach || tmux -2) &>/dev/null && exit # exit from shell after exit tmux
+        if [ "$TERM_PROGRAM" != "zed" ]; then # not inside zed
+          if [ -z "$TMUX" ]; then # not inside tmux
+            if [ -z "$WARP_IS_LOCAL_SHELL_SESSION" ]; then # not inside warp terminal
+              N=$(tmux ls 2>/dev/null | grep -v attached | head -1 | cut -d: -f1)
+              if [[ -z $N ]]; then
+                # if all sessions are attached or no any session
+                # create a new one. This allow us to open several terminals
+                # with own sessions
+                tmux -2 &>/dev/null && exit
+              else
+                # -2 for supporting colors (256)
+                (tmux attach || tmux -2) &>/dev/null && exit # exit from shell after exit tmux
+              fi
             fi
           fi
         fi
