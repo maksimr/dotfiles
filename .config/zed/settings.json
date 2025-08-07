@@ -16,6 +16,24 @@
   "scrollbar": {
     "show": "system"
   },
+  "git": {
+    "git_gutter": "hide"
+  },
+  "gutter": {
+    "line_numbers": true, // Show/hide line numbers in the gutter.
+    "runnables": true, // Show/hide runnables buttons in the gutter.
+    "breakpoints": true, // Show/hide show breakpoints in the gutter.
+    "folds": false, // Show/hide show fold buttons in the gutter.
+    "min_line_number_digits": 3 // Reserve space for N digit line numbers
+  },
+  "indent_guides": {
+    "enabled": true,
+    "line_width": 1, // Width of guides in pixels [1-10]
+    "active_line_width": 1, // Width of active guide in pixels [1-10]
+    "coloring": "fixed", // disabled, fixed, indent_aware
+    "background_coloring": "disabled" // disabled, indent_aware
+  },
+  "unnecessary_code_fade": 0.8,
   "vim_mode": true,
   "ui_font_size": 16,
   "buffer_font_size": 28,
@@ -87,8 +105,8 @@
     "editor.invisible": null,
     "editor.wrap_guide": "#303030",
     "editor.active_wrap_guide": "#303030",
-    "editor.indent_guide": "#404040",
-    "editor.indent_guide_active": "#707070",
+    "editor.indent_guide": "#262626",
+    "editor.indent_guide_active": "#303030",
     "editor.document_highlight.read_background": "#37373d",
     "editor.document_highlight.write_background": null,
     "terminal.background": "#262626",
@@ -254,19 +272,19 @@
         "font_weight": 700
       },
       "function": {
-        "color": "#DCDCAA",
+        "color": "#e0e0e0",
         "background_color": null,
         "font_style": null,
         "font_weight": null
       },
       "keyword": {
-        "color": "#569CD6",
+        "color": "#afd787",
         "background_color": null,
         "font_style": null,
         "font_weight": null
       },
       "number": {
-        "color": "#B5CEA8",
+        "color": "#87d7d7",
         "background_color": null,
         "font_style": null,
         "font_weight": null
@@ -284,7 +302,13 @@
         "font_weight": null
       },
       "property": {
-        "color": "#9CDCFE",
+        "color": "#e0e0e0",
+        "background_color": null,
+        "font_style": null,
+        "font_weight": null
+      },
+      "property.json_key": {
+        "color": "#afd787",
         "background_color": null,
         "font_style": null,
         "font_weight": null
@@ -320,7 +344,7 @@
         "font_weight": null
       },
       "string": {
-        "color": "#CE9178",
+        "color": "#87afd7",
         "background_color": null,
         "font_style": null,
         "font_weight": null
@@ -362,13 +386,13 @@
         "font_weight": null
       },
       "type": {
-        "color": "#4EC9B0",
+        "color": "#afd787",
         "background_color": null,
         "font_style": null,
         "font_weight": null
       },
       "variable": {
-        "color": "#9CDCFE",
+        "color": "#e0e0e0",
         "background_color": null,
         "font_style": null,
         "font_weight": null
