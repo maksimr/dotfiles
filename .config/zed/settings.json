@@ -32,6 +32,7 @@
     "folds": false, // Show/hide show fold buttons in the gutter.
     "min_line_number_digits": 3 // Reserve space for N digit line numbers
   },
+  "inline_code_actions": true, // Show lighting bold icon for inline code actions
   "indent_guides": {
     "enabled": true,
     "line_width": 1, // Width of guides in pixels [1-10]
@@ -154,9 +155,9 @@
     "deleted": "#F85149",
     "deleted.background": "#F851491A",
     "deleted.border": null,
-    "error": "#F14C4C",
-    "error.background": "#262626",
-    "error.border": "#404040",
+    "error": "#F14C4Cad",
+    "error.background": "#34090D",
+    "error.border": "#460C12",
     "hidden": "#9D9D9D",
     "hidden.background": null,
     "hidden.border": null,
