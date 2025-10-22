@@ -56,6 +56,14 @@ set backup " Создавать резервные копии файлов
 set backupdir^=~/.vim/backup  " Создавать резервные копии файлов в папке sessions или если ее нет то в том же каталоге
 set dir^=~/.vim/sessions " Складываем swp файлы в sessions папку, а не в текущую (:h swap-file)
 
+" Create session and backup directories if they don't exist
+if !isdirectory(expand("~/.vim/backup"))
+    call mkdir(expand("~/.vim/backup"), "p", 0700)
+endif
+if !isdirectory(expand("~/.vim/sessions"))
+    call mkdir(expand("~/.vim/sessions"), "p", 0700)
+endif
+
 set wildmode=list:longest,full " Автодополнение на манер zsh в командной строке
 set wildmenu
 set wildignore+=.hg,.git,.svn  " Version control
