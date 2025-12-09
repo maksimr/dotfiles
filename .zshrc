@@ -137,8 +137,13 @@ alias v="$([ "$(command -v nvim)" ] && echo "nvim" || echo "vim")"
 alias co="$([ "$(command -v code-insiders)" ] && echo "code-insiders -n " || echo "code -n ")"
 alias zshprofiling="time zsh -i -c exit"
 alias n="npm"
-alias '??'='gh copilot suggest -t shell'
 alias devcontainer='npx -y @devcontainers/cli'
+
+function copilot() {
+  local prompt_str="suggest $@"
+  npx -y @github/copilot -s --stream on -p "'$prompt_str'"
+}
+alias '??'='copilot'
 
 if [ "$(command -v bat)" ]
 then
