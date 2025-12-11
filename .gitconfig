@@ -26,3 +26,5 @@
 	precomposeUnicode = true
 [safe]
 	directory = /private/tmp
+[protocol "file"]
+	allow = always
