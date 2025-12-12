@@ -144,6 +144,7 @@ function copilot() {
   npx -y @github/copilot -s --stream on -p "'$prompt_str'"
 }
 alias '??'='copilot'
+alias '???'='npx -y @github/copilot'
 
 if [ "$(command -v bat)" ]
 then
