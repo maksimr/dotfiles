@@ -2,6 +2,10 @@
 const vscode = require('vscode');
 const { dirname, basename, join } = require('path');
 
+/**
+ * @typedef {vscode.QuickPickItem & { resourceUri: vscode.Uri }} QuickPickFileItem
+ */
+
 async function main() {
   const uri = vscode.window.activeTextEditor?.document.uri;
   const file = uri?.path ?? '';
@@ -29,7 +33,7 @@ async function main() {
         const selectedPath = await showFileQuickPick(candidatePaths);
         if (selectedPath) {
           const newFileUri = selectedPath.resourceUri;
-          await vscode.workspace.fs.writeFile(newFileUri, Buffer.from(''));
+          await vscode.workspace.fs.writeFile(newFileUri, new Uint8Array());
           return openSelectedFileItem(selectedPath);
         }
       }
@@ -116,6 +120,7 @@ async function main() {
    * @param {vscode.Uri[]} candidates 
    */
   async function showFileQuickPick(candidates) {
+    /**@type {QuickPickFileItem[]}*/
     const quickPickItems = candidates.map((uri) => {
       const relativePath = vscode.workspace.asRelativePath(uri);
       // VSCode doesn't support file type icon for the quick pick dialog
@@ -128,11 +133,11 @@ async function main() {
     if (quickPickItems.length === 1) {
       return quickPickItems[0];
     }
-    return vscode.window.showQuickPick(quickPickItems);
+    return await vscode.window.showQuickPick(quickPickItems);
   }
 
   /**
-   * @param {(vscode.QuickPickItem & { resourceUri: vscode.Uri }) | undefined} value 
+   * @param {QuickPickFileItem | undefined} value 
    */
   async function openSelectedFileItem(value) {
     if (value) {
@@ -211,7 +216,7 @@ async function main() {
     });
   }
 
-  function i18n(key) {
+  function i18n(/**@type {string}*/ key) {
     return key;
   }
 }
