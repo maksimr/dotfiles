@@ -6,4 +6,4 @@ window-decoration = none
 macos-titlebar-style = hidden
 
 # requires Accessibility permission
-keybind = global:cmd+grave_accent=toggle_quick_terminal
+#keybind = global:cmd+grave_accent=toggle_quick_terminal
