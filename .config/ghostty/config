@@ -2,6 +2,7 @@ font-family = "JetBrains Mono Thin"
 font-size = 32
 background = "#333333"
 background-opacity = 0.9
+window-decoration = none
 macos-titlebar-style = hidden
 
 # requires Accessibility permission
