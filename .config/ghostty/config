@@ -3,3 +3,6 @@ font-size = 32
 background = "#333333"
 background-opacity = 0.9
 macos-titlebar-style = hidden
+
+# requires Accessibility permission
+keybind = global:cmd+grave_accent=toggle_quick_terminal
