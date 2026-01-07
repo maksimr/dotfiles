@@ -107,16 +107,6 @@ if [ "$1" == 'stop-all' ]; then
   exit 0
 fi
 
-PROJECT_ROOT_DIR="$WORKING_DIR"
-while [ ! -d "$PROJECT_ROOT_DIR/$DEVCONTAINER_FOLDER" ]; do
-  if [ "$PROJECT_ROOT_DIR" == "/" ] || [ -d "$PROJECT_ROOT_DIR/.git" ]; then
-    echo "Error: Could not find .devcontainer folder" 1>&2
-    exit 1
-  fi
-  PROJECT_ROOT_DIR=$(dirname "$PROJECT_ROOT_DIR")
-  debug "Searching for .devcontainer folder in $PROJECT_ROOT_DIR"
-done
-
 debug "Passed arguments: $*"
 
 DEVCONTAINER_ARGS=()
@@ -137,9 +127,19 @@ for arg in "$@"; do
 done
 
 if [ "$DEVCONTAINER_COMMAND" == "init" ]; then
-  npx -y @devcontainers/cli templates apply -t ghcr.io/devcontainers/templates/ubuntu:latest
+  _init_devcontainer
   exit 0
 fi
+
+PROJECT_ROOT_DIR="$WORKING_DIR"
+while [ ! -d "$PROJECT_ROOT_DIR/$DEVCONTAINER_FOLDER" ]; do
+  if [ "$PROJECT_ROOT_DIR" == "/" ] || [ -d "$PROJECT_ROOT_DIR/.git" ]; then
+    PROJECT_ROOT_DIR=$(pwd)
+    break
+  fi
+  PROJECT_ROOT_DIR=$(dirname "$PROJECT_ROOT_DIR")
+  debug "Searching for .devcontainer folder in $PROJECT_ROOT_DIR"
+done
 
 if [ "$DEVCONTAINER_COMMAND" == "stop" ]; then
   CONTAINER_ID=$(docker ps -q --filter "label=devcontainer.local_folder=$PROJECT_ROOT_DIR")
