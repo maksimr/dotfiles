@@ -5,6 +5,7 @@ background-opacity = 0.9
 window-decoration = none
 macos-titlebar-style = hidden
 quit-after-last-window-closed = true
+maximize = true
 
 # requires Accessibility permission
 #keybind = global:cmd+grave_accent=toggle_quick_terminal
