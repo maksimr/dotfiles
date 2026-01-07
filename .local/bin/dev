@@ -65,7 +65,9 @@ function _list_devcontainers() {
 }
 
 function _init_devcontainer() {
-  devcontainer_exec templates apply -t ghcr.io/devcontainers/templates/ubuntu:latest
+  TEMPLATE_DEFAULT="ubuntu:latest"
+  TEMPLATE="${1:-$TEMPLATE_DEFAULT}"
+  devcontainer_exec templates apply -t ghcr.io/devcontainers/templates/$TEMPLATE
 }
 
 function _stop_all_devcontainers() {
@@ -96,7 +98,7 @@ if [ "$1" == 'ls' ]; then
 fi
 
 if [ "$1" == 'init' ]; then
-  _init_devcontainer
+  _init_devcontainer "$2"
   exit 0
 fi
 
