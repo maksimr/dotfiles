@@ -127,7 +127,8 @@ async function main() {
       // @see https://github.com/microsoft/vscode/issues/59826
       return {
         label: relativePath,
-        resourceUri: uri
+        resourceUri: uri,
+        iconPath: vscode.ThemeIcon.File
       };
     });
     if (quickPickItems.length === 1) {
