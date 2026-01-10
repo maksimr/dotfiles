@@ -134,7 +134,7 @@ fi
 PROJECT_ROOT_DIR="$WORKING_DIR"
 while [ ! -d "$PROJECT_ROOT_DIR/$DEVCONTAINER_FOLDER" ]; do
   if [ "$PROJECT_ROOT_DIR" == "/" ] || [ -d "$PROJECT_ROOT_DIR/.git" ]; then
-    PROJECT_ROOT_DIR=$(pwd)
+    PROJECT_ROOT_DIR="$WORKING_DIR"
     break
   fi
   PROJECT_ROOT_DIR=$(dirname "$PROJECT_ROOT_DIR")
