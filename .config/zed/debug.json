@@ -6,13 +6,8 @@
     "request": "launch",
     "program": "$ZED_FILE",
     "runtimeExecutable": "node",
-    "runtimeArgs": [
-      "--expose-gc"
-    ],
+    "runtimeArgs": ["--expose-gc"],
     "console": "integratedTerminal",
-    "skipFiles": [
-      "<node_internals>/**"
-    ]
   },
   {
     "adapter": "JavaScript",
@@ -21,13 +16,8 @@
     "request": "launch",
     "program": "$ZED_FILE",
     "runtimeExecutable": "node",
-    "runtimeArgs": [
-      "--watch"
-    ],
+    "runtimeArgs": ["--watch"],
     "console": "integratedTerminal",
-    "skipFiles": [
-      "<node_internals>/**"
-    ]
   },
   {
     "adapter": "JavaScript",
@@ -36,14 +26,9 @@
     "request": "launch",
     "program": "$ZED_FILE",
     "runtimeExecutable": "npx",
-    "runtimeArgs": [
-      "tsx",
-      "$ZED_FILE"
-    ],
+    "sourceMaps": true,
+    "runtimeArgs": ["tsx", "$ZED_FILE"],
     "console": "integratedTerminal",
-    "skipFiles": [
-      "<node_internals>/**"
-    ]
   },
   {
     "adapter": "JavaScript",
@@ -52,15 +37,9 @@
     "request": "launch",
     "program": "$ZED_FILE",
     "runtimeExecutable": "npx",
-    "runtimeArgs": [
-      "tsx",
-      "--watch",
-      "$ZED_FILE"
-    ],
+    "sourceMaps": true,
+    "runtimeArgs": ["tsx", "--watch", "$ZED_FILE"],
     "console": "integratedTerminal",
-    "skipFiles": [
-      "<node_internals>/**"
-    ]
   },
   {
     "adapter": "JavaScript",
@@ -69,8 +48,12 @@
     "request": "launch",
     "url": "http://localhost:1234",
     "webRoot": "$ZED_WORKTREE_ROOT",
-    "skipFiles": [
-      "<node_internals>/**"
-    ]
-  }
+    "sourceMaps": true,
+    "sourceMapPathOverrides": {
+      "webpack:///./src/*": "${webRoot}/src/*",
+      "webpack:///src/*": "${webRoot}/src/*",
+      "webpack:///*": "${webRoot}/*",
+      "/__parcel_source_root/*": "${webRoot}/*",
+    },
+  },
 ]
