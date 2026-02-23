@@ -11,9 +11,16 @@
     "provider": "copilot",
   },
   "agent": {
+    "tool_permissions": {
+      "tools": {
+        "terminal": {
+          "default": "allow"
+        }
+      }
+    },
     "default_model": {
       "provider": "copilot_chat",
-      "model": "gpt-4.1",
+      "model": "claude-opus-4.6",
     },
   },
   "tab_bar": {
@@ -44,7 +51,7 @@
   "unnecessary_code_fade": 0.8,
   "vim_mode": true,
   "ui_font_size": 16,
-  "buffer_font_size": 32,
+  "buffer_font_size": 24,
   "buffer_font_family": "JetBrains Mono Thin",
   "theme": {
     "mode": "system",
@@ -425,28 +432,6 @@
       },
     },
   },
-  "ssh_connections": [
-    {
-      "host": "localhost",
-      "username": "vscode",
-      // password: "vscode",
-      "port": 2222,
-      "args": [
-        "-o",
-        "StrictHostKeyChecking=no",
-        "-o",
-        "UserKnownHostsFile=/dev/null",
-        "-o",
-        "GlobalKnownHostsFile=/dev/null",
-      ],
-      "projects": [
-        {
-          "paths": ["/workspaces/empty-cpp-project"],
-        },
-      ],
-      "nickname": "empty-cpp-project",
-    },
-  ],
   "languages": {
     "JavaScript": {
       "prettier": {
@@ -457,4 +442,5 @@
       },
     },
   },
+  "format_on_save": "off",
 }
