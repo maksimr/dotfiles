@@ -11,12 +11,17 @@
     "provider": "copilot",
   },
   "agent": {
+    "inline_assistant_model": {
+      "provider": "copilot_chat",
+      "model": "gpt-4.1",
+      "enable_thinking": false,
+    },
     "tool_permissions": {
       "tools": {
         "terminal": {
-          "default": "allow"
-        }
-      }
+          "default": "allow",
+        },
+      },
     },
     "default_model": {
       "provider": "copilot_chat",
@@ -433,6 +438,11 @@
     },
   },
   "languages": {
+    "TypeScript": {
+      "prettier": {
+        "singleQuote": true,
+      },
+    },
     "JavaScript": {
       "prettier": {
         "singleQuote": true,
