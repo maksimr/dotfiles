@@ -68,5 +68,11 @@
     "bindings": {
       "ctrl-q": "editor::Hover"
     }
+  },
+  {
+    "context": "Terminal",
+    "bindings": {
+      "cmd-1": "editor::ToggleFocus"
+    }
   }
 ]
