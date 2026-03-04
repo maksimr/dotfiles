@@ -8,7 +8,7 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "git_panel": {
-    "tree_view": false
+    "tree_view": false,
   },
   "edit_predictions": {
     "provider": "copilot",
@@ -441,19 +441,14 @@
     },
   },
   "languages": {
-    "TypeScript": {
-      "prettier": {
-        "singleQuote": true,
-      },
-    },
     "JavaScript": {
-      "prettier": {
-        "singleQuote": true,
-      },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
       },
     },
   },
   "format_on_save": "off",
+  "prettier": {
+    "singleQuote": true,
+  },
 }
