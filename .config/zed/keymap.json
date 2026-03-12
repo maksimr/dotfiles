@@ -10,22 +10,22 @@
     "bindings": {
       "cmd-shift-c": "agent::ToggleFocus",
       "alt-]": "copilot::NextSuggestion",
-      "cmd-i": "assistant::InlineAssist"
+      "cmd-i": "assistant::InlineAssist",
       // "shift shift": "file_finder::Toggle"
-    }
+    },
   },
   {
     "context": "Editor && vim_mode == visual",
     "bindings": {
       "F": "editor::FormatSelections",
-      ", d e": "debugger::EvaluateSelectedText"
-    }
+      ", d e": "debugger::EvaluateSelectedText",
+    },
   },
   {
     "context": "Editor && vim_mode == insert",
     "bindings": {
-      "j k": "vim::NormalBefore"
-    }
+      "j k": "vim::NormalBefore",
+    },
   },
   {
     "context": "Editor && vim_mode == normal",
@@ -54,25 +54,32 @@
       "g s": "editor::GoToDefinition",
       "g i": "editor::GoToImplementation",
       "g shift-d": "editor::GoToDeclaration",
-      "shift-E": "file_finder::Toggle"
-    }
+      "shift-E": "file_finder::Toggle",
+    },
   },
   {
     "context": "Editor",
     "bindings": {
-      "ctrl-w": "pane::CloseActiveItem"
-    }
+      "ctrl-w": "pane::CloseActiveItem",
+    },
   },
   {
     "context": "(VimControl && !menu)",
     "bindings": {
-      "ctrl-q": "editor::Hover"
-    }
+      "ctrl-q": "editor::Hover",
+    },
   },
   {
     "context": "Terminal",
     "bindings": {
-      "cmd-1": "editor::ToggleFocus"
-    }
-  }
+      "cmd-1": "editor::ToggleFocus",
+    },
+  },
+  {
+    "context": "ProjectPanel",
+    "use_key_equivalents": true,
+    "bindings": {
+      "cmd-enter": "project_panel::Rename",
+    },
+  },
 ]
