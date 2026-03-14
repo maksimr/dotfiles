@@ -61,6 +61,7 @@
     "context": "Editor",
     "bindings": {
       "ctrl-w": "pane::CloseActiveItem",
+      "ctrl-r": ["projects::OpenRecent", { "create_new_window": false }],
     },
   },
   {
@@ -80,12 +81,6 @@
     "use_key_equivalents": true,
     "bindings": {
       "cmd-enter": "project_panel::Rename",
-    },
-  },
-  {
-    "use_key_equivalents": true,
-    "bindings": {
-      "ctrl-r": ["projects::OpenRecent", { "create_new_window": false }],
     },
   },
 ]
