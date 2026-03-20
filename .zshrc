@@ -350,6 +350,12 @@ then
     . "$NVM_DIR/bash_completion"
 fi
 
+# https://direnv.net/
+# brew install direnv
+if [ -x "$(command -v direnv)" ]; then
+  _eval_and_cache 'direnv' 'direnv hook zsh'
+fi
+
 # Is a tool for managing parallel versions of multiple
 # Java based Software Development Kits on systems.
 # https://sdkman.io
