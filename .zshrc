@@ -130,13 +130,11 @@ alias q="exit"
 alias rm="rm -rf"
 alias pl="sudo"
 alias mimimi="git pull --rebase"
-alias c="cd"
 alias k9="kill -9"
 alias disc='df -h'
 alias v="$([ "$(command -v nvim)" ] && echo "nvim" || echo "vim")"
 alias co="$([ "$(command -v code-insiders)" ] && echo "code-insiders -n " || echo "code -n ")"
 alias zshprofiling="time zsh -i -c exit"
-alias n="npm"
 alias devcontainer='npx -y @devcontainers/cli'
 
 function copilot() {
