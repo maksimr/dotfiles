@@ -313,9 +313,12 @@ then
   }
 fi
 
-# This loads nvm
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-if [ -s "$NVM_DIR/nvm.sh" ]; then
+# Prefer fnm over nvm if both are installed
+# https://github.com/Schniz/fnm
+if [ "$(command -v fnm)"  ]; then
+  _eval_and_cache 'fnm' 'fnm env --use-on-cd --shell zsh'
+elif [ -s "$NVM_DIR/nvm.sh" ]; then
   source "$NVM_DIR/nvm.sh" --no-use
   # setup default node version manually to speed up shell loading
   if [ -f "$NVM_DIR/alias/default" ]; then
