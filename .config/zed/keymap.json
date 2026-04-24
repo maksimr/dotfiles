@@ -90,11 +90,12 @@
       "cmd-backspace": "project_panel::Delete"
     }
   },
-  // {
-  //   "context": "GitGraph",
-  //   "bindings": {
-  //     "j": "vim::MenuSelectNext",
-  //     "k": "vim::MenuSelectPrevious"
-  //   }
-  // },
+  {
+    "context": "GitGraph && !Editor",
+    "bindings": {
+      "j": "vim::MenuSelectNext",
+      "k": "vim::MenuSelectPrevious",
+      "/": "git_graph::FocusSearch"
+    }
+  },
 ]
