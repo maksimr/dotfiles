@@ -87,15 +87,22 @@
     "context": "ProjectPanel && not_editing",
     "use_key_equivalents": true,
     "bindings": {
-      "cmd-backspace": "project_panel::Delete"
-    }
+      "cmd-backspace": "project_panel::Delete",
+    },
   },
   {
     "context": "GitGraph && !Editor",
     "bindings": {
       "j": "vim::MenuSelectNext",
       "k": "vim::MenuSelectPrevious",
-      "/": "git_graph::FocusSearch"
-    }
+      "/": "git_graph::FocusSearch",
+    },
+  },
+  {
+    "context": "vim_mode == normal || vim_mode == visual",
+    "bindings": {
+      "s": "vim::PushSneak",
+      "shift-s": "vim::PushSneakBackward",
+    },
   },
 ]
