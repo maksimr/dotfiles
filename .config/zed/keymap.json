@@ -105,4 +105,11 @@
       "shift-s": "vim::PushSneakBackward",
     },
   },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "alt-down": "editor::GoToHunk",
+      "alt-up": "editor::GoToPreviousHunk",
+    },
+  },
 ]
