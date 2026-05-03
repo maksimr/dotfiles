@@ -110,8 +110,6 @@ if [ "$(command -v zgen)"  ]; then
         zgen load "zsh-users/zsh-autosuggestions" "zsh-autosuggestions.zsh"
         zgen load zsh-users/zsh-completions src
 
-        zgen oh-my-zsh plugins/npm
-
         # Theme
         zgen oh-my-zsh themes/robbyrussell
         zgen save
