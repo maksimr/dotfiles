@@ -90,8 +90,9 @@ _eval_and_cache() {
 }
 
 # Instal and load zgen (zsh plugin manager)
-[[ ! -d $HOME/.zgen ]] && git clone https://github.com/tarjoilija/zgen.git "${HOME}/.zgen"
-[[ -f $HOME/.zgen/zgen.zsh ]] && source $HOME/.zgen/zgen.zsh 2>/dev/null
+ZGEN_DIR="$HOME/.zgen"
+[[ ! -d $ZGEN_DIR ]] && git clone https://github.com/tarjoilija/zgen.git "$ZGEN_DIR"
+[[ -f $ZGEN_DIR/zgen.zsh ]] && source $ZGEN_DIR/zgen.zsh 2>/dev/null
 
 if [ "$(command -v zgen)"  ]; then
   if ! zgen saved; then
@@ -116,10 +117,25 @@ if [ "$(command -v zgen)"  ]; then
   fi
 fi
 
+# compile zgen init file if not compiled yet or
+# if source file is newer than compiled one
+ZGEN_INIT="$ZGEN_DIR/init.zsh"
+if [ -f "$ZGEN_INIT" ]; then
+  if [ ! -f "$ZGEN_INIT.zwc" ] || [ "$ZGEN_INIT" -nt "$ZGEN_INIT.zwc" ]; then
+    # Parse init.zsh to get path from  `source "<path>"` and compile it
+    cat "$ZGEN_INIT" | grep 'source "' | sed 's/.*source "\(.*\).zsh".*/\1/' | while read -r source_file; do
+      if [ -f "$source_file.zsh" ]; then
+        zcompile "$source_file.zsh"
+      fi
+    done
+    zcompile "$ZGEN_INIT"
+  fi
+fi
+
 if [ -d $HOME/.local/share/zsh/completion ]; then
   fpath=($HOME/.local/share/zsh/completion $fpath)
   autoload -Uz compinit
-  compinit -u
+  compinit -u -C -d "$HOME/.zcompdump"
 fi
 
 alias mk="mkdir -p"
@@ -382,6 +398,7 @@ export HOMEBREW_NO_ANALYTICS=1
 # Load custom zsh scripts
 [[ -d "$HOME/.local/share/zsh" ]] && \
   for file in "$HOME/.local/share/zsh"/*.zsh; do
+    zcompile "$file"
     source "$file"
   done 2>/dev/null
 
