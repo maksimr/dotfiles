@@ -93,8 +93,6 @@
   {
     "context": "GitGraph && !Editor",
     "bindings": {
-      "j": "vim::MenuSelectNext",
-      "k": "vim::MenuSelectPrevious",
       "/": "git_graph::FocusSearch",
     },
   },
