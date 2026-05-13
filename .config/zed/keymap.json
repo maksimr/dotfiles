@@ -110,4 +110,11 @@
       "alt-up": "editor::GoToPreviousHunk",
     },
   },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "alt-, shift-b": "editor::ViewBookmarks",
+      "alt-, b": "editor::ToggleBookmark",
+    },
+  },
 ]
