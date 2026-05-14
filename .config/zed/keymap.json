@@ -101,6 +101,7 @@
     "bindings": {
       "s": "vim::PushSneak",
       "shift-s": "vim::PushSneakBackward",
+      "g w": "vim::HelixJumpToWord",
     },
   },
   {
