@@ -13,17 +13,17 @@
       "settings": {
         "typescript": {
           "updateImportsOnFileMove": {
-            "enabled": "always"
-          }
+            "enabled": "always",
+          },
         },
         "javascript": {
           "updateImportsOnFileMove": {
-            "enabled": "always"
-          }
-        }
+            "enabled": "always",
+          },
+        },
       },
-      "enable_lsp_tasks": true
-    }
+      "enable_lsp_tasks": true,
+    },
   },
   "cli_default_open_behavior": "new_window",
   "project_panel": {
@@ -487,5 +487,8 @@
   "format_on_save": "off",
   "prettier": {
     "singleQuote": true,
+  },
+  "journal": {
+    "path": "~/.zed",
   },
 }
