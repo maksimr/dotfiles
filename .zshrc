@@ -27,6 +27,7 @@ if [[ $- == *i* ]]; then # only if we are in interactive mode
     if [ -z "$INSIDE_EMACS" ]; then # not inside emacs
       if [ "$TERM_PROGRAM" != "vscode" ]; then # not inside vscode
         if [ "$TERM_PROGRAM" != "zed" ]; then # not inside zed
+          if [ -z "$VSCODE_RESOLVING_ENVIRONMENT"]; then # not vscode resolve env process
           if [ -z "$WARP_IS_LOCAL_SHELL_SESSION" ]; then # not inside warp terminal
             if [ "$(command -v tmux)"  ]; then # tmux installed
               N=$(tmux ls 2>/dev/null | grep -v attached | head -1 | cut -d: -f1)
@@ -41,6 +42,7 @@ if [[ $- == *i* ]]; then # only if we are in interactive mode
                 (tmux attach || tmux -2) &>/dev/null && exit # exit from shell after exit tmux
               fi
             fi
+          fi
           fi
         fi
       fi
