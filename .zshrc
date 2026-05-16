@@ -34,10 +34,11 @@ if [[ $- == *i* ]]; then # only if we are in interactive mode
                 # if all sessions are attached or no any session
                 # create a new one. This allow us to open several terminals
                 # with own sessions
-                # -2 for supporting colors (256)
-                exec tmux -2
+                # Don't use `exec tmux` because it will cause problems
+                # with editors that try to resolve env variables
+                tmux -2 &>/dev/null && exit # -2 for supporting colors (256)
               else
-                exec tmux attach
+                (tmux attach || tmux -2) &>/dev/null && exit # exit from shell after exit tmux
               fi
             fi
           fi
