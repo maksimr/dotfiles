@@ -60,9 +60,9 @@
     },
     "default_model": {
       "effort": "high",
-      "enable_thinking": true,
-      "provider": "copilot_chat",
-      "model": "claude-sonnet-4.6",
+      "enable_thinking": false,
+      "provider": "deepseek",
+      "model": "deepseek-v4-pro",
     },
   },
   "tab_bar": {
