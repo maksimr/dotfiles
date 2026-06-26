@@ -1,4 +1,31 @@
 {
   "effortLevel": "high",
-  "theme": "dark-ansi"
+  "theme": "dark-ansi",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "WebSearch",
+      "WebFetch",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(find *)",
+      "Bash(uv init *)",
+      "Bash(uv add *)",
+      "Bash(uv run *)"
+    ],
+    "deny": [
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(rm -rf *)",
+      "Bash(git push *)",
+      "Bash(sudo *)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(./.ssh/**)"
+    ]
+  }
 }
