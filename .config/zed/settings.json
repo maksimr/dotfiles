@@ -7,6 +7,14 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "agent_servers": {
+    "claude-acp": {
+      "default_config_options": {
+        "agent": "Ask"
+      },
+      "type": "registry"
+    }
+  },
   "diff_view_style": "unified",
   "lsp": {
     "vtsls": {
