@@ -3,15 +3,9 @@
   "theme": "dark-ansi",
   "permissions": {
     "allow": [
-      "Read",
-      "Glob",
-      "Grep",
-      "WebSearch",
-      "WebFetch",
       "Bash(git status)",
       "Bash(git diff *)",
       "Bash(git log *)",
-      "Bash(find *)",
       "Bash(uv init *)",
       "Bash(uv add *)",
       "Bash(uv run *)"
