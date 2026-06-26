@@ -6,6 +6,7 @@
       "Bash(git status)",
       "Bash(git diff *)",
       "Bash(git log *)",
+      "Bash(npm:*)",
       "Bash(uv init *)",
       "Bash(uv add *)",
       "Bash(uv run *)"
@@ -21,5 +22,12 @@
       "Read(./secrets/**)",
       "Read(./.ssh/**)"
     ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true
+  },
+  "env": {
+    "DISABLE_TELEMETRY": "1"
   }
 }
