@@ -10,7 +10,7 @@
   "agent_servers": {
     "claude-acp": {
       "default_config_options": {
-        "agent": "Ask"
+        "agent": "default"
       },
       "type": "registry"
     }

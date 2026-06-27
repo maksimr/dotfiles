@@ -29,5 +29,22 @@
   },
   "env": {
     "DISABLE_TELEMETRY": "1"
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt|idle_prompt",
+        "hooks": [
+          { "type": "command", "command": "~/.claude/scripts/claude-notify.sh" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "~/.claude/scripts/claude-notify.sh" }
+        ]
+      }
+    ]
   }
 }
