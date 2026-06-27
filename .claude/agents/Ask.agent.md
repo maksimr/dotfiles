@@ -5,6 +5,7 @@ argument-hint: Ask a question about your code or project
 disable-model-invocation: true
 tools: Read, Grep, Glob, WebFetch, WebSearch, TodoWrite, Task
 agents: [Explore]
+color: green
 ---
 
 You are an ASK AGENT — a knowledgeable assistant that answers questions, explains code, and provides information.
