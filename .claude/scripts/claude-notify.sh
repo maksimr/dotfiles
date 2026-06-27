@@ -41,17 +41,17 @@ event=$(printf '%s' "$input" | json_get hook_event_name)
 ntype=$(printf '%s' "$input" | json_get notification_type)
 msg=$(printf '%s' "$input" | json_get message)
 
+# Get current session directory name (hooks run in the same directory as the session)
+session_dir=$(basename "$(pwd)")
 title="Claude Code"
 
 case "$event" in
   Notification)
     case "$ntype" in
       permission_prompt)
-        subtitle="Permission needed"
         [ -z "$msg" ] && msg="Approve an action to continue"
         ;;
       idle_prompt)
-        subtitle="Waiting for you"
         [ -z "$msg" ] && msg="Claude is waiting for your input"
         ;;
       *)
@@ -60,7 +60,6 @@ case "$event" in
     esac
     ;;
   Stop)
-    subtitle="All done"
     msg="Claude is ready for your next message"
     ;;
   *)
@@ -70,7 +69,7 @@ esac
 
 # Escape double quotes for AppleScript
 title=${title//\"/\\\"}
-subtitle=${subtitle//\"/\\\"}
+subtitle=${session_dir//\"/\\\"}
 msg=${msg//\"/\\\"}
 
 notification="display notification \"$msg\" with title \"$title\""
