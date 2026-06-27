@@ -59,7 +59,7 @@ esac
 title=${title//\"/\\\"}
 subtitle=${session_dir//\"/\\\"}
 msg=${msg//\"/\\\"}
-sound_name="Glass"
+sound_name="Frog"
 
 notification="display notification \"$msg\" with title \"$title\""
 [ -n "$subtitle" ] && notification="$notification subtitle \"$subtitle\""
