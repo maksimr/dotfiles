@@ -36,43 +36,32 @@ json_get() {
   }'
 }
 
+# Get current session directory name (hooks run in the same directory as the session)
+session_dir=$(basename "$(pwd)")
 input=$(cat)
 event=$(printf '%s' "$input" | json_get hook_event_name)
 ntype=$(printf '%s' "$input" | json_get notification_type)
 msg=$(printf '%s' "$input" | json_get message)
 
-# Get current session directory name (hooks run in the same directory as the session)
-session_dir=$(basename "$(pwd)")
 title="Claude Code"
-
 case "$event" in
   Notification)
     case "$ntype" in
-      permission_prompt)
-        [ -z "$msg" ] && msg="Approve an action to continue"
-        ;;
-      idle_prompt)
-        [ -z "$msg" ] && msg="Claude is waiting for your input"
-        ;;
-      *)
-        [ -z "$msg" ] && msg="Claude needs your attention"
-        ;;
+      permission_prompt) msg="Approve an action to continue" ;;
+      idle_prompt) msg="Claude is waiting for your input" ;;
+      *) [ -z "$msg" ] && msg="Claude needs your attention" ;;
     esac
     ;;
-  Stop)
-    msg="Claude is ready for your next message"
-    ;;
-  *)
-    [ -z "$msg" ] && msg="Notification"
-    ;;
+  Stop) msg="Claude is ready for your next message" ;;
 esac
 
 # Escape double quotes for AppleScript
 title=${title//\"/\\\"}
 subtitle=${session_dir//\"/\\\"}
 msg=${msg//\"/\\\"}
+sound_name="Glass"
 
 notification="display notification \"$msg\" with title \"$title\""
 [ -n "$subtitle" ] && notification="$notification subtitle \"$subtitle\""
-osascript -e "$notification sound name \"Glass\""
+osascript -e "$notification sound name \"$sound_name\""
 exit 0
