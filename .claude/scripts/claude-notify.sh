@@ -41,28 +41,39 @@ event=$(printf '%s' "$input" | json_get hook_event_name)
 ntype=$(printf '%s' "$input" | json_get notification_type)
 msg=$(printf '%s' "$input" | json_get message)
 
+title="Claude Code"
+
 case "$event" in
   Notification)
     case "$ntype" in
-      permission_prompt) title="Claude Code — permission needed" ;;
-      idle_prompt)       title="Claude Code — waiting for you" ;;
-      *)                 title="Claude Code" ;;
+      permission_prompt)
+        subtitle="Permission needed"
+        [ -z "$msg" ] && msg="Approve an action to continue"
+        ;;
+      idle_prompt)
+        subtitle="Waiting for you"
+        [ -z "$msg" ] && msg="Claude is waiting for your input"
+        ;;
+      *)
+        [ -z "$msg" ] && msg="Claude needs your attention"
+        ;;
     esac
-    [ -z "$msg" ] && msg="Claude needs your attention"
     ;;
   Stop)
-    title="Claude Code — task finished"
-    msg="Claude has finished responding"
+    subtitle="All done"
+    msg="Claude is ready for your next message"
     ;;
   *)
-    title="Claude Code"
     [ -z "$msg" ] && msg="Notification"
     ;;
 esac
 
 # Escape double quotes for AppleScript
 title=${title//\"/\\\"}
+subtitle=${subtitle//\"/\\\"}
 msg=${msg//\"/\\\"}
 
-osascript -e "display notification \"$msg\" with title \"$title\" sound name \"Glass\""
+notification="display notification \"$msg\" with title \"$title\""
+[ -n "$subtitle" ] && notification="$notification subtitle \"$subtitle\""
+osascript -e "$notification sound name \"Glass\""
 exit 0
