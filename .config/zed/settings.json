@@ -503,4 +503,7 @@
   "journal": {
     "path": "~/.zed",
   },
+  "inlay_hints": {
+    "show_value_hints": false
+  }
 }

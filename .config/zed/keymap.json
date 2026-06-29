@@ -44,7 +44,7 @@
       ", d ;": "debugger::StepInto",
       ", d :": "debugger::StepOut",
       ", d r": "debugger::FocusConsole",
-      ", d e": "debugger::EvaluateSelectedText",
+      ", d e": ["workspace::SendKeystrokes", "ctrl-alt-0"],
       ", d b": "editor::ToggleBreakpoint",
       ", d shift-b": "debugger::FocusBreakpointList",
       ", b b": "project_panel::ToggleFocus",
@@ -116,6 +116,20 @@
     "bindings": {
       "alt-, shift-b": "editor::ViewBookmarks",
       "alt-, b": "editor::ToggleBookmark",
+    },
+  },
+  {
+    "context": "debugger_stopped > Editor",
+    "bindings": {
+      // automatically select node under cursor and
+      // run evalute text after that reset cursor
+      // position on previous palce
+      "ctrl-alt-1": "editor::SelectLargerSyntaxNode",
+      "ctrl-alt-2": "debugger::EvaluateSelectedText",
+      "ctrl-alt-0": [
+        "workspace::SendKeystrokes",
+        "m a ctrl-alt-1 ctrl-alt-2 escape ` a",
+      ],
     },
   },
 ]
