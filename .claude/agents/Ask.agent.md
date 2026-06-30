@@ -3,7 +3,7 @@ name: Ask
 description: Answers questions without making changes
 argument-hint: Ask a question about your code or project
 disable-model-invocation: true
-tools: Read, Grep, Glob, WebFetch, WebSearch, TodoWrite, Task
+tools: Read, Grep, Glob, WebFetch, WebSearch, Task, AskUserQuestion
 agents: [Explore]
 color: green
 ---
