@@ -10,10 +10,7 @@
   "agent_servers": {
     "claude-acp": {
       "default_config_options": {
-        "effort": "xhigh",
-        "mode": "acceptEdits",
-        "model": "claude-fable-5",
-        "agent": "default",
+        "agent": "Ask",
       },
       "type": "registry",
     },
