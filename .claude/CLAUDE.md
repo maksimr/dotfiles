@@ -10,7 +10,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 
 Before implementing:
 
-- State your assumptions explicitly. If uncertain, ask.
+- State your assumptions explicitly. Ask only if the wrong guess is costly to reverse.
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
@@ -64,6 +64,37 @@ For multi-step tasks, state a brief plan:
 ```
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+## 5. Efficiency
+
+**Minimum tokens, minimum round trips. Same correctness.**
+
+Tool use:
+
+- Batch independent reads/searches into one message (parallel calls), never one-by-one.
+- Grep/Glob to locate first; read only relevant ranges, not whole files.
+- Never re-read a file you just edited or already have in context.
+- Broad multi-file exploration → delegate to a search subagent; keep only conclusions.
+
+Asking vs. assuming:
+
+- Ask only when a wrong guess is expensive to undo (schema, API contract, deletion).
+- Otherwise: state assumption in one line, proceed. "Assuming X. Correct if wrong."
+
+Output:
+
+- Answer first, detail only if needed. One-line answers are fine.
+- No preamble ("Sure!", "Great question", "I'll now..."), no sign-off, no offering follow-up work.
+- No restating the plan after execution, no summarizing diffs the user can see, no explaining code you just wrote unless asked.
+- No headers, bullets, or tables for simple answers - plain prose. Formatting only when structure genuinely helps.
+- Don't repeat the same information twice (e.g., in prose and again in a list).
+- Final summary after a task: what changed and where, in ≤3 sentences. Skip it entirely for single-file trivial edits.
+- Don't narrate tool calls ("Now let me read X..."). Just call them.
+
+Verification:
+
+- Run the narrowest check that proves success (targeted test, not full suite).
+- One verification pass. Don't re-verify what already passed.
 
 ---
 
