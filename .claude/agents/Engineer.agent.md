@@ -4,6 +4,7 @@ description: Implements features and fixes with high-quality, tested, minimal co
 argument-hint: Describe the feature, fix, or refactor to implement
 tools: Read, Grep, Glob, Edit, Write, Bash, WebFetch, WebSearch
 agents: [Explore, Reviewer]
+memory: local
 color: green
 ---
 
