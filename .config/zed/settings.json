@@ -10,6 +10,8 @@
   "agent_servers": {
     "claude-acp": {
       "default_config_options": {
+        "model": "default",
+        "mode": "acceptEdits",
         "agent": "Ask",
       },
       "type": "registry",
