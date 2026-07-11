@@ -1,6 +1,7 @@
 {
-  "effortLevel": "high",
-  "theme": "dark-ansi",
+  "env": {
+    "DISABLE_TELEMETRY": "1"
+  },
   "permissions": {
     "allow": [
       "WebSearch",
@@ -87,28 +88,35 @@
       "Write(//srv/**)"
     ]
   },
-  "sandbox": {
-    "enabled": true,
-    "autoAllowBashIfSandboxed": true
-  },
-  "env": {
-    "DISABLE_TELEMETRY": "1"
-  },
   "hooks": {
     "Notification": [
       {
         "matcher": "permission_prompt|idle_prompt",
         "hooks": [
-          { "type": "command", "command": "~/.claude/scripts/claude-notify.sh" }
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/claude-notify.sh"
+          }
         ]
       }
     ],
     "Stop": [
       {
         "hooks": [
-          { "type": "command", "command": "~/.claude/scripts/claude-notify.sh" }
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/claude-notify.sh"
+          }
         ]
       }
     ]
-  }
+  },
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true
+  },
+  "effortLevel": "high",
+  "remoteControlAtStartup": true,
+  "theme": "dark-ansi",
+  "tui": "fullscreen"
 }
