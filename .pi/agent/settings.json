@@ -6,6 +6,7 @@
   "defaultThinkingLevel": "high",
   "quietStartup": true,
   "packages": [
-    "npm:@gotgenes/pi-anthropic-auth"
+    "npm:@gotgenes/pi-anthropic-auth",
+    "npm:pi-web-access"
   ]
 }
