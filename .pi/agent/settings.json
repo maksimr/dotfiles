@@ -1,0 +1,11 @@
+{
+  "lastChangelogVersion": "0.80.6",
+  "theme": "dark",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
+  "defaultThinkingLevel": "high",
+  "quietStartup": true,
+  "packages": [
+    "npm:@gotgenes/pi-anthropic-auth"
+  ]
+}
