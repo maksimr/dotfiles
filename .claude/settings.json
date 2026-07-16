@@ -36,7 +36,11 @@
       "Bash(npm:*)",
       "Bash(uv init *)",
       "Bash(uv add *)",
-      "Bash(uv run *)"
+      "Bash(uv run *)",
+      "Write(//tmp/**)",
+      "Edit(//tmp/**)",
+      "Write(//private/tmp/**)",
+      "Edit(//private/tmp/**)"
     ],
     "deny": [
       "Bash(curl *)",
@@ -50,7 +54,8 @@
       "Read(./.ssh/**)",
       "Edit(//System/**)",
       "Edit(//Library/**)",
-      "Edit(//private/**)",
+      "Edit(//private/etc/**)",
+      "Edit(//private/var/**)",
       "Edit(//usr/**)",
       "Edit(//bin/**)",
       "Edit(//sbin/**)",
@@ -69,7 +74,8 @@
       "Edit(//srv/**)",
       "Write(//System/**)",
       "Write(//Library/**)",
-      "Write(//private/**)",
+      "Write(//private/etc/**)",
+      "Write(//private/var/**)",
       "Write(//usr/**)",
       "Write(//bin/**)",
       "Write(//sbin/**)",
@@ -116,7 +122,7 @@
     "autoAllowBashIfSandboxed": true
   },
   "effortLevel": "high",
-  "remoteControlAtStartup": true,
+  "tui": "fullscreen",
   "theme": "dark-ansi",
-  "tui": "fullscreen"
+  "remoteControlAtStartup": true
 }
