@@ -7,6 +7,7 @@
   "quietStartup": true,
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
-    "npm:pi-web-access"
+    "npm:pi-web-access",
+    "npm:@tintinweb/pi-subagents"
   ]
 }
