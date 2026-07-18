@@ -1,5 +1,11 @@
 {
   "permission": {
+    "*": "allow",
+    "bash": {
+      "rm -rf *": "ask",
+      "sudo *": "ask",
+      "git push *": "ask"
+    },
     "write": {
       "/tmp/*": "allow",
       "/private/tmp/*": "allow",
