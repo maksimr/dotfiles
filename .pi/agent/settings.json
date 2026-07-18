@@ -4,6 +4,7 @@
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
+  "enableSkillCommands": true,
   "quietStartup": true,
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
