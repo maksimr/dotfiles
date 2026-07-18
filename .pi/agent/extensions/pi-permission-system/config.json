@@ -1,0 +1,52 @@
+{
+  "permission": {
+    "write": {
+      "/tmp/*": "allow",
+      "/private/tmp/*": "allow",
+      "/System/*": "ask",
+      "/Library/*": "ask",
+      "/private/etc/*": "ask",
+      "/private/var/*": "ask",
+      "/usr/*": "ask",
+      "/bin/*": "ask",
+      "/sbin/*": "ask",
+      "/etc/*": "ask",
+      "/var/*": "ask",
+      "/Users/*/Library/*": "ask",
+      "/boot/*": "ask",
+      "/proc/*": "ask",
+      "/sys/*": "ask",
+      "/dev/*": "ask",
+      "/root/*": "ask",
+      "/run/*": "ask",
+      "/lib/*": "ask",
+      "/lib64/*": "ask",
+      "/opt/*": "ask",
+      "/srv/*": "ask"
+    },
+    "edit": {
+      "/tmp/*": "allow",
+      "/private/tmp/*": "allow",
+      "/System/*": "ask",
+      "/Library/*": "ask",
+      "/private/etc/*": "ask",
+      "/private/var/*": "ask",
+      "/usr/*": "ask",
+      "/bin/*": "ask",
+      "/sbin/*": "ask",
+      "/etc/*": "ask",
+      "/var/*": "ask",
+      "/Users/*/Library/*": "ask",
+      "/boot/*": "ask",
+      "/proc/*": "ask",
+      "/sys/*": "ask",
+      "/dev/*": "ask",
+      "/root/*": "ask",
+      "/run/*": "ask",
+      "/lib/*": "ask",
+      "/lib64/*": "ask",
+      "/opt/*": "ask",
+      "/srv/*": "ask"
+    }
+  }
+}
