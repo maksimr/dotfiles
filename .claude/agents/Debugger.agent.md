@@ -4,7 +4,6 @@ description: Investigates bugs, forms hypotheses, verifies root cause without fi
 argument-hint: Describe the bug or paste the error
 tools: Read, Grep, Glob, Bash, WebFetch, WebSearch
 agents: [Explore]
-memory: local
 color: orange
 ---
 

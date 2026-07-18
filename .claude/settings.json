@@ -124,5 +124,6 @@
   "effortLevel": "high",
   "tui": "fullscreen",
   "theme": "dark-ansi",
+  "autoMemoryEnabled": false,
   "remoteControlAtStartup": true
 }
