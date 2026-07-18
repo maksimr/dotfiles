@@ -8,6 +8,7 @@
       "git push *": "ask"
     },
     "write": {
+      "*": "allow",
       "/tmp/*": "allow",
       "/private/tmp/*": "allow",
       "/System/*": "ask",
@@ -32,6 +33,7 @@
       "/srv/*": "ask"
     },
     "edit": {
+      "*": "allow",
       "/tmp/*": "allow",
       "/private/tmp/*": "allow",
       "/System/*": "ask",
