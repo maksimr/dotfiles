@@ -5,12 +5,13 @@
   "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
   "enableSkillCommands": true,
-  "quietStartup": true,
+  "quietStartup": false,
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-web-access",
     "npm:@tintinweb/pi-subagents",
     "npm:@gotgenes/pi-permission-system",
-    "npm:@raquezha/noheadroom"
+    "npm:@raquezha/noheadroom",
+    "git:github.com/maksimr/pi-gondolin"
   ]
 }
