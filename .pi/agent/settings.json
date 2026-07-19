@@ -11,7 +11,6 @@
     "npm:pi-web-access",
     "npm:@tintinweb/pi-subagents",
     "npm:@gotgenes/pi-permission-system",
-    "npm:@raquezha/noheadroom",
-    "git:github.com/maksimr/pi-gondolin"
+    "npm:@raquezha/noheadroom"
   ]
 }
