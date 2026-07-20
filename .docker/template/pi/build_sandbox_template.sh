@@ -9,4 +9,4 @@ TEMPLATE_TAR_PATH="$TEMP_DIR/${TEMPLATE_NAME}.tar"
 
 docker build -t ${TEMPLATE_NAME}:${TEMPLATE_VERSION} "$DOCKER_TEMPLATE_DIR"
 docker image save ${TEMPLATE_NAME}:${TEMPLATE_VERSION} -o "$TEMPLATE_TAR_PATH"
-sbx template load "$TEMPLATE_TAR_PATH" --name "$TEMPLATE_NAME" --force
+sbx template load "$TEMPLATE_TAR_PATH"
