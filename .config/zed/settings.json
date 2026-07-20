@@ -19,9 +19,9 @@
     },
     "claude-acp": {
       "default_config_options": {
-        "model": "default",
+        "model": "opus[1m]",
         "mode": "acceptEdits",
-        "agent": "Ask",
+        "agent": "Engineer",
       },
       "type": "registry",
     },
