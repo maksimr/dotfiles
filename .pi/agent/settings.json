@@ -1,12 +1,19 @@
 {
   "lastChangelogVersion": "0.80.6",
   "theme": "dark",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.6-sol",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-opus-4-8",
   "defaultThinkingLevel": "high",
   "enableSkillCommands": true,
   "quietStartup": false,
-  "enabledModels": ["claude-fable-5", "claude-opus-4-8", "gpt-5.6-sol"],
+  "warnings": {
+    "anthropicExtraUsage": false
+  },
+  "enabledModels": [
+    "claude-fable-5",
+    "claude-opus-4-8",
+    "gpt-5.6-sol"
+  ],
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-web-access",
