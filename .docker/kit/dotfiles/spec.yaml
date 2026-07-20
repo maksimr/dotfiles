@@ -1,0 +1,10 @@
+schemaVersion: "1"
+kind: mixin
+name: dotfiles
+
+commands:
+  install:
+    - command: "npm install -g --maxsockets=1 --fetch-timeout=600000 github:maksimr/udot"
+      user: "1000"
+    - command: "udot use https://github.com/maksimr/dotfiles"
+      user: "1000"
