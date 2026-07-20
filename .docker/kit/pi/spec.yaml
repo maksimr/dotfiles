@@ -1,15 +1,22 @@
-schemaVersion: "1"
+schemaVersion: '1'
 kind: agent
 name: pi
 displayName: Pi
 
 agent:
-  image: "docker/sandbox-templates:shell-docker"
+  image: 'docker/sandbox-templates:shell-docker'
 
 commands:
   install:
-    - command: "npm config set proxy $HTTP_PROXY && npm config set https-proxy $HTTP_PROXY && i=0; while [ $i -lt 5 ]; do npm install -g --maxsockets=1 --fetch-timeout=600000 @earendil-works/pi-coding-agent && break; i=$((i+1)); echo \"Retrying ($i/5)...\"; done"
-      user: "1000"
-      description: "Configure npm proxy and install pi coding agent globally (with retries)"
+    - command: 'npm config set proxy $HTTP_PROXY && npm config set https-proxy $HTTP_PROXY && i=0; while [ $i -lt 5 ]; do npm install -g --maxsockets=1 --fetch-timeout=600000 @earendil-works/pi-coding-agent && break; i=$((i+1)); echo "Retrying ($i/5)..."; done'
+      user: '1000'
+      description: 'Configure npm proxy and install pi coding agent globally (with retries)'
     - command: "echo 'unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN OPENAI_API_KEY GEMINI_API_KEY GOOGLE_API_KEY OPENROUTER_API_KEY XAI_API_KEY NEBIUS_API_KEY MISTRAL_API_KEY' >> /etc/sandbox-persistent.sh"
-      description: "Unset agent provider API key env variables managed by docker sandbox"
+      description: 'Unset agent provider API key env variables managed by docker sandbox'
+    - command: 'npm install -g --maxsockets=1 --fetch-timeout=600000 github:maksimr/udot'
+      user: '1000'
+    - command: 'udot use https://github.com/maksimr/dotfiles'
+      user: '1000'
+    - command: 'pip install "headroom-ai[all]"'
+      user: '1000'
+      description: 'Install headroom cli globally'
