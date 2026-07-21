@@ -336,6 +336,7 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 # Prefer fnm over nvm if both are installed
 # https://github.com/Schniz/fnm
 if [ "$(command -v fnm)"  ]; then
+  export PATH="$PATH:$HOME/.local/share/fnm/aliases/default/bin"
   _eval_and_cache 'fnm' 'fnm env --use-on-cd --shell zsh'
 elif [ -s "$NVM_DIR/nvm.sh" ]; then
   source "$NVM_DIR/nvm.sh" --no-use
