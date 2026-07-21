@@ -1,8 +1,8 @@
 {
   "lastChangelogVersion": "0.81.1",
   "theme": "dark",
-  "defaultProvider": "xai",
-  "defaultModel": "grok-4.5",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-fable-5",
   "defaultThinkingLevel": "high",
   "enableSkillCommands": true,
   "quietStartup": false,
