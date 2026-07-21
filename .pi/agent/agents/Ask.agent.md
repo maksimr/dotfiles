@@ -1,5 +1,7 @@
 ---
 name: Ask
+run_in_background: false
+prompt_mode: append
 description: Answers questions without making changes
 tools: read, grep, find, ls, web_search, fetch_content, get_search_content
 ---

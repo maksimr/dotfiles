@@ -1,5 +1,7 @@
 ---
 name: Reviewer
+run_in_background: false
+prompt_mode: append
 description: Reviews code for bugs, security issues, and quality without making changes
 tools: read, grep, find, ls, bash, web_search, fetch_content, get_search_content
 ---

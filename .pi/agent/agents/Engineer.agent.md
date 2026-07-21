@@ -1,5 +1,7 @@
 ---
 name: Engineer
+run_in_background: false
+prompt_mode: append
 description: Implements features and fixes with high-quality, tested, minimal code
 tools: read, grep, find, edit, write, bash, web_search, fetch_content, get_search_content, subagent
 ---
