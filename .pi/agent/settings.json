@@ -18,7 +18,6 @@
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-web-access",
-    "npm:@tintinweb/pi-subagents",
     "npm:@gotgenes/pi-permission-system",
     "npm:@raquezha/noheadroom"
   ]
