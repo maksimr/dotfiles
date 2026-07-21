@@ -10,20 +10,11 @@
  *   (rebindable in keybindings.json, e.g. ctrl+n/ctrl+p for down/up)
  */
 
+import type { ExtensionAPI, ExtensionContext } from '@earendil-works/pi-coding-agent';
+import { DynamicBorder, getAgentDir } from '@earendil-works/pi-coding-agent';
+import { fuzzyFilter, Input, type SelectItem, SelectList, Spacer } from '@earendil-works/pi-tui';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import type {
-  ExtensionAPI,
-  ExtensionContext,
-} from '@earendil-works/pi-coding-agent';
-import { DynamicBorder, getAgentDir } from '@earendil-works/pi-coding-agent';
-import {
-  fuzzyFilter,
-  Input,
-  type SelectItem,
-  SelectList,
-  Spacer,
-} from '@earendil-works/pi-tui';
 
 interface HistoryEntry {
   text: string;
@@ -119,31 +110,24 @@ export default function (pi: ExtensionAPI) {
 
           const applyFilter = (): void => {
             const query = input.getValue().trim();
-            filtered =
-              query.length === 0
-                ? entries
-                : fuzzyFilter(entries, query, (e) => e.text);
+            filtered = query.length === 0 ? entries : fuzzyFilter(entries, query, (e) => e.text);
           };
 
           const makeItems = (): SelectItem[] =>
             filtered.map((e, i) => ({
               value: String(i),
               label: e.text.replace(/[\r\n]+/g, ' ⏎ '),
-              description: relativeTime(e.ts),
+              description: relativeTime(e.ts)
             }));
 
           const makeList = (listItems: SelectItem[]): SelectList => {
-            const list = new SelectList(
-              listItems,
-              Math.min(Math.max(listItems.length, 1), MAX_VISIBLE),
-              {
-                selectedPrefix: (text) => theme.fg('accent', text),
-                selectedText: (text) => theme.fg('accent', text),
-                description: (text) => theme.fg('muted', text),
-                scrollInfo: (text) => theme.fg('dim', text),
-                noMatch: (text) => theme.fg('warning', text),
-              },
-            );
+            const list = new SelectList(listItems, Math.min(Math.max(listItems.length, 1), MAX_VISIBLE), {
+              selectedPrefix: (text) => theme.fg('accent', text),
+              selectedText: (text) => theme.fg('accent', text),
+              description: (text) => theme.fg('muted', text),
+              scrollInfo: (text) => theme.fg('dim', text),
+              noMatch: (text) => theme.fg('warning', text)
+            });
             list.onSelect = (item) => {
               const entry = filtered[Number(item.value)];
               done(entry ? entry.text : null);
@@ -155,9 +139,7 @@ export default function (pi: ExtensionAPI) {
           let selectList = makeList(makeItems());
 
           const spacer = new Spacer(1);
-          const border = new DynamicBorder((str: string) =>
-            theme.fg('border', str),
-          );
+          const border = new DynamicBorder((str: string) => theme.fg('border', str));
 
           return {
             render(width: number) {
@@ -166,7 +148,7 @@ export default function (pi: ExtensionAPI) {
                 ...input.render(width),
                 ...spacer.render(width),
                 ...selectList.render(width),
-                ...border.render(width),
+                ...border.render(width)
               ];
             },
             invalidate() {
@@ -191,17 +173,17 @@ export default function (pi: ExtensionAPI) {
                 }
               }
               tui.requestRender();
-            },
+            }
           };
         },
         {
-          overlay: true,
-        },
+          overlay: true
+        }
       );
 
       if (selected) {
         ctx.ui.setEditorText(selected);
       }
-    },
+    }
   });
 }
