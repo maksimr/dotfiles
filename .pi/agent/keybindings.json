@@ -1,6 +1,7 @@
 {
   "tui.select.up": ["up", "ctrl+p"],
   "tui.select.down": ["down", "ctrl+n"],
-  "app.model.cycleBackward": ["ctrl+n"],
+  "app.model.cycleForward": ["ctrl+shift+p"],
+  "app.model.cycleBackward": ["ctrl+shift+n"],
   "app.session.rename": ["ctrl+shift+r"]
 }
