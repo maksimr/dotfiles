@@ -2,7 +2,7 @@
  * Prompt History Extension
  *
  * Records every prompt you type interactively (including /commands and /skill:...
- * invocations) to ~/.pi/agent/typed-prompt-history.jsonl.
+ * invocations) to ~/.pi_history.jsonl (following the ~/.bash_history convention).
  *
  * Press Ctrl+R to open a searchable history dialog:
  * - Type to filter (case-insensitive substring match)
@@ -11,9 +11,10 @@
  */
 
 import type { ExtensionAPI, ExtensionContext } from '@earendil-works/pi-coding-agent';
-import { DynamicBorder, getAgentDir } from '@earendil-works/pi-coding-agent';
+import { DynamicBorder } from '@earendil-works/pi-coding-agent';
 import { fuzzyFilter, Input, type SelectItem, SelectList, Spacer } from '@earendil-works/pi-tui';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 
 interface HistoryEntry {
@@ -21,7 +22,7 @@ interface HistoryEntry {
   ts: number;
 }
 
-const HISTORY_FILE = join(getAgentDir(), 'typed-prompt-history.jsonl');
+const HISTORY_FILE = join(process.env.HOME ?? homedir(), '.pi_history.jsonl');
 const MAX_ENTRIES = 1000;
 const MAX_VISIBLE = 10;
 
