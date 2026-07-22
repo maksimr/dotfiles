@@ -72,20 +72,34 @@ export default function (pi: ExtensionAPI) {
     history = persisted;
   });
 
+  // Append a raw input line to history with shell-style dedupe (best-effort).
+  const record = async (text: string): Promise<void> => {
+    if (text.length === 0) return;
+    await loaded;
+    // Shell-history style dedupe: drop older identical entry, append newest
+    history = history.filter((e) => e.text !== text);
+    history.push({ text, ts: Date.now() });
+    if (history.length > MAX_ENTRIES) history = history.slice(-MAX_ENTRIES);
+    saveHistory(history);
+  };
+
   // Record every interactively typed prompt (commands and skills included,
   // since the input event sees raw text before expansion).
   pi.on('input', async (event) => {
     if (event.source !== 'interactive') return { action: 'continue' };
-    const text = event.text.trim();
-    if (text.length > 0) {
-      await loaded;
-      // Shell-history style dedupe: drop older identical entry, append newest
-      history = history.filter((e) => e.text !== text);
-      history.push({ text, ts: Date.now() });
-      if (history.length > MAX_ENTRIES) history = history.slice(-MAX_ENTRIES);
-      saveHistory(history);
-    }
+    await record(event.text.trim());
     return { action: 'continue' };
+  });
+
+  // Record inline bash commands run via the ! / !! prefix. These bypass the
+  // input event, so capture them here and store with their prefix so recalling
+  // an entry re-runs it as a bash command.
+  pi.on('user_bash', async (event) => {
+    const command = event.command.trim();
+    if (command.length > 0) {
+      await record(`${event.excludeFromContext ? '!!' : '!'}${command}`);
+    }
+    return undefined;
   });
 
   pi.registerShortcut('ctrl+r', {
