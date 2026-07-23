@@ -19,6 +19,7 @@
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-web-access",
     "npm:@gotgenes/pi-permission-system",
-    "npm:@raquezha/noheadroom"
+    "npm:@raquezha/noheadroom",
+    "git:github.com/maksimr/pi-prompt-history"
   ]
 }
