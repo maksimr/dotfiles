@@ -68,7 +68,7 @@
     "tree_view": false,
   },
   "edit_predictions": {
-    "provider": "copilot",
+    "provider": "zed",
   },
   "agent": {
     "dock": "right",
