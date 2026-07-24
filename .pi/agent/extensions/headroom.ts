@@ -81,6 +81,8 @@ interface Pending {
 }
 
 class HeadroomMcp {
+  /** Invoked once, right after the server handshake completes. */
+  onReady?: () => void;
   private child: ChildProcess | null = null;
   private ready: Promise<void> | null = null;
   private pending = new Map<number, Pending>();
@@ -140,6 +142,7 @@ class HeadroomMcp {
           this.notify('notifications/initialized', {});
           clearTimeout(timer);
           resolve();
+          this.onReady?.();
         })
         .catch((err) => {
           clearTimeout(timer);
@@ -257,21 +260,49 @@ export default async function (pi: ExtensionAPI) {
   let enabled = false; // headroom CLI found (probe succeeded)
   let active = true; // user toggle via /headroom on|off
 
-  // Footer status: "hr: on" when active, "hr: 3× −12.4k" once tokens are saved.
+  // Footer status: "headroom: on" when active, backend stats once tokens are saved,
+  // e.g. "headroom: 18× −2.6k (5%) $0.0077".
   let compressions = 0;
   let tokensSaved = 0;
+  let backendStats: { compressions: number; saved: number; pct: number; cost: number } | null =
+    null;
   const updateStatus = (ctx: {
     ui: { setStatus(key: string, text?: string): void; theme: { fg(color: 'dim', text: string): string } };
   }) => {
     if (!enabled) return;
     const fmt = (n: number) => (n < 1000 ? `${n}` : `${(n / 1000).toFixed(1)}k`);
+    const s = backendStats;
     const text =
       mcp.dead || !active
         ? 'headroom: off'
-        : compressions === 0
-          ? 'headroom: on'
-          : `headroom: ${compressions}× −${fmt(tokensSaved)}`;
+        : s
+          ? `headroom: ${s.compressions}× −${fmt(s.saved)} (${s.pct}%) $${s.cost.toFixed(4)}`
+          : compressions === 0
+            ? 'headroom: on'
+            : `headroom: ${compressions}× −${fmt(tokensSaved)}`;
     ctx.ui.setStatus('headroom', ctx.ui.theme.fg('dim', text));
+  };
+
+  // Refresh backend stats (session totals incl. sub-agents) and re-render status.
+  let statsBusy = false;
+  const refreshStats = async (ctx: Parameters<typeof updateStatus>[0]) => {
+    if (statsBusy || mcp.dead) return;
+    statsBusy = true;
+    try {
+      const raw = await mcp.callTool('headroom_stats', {}, 5_000);
+      const combined = (raw.combined ?? raw) as Record<string, unknown>;
+      backendStats = {
+        compressions: Number(combined.total_compressions ?? 0),
+        saved: Number(combined.total_tokens_saved ?? 0),
+        pct: Number(combined.savings_percent ?? 0),
+        cost: Number(combined.estimated_cost_saved_usd ?? 0)
+      };
+    } catch (err) {
+      debugLog('stats refresh failed:', err);
+    } finally {
+      statsBusy = false;
+      updateStatus(ctx);
+    }
   };
 
   // Probe headroom CLI in the background — never block pi startup on a
@@ -296,6 +327,9 @@ export default async function (pi: ExtensionAPI) {
   pi.on('session_start', (_event, ctx) => {
     // Don't block session start on the probe; set status when it resolves.
     void probe.then((ok) => ok && updateStatus(ctx));
+    // Fetch initial stats as soon as the MCP server comes up (it starts lazily,
+    // so earlier session-window savings show without waiting for a compression).
+    mcp.onReady = () => void refreshStats(ctx);
   });
 
   const SUBCOMMANDS = ['stats', 'on', 'off'] as const;
@@ -376,7 +410,7 @@ export default async function (pi: ExtensionAPI) {
       }
 
       if (changed) {
-        updateStatus(ctx);
+        void refreshStats(ctx);
         return { content: out };
       }
     } catch (err) {
@@ -447,7 +481,7 @@ export default async function (pi: ExtensionAPI) {
       if (freshCompressions > 0) {
         compressions += freshCompressions;
         tokensSaved += freshSaved;
-        updateStatus(ctx);
+        void refreshStats(ctx);
       }
       if (changed) return { messages: event.messages };
     } catch (err) {
