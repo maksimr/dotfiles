@@ -254,7 +254,8 @@ export default async function (pi: ExtensionAPI) {
   if (DISABLED) return;
 
   const mcp = new HeadroomMcp();
-  let enabled = false;
+  let enabled = false; // headroom CLI found (probe succeeded)
+  let active = true; // user toggle via /headroom on|off
 
   // Footer status: "hr: on" when active, "hr: 3× −12.4k" once tokens are saved.
   let compressions = 0;
@@ -264,11 +265,12 @@ export default async function (pi: ExtensionAPI) {
   }) => {
     if (!enabled) return;
     const fmt = (n: number) => (n < 1000 ? `${n}` : `${(n / 1000).toFixed(1)}k`);
-    const text = mcp.dead
-      ? 'headroom: off'
-      : compressions === 0
-        ? 'headroom: on'
-        : `headroom: ${compressions}× −${fmt(tokensSaved)}`;
+    const text =
+      mcp.dead || !active
+        ? 'headroom: off'
+        : compressions === 0
+          ? 'headroom: on'
+          : `headroom: ${compressions}× −${fmt(tokensSaved)}`;
     ctx.ui.setStatus('headroom', ctx.ui.theme.fg('dim', text));
   };
 
@@ -296,25 +298,53 @@ export default async function (pi: ExtensionAPI) {
     void probe.then((ok) => ok && updateStatus(ctx));
   });
 
-  pi.registerCommand('headroom-stats', {
-    description: 'Show Headroom compression stats for this session',
-    handler: async (_args, ctx) => {
-      try {
-        if (!(await probe)) {
-          ctx.ui.notify('headroom CLI not available', 'warning');
+  const SUBCOMMANDS = ['stats', 'on', 'off'] as const;
+  pi.registerCommand('headroom', {
+    description: 'Headroom compression. Usage: /headroom [stats|on|off]',
+    getArgumentCompletions: (prefix) =>
+      SUBCOMMANDS.filter((c) => c.startsWith(prefix.trim().toLowerCase())).map((c) => ({
+        value: c,
+        label: c
+      })),
+    handler: async (args, ctx) => {
+      const sub = args.trim().toLowerCase();
+      if (!(await probe)) {
+        ctx.ui.notify('headroom CLI not available', 'warning');
+        return;
+      }
+      switch (sub) {
+        case 'on':
+        case 'off':
+          active = sub === 'on';
+          updateStatus(ctx);
+          ctx.ui.notify(`headroom compression ${sub}`, 'info');
           return;
+        case 'stats':
+          try {
+            const stats = await mcp.callTool('headroom_stats', {}, COMPRESS_TIMEOUT_MS);
+            ctx.ui.notify(JSON.stringify(stats, null, 2), 'info');
+          } catch (err) {
+            ctx.ui.notify(`headroom stats failed: ${err}`, 'error');
+          }
+          return;
+        default: {
+          const fmt = (n: number) => n.toLocaleString();
+          ctx.ui.notify(
+            [
+              `headroom: ${mcp.dead ? 'server dead' : active ? 'on' : 'off'}`,
+              `session: ${compressions} compressions, ~${fmt(tokensSaved)} tokens saved`,
+              'usage: /headroom [stats|on|off]'
+            ].join('\n'),
+            'info'
+          );
         }
-        const stats = await mcp.callTool('headroom_stats', {}, COMPRESS_TIMEOUT_MS);
-        ctx.ui.notify(JSON.stringify(stats, null, 2), 'info');
-      } catch (err) {
-        ctx.ui.notify(`headroom stats failed: ${err}`, 'error');
       }
     }
   });
 
   pi.on('tool_result', async (event, ctx) => {
     try {
-      if (!enabled || mcp.dead) return;
+      if (!enabled || !active || mcp.dead) return;
       if (event.isError) return; // keep error output exact
       if (!COMPRESS_TOOLS.has(event.toolName)) return;
       if (event.toolName === RETRIEVE_TOOL) return;
@@ -364,7 +394,7 @@ export default async function (pi: ExtensionAPI) {
   let contextBusy = false;
 
   pi.on('context', async (event, ctx) => {
-    if (CONTEXT_DISABLED || !enabled || mcp.dead || contextBusy) return;
+    if (CONTEXT_DISABLED || !enabled || !active || mcp.dead || contextBusy) return;
     try {
       contextBusy = true;
 
