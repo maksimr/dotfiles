@@ -10,22 +10,22 @@
     "bindings": {
       "cmd-shift-c": "agent::ToggleFocus",
       "alt-]": "copilot::NextSuggestion",
-      "cmd-i": "assistant::InlineAssist",
+      "cmd-i": "assistant::InlineAssist"
       // "shift shift": "file_finder::Toggle"
-    },
+    }
   },
   {
     "context": "Editor && vim_mode == visual",
     "bindings": {
       "F": "editor::FormatSelections",
-      ", d e": "debugger::EvaluateSelectedText",
-    },
+      ", d e": "debugger::EvaluateSelectedText"
+    }
   },
   {
     "context": "Editor && vim_mode == insert",
     "bindings": {
-      "j k": "vim::NormalBefore",
-    },
+      "j k": "vim::NormalBefore"
+    }
   },
   {
     "context": "Editor && vim_mode == normal",
@@ -54,69 +54,69 @@
       "g s": "editor::GoToDefinition",
       "g i": "editor::GoToImplementation",
       "g shift-d": "editor::GoToDeclaration",
-      "shift-E": "file_finder::Toggle",
-    },
+      "shift-E": "file_finder::Toggle"
+    }
   },
   {
     "context": "Editor",
     "bindings": {
       "ctrl-w": "pane::CloseActiveItem",
-      "ctrl-r": ["projects::OpenRecent", { "create_new_window": false }],
-    },
+      "ctrl-r": ["projects::OpenRecent", { "create_new_window": false }]
+    }
   },
   {
     "context": "(VimControl && !menu)",
     "bindings": {
-      "ctrl-q": "editor::Hover",
-    },
+      "ctrl-q": "editor::Hover"
+    }
   },
   {
     "context": "Terminal",
     "bindings": {
-      "cmd-1": "editor::ToggleFocus",
-    },
+      "cmd-1": "editor::ToggleFocus"
+    }
   },
   {
     "context": "ProjectPanel",
     "use_key_equivalents": true,
     "bindings": {
-      "cmd-enter": "project_panel::Rename",
-    },
+      "cmd-enter": "project_panel::Rename"
+    }
   },
   {
     "context": "ProjectPanel && not_editing",
     "use_key_equivalents": true,
     "bindings": {
-      "cmd-backspace": "project_panel::Delete",
-    },
+      "cmd-backspace": "project_panel::Delete"
+    }
   },
   {
     "context": "GitGraph && !Editor",
     "bindings": {
-      "/": "git_graph::FocusSearch",
-    },
+      "/": "git_graph::FocusSearch"
+    }
   },
   {
     "context": "vim_mode == normal || vim_mode == visual",
     "bindings": {
       "s": "vim::PushSneak",
       "shift-s": "vim::PushSneakBackward",
-      "g w": "vim::HelixJumpToWord",
-    },
+      "g w": "vim::HelixJumpToWord"
+    }
   },
   {
     "context": "Editor && vim_mode == normal",
     "bindings": {
       "alt-down": "editor::GoToHunk",
-      "alt-up": "editor::GoToPreviousHunk",
-    },
+      "alt-up": "editor::GoToPreviousHunk"
+    }
   },
   {
     "context": "Editor && vim_mode == normal",
     "bindings": {
       "alt-, shift-b": "editor::ViewBookmarks",
-      "alt-, b": "editor::ToggleBookmark",
-    },
+      "alt-, b": "editor::ToggleBookmark"
+    }
   },
   {
     "context": "debugger_stopped > Editor",
@@ -126,10 +126,19 @@
       // position on previous palce
       "ctrl-alt-1": "editor::SelectLargerSyntaxNode",
       "ctrl-alt-2": "debugger::EvaluateSelectedText",
-      "ctrl-alt-0": [
-        "workspace::SendKeystrokes",
-        "m a ctrl-alt-1 ctrl-alt-2 escape ` a",
-      ],
-    },
+      "ctrl-alt-0": ["workspace::SendKeystrokes", "m a ctrl-alt-1 ctrl-alt-2 escape ` a"]
+    }
   },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "space y p": "workspace::CopyRelativePath"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == visual",
+    "bindings": {
+      "space y p": "editor::CopyFileLocation"
+    }
+  }
 ]
