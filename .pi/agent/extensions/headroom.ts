@@ -14,9 +14,12 @@
 //
 // Config (env):
 //   HEADROOM_PI_DISABLED=1        disable entirely
-//   HEADROOM_PI_TOOLS             comma list of tool names to compress (default: "bash")
+//   HEADROOM_PI_TOOLS             comma list of tool names to compress
+//                                 (default: "bash,grep,find,ls,web_search,fetch_content,get_search_content")
 //                                 NOTE: do NOT add "read" — edit.oldText must match
 //                                 file contents exactly; compressing reads breaks edits.
+//                                 (Stale reads are still compressed via history compression,
+//                                 and duplicate reads are deduped — see below.)
 //   HEADROOM_PI_MIN_CHARS         min output size to compress (default: 2500)
 //   HEADROOM_PI_MIN_SAVINGS_PCT   keep original unless savings >= this (default: 10)
 //   HEADROOM_PI_TIMEOUT_MS        per-compression timeout (default: 20000)
@@ -25,6 +28,10 @@
 //   HEADROOM_PI_MIN_CONTEXT_TOKENS  history compression kicks in at this context size (default: 10000)
 //   HEADROOM_PI_KEEP_RECENT       never compress the last N history messages (default: 4)
 //   HEADROOM_PI_MAX_PER_TURN      max new compressions per LLM call (default: 3)
+//
+// Read dedup: a repeat `read` of a file whose content hasn't changed is replaced
+// with a short marker (destructive, in-history — safe because the identical full
+// text already exists earlier in history and is retrievable via headroom_retrieve).
 //
 // History compression (idea borrowed from @raquezha/noheadroom): pi's `context`
 // event provides a deep copy of messages, mutated per-request only — the real
@@ -55,7 +62,7 @@ const MIN_CHARS = intEnv('HEADROOM_PI_MIN_CHARS', 2500);
 const MIN_SAVINGS_PCT = intEnv('HEADROOM_PI_MIN_SAVINGS_PCT', 10);
 const COMPRESS_TIMEOUT_MS = intEnv('HEADROOM_PI_TIMEOUT_MS', 20_000);
 const COMPRESS_TOOLS = new Set(
-  (process.env.HEADROOM_PI_TOOLS ?? 'bash')
+  (process.env.HEADROOM_PI_TOOLS ?? 'bash,grep,find,ls,web_search,fetch_content,get_search_content')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)
@@ -376,10 +383,21 @@ export default async function (pi: ExtensionAPI) {
     }
   });
 
+  // Read dedup: seen-read key → CCR hash of the full content (null = seen once,
+  // hash created lazily on the first duplicate).
+  const readSeen = new BoundedMap<{ hash: string } | null>();
+
   pi.on('tool_result', async (event, ctx) => {
     try {
       if (!enabled || !active || mcp.dead) return;
       if (event.isError) return; // keep error output exact
+
+      if (event.toolName === 'read') {
+        const patch = await dedupRead(mcp, readSeen, event, ctx.signal);
+        if (patch) void refreshStats(ctx);
+        return patch;
+      }
+
       if (!COMPRESS_TOOLS.has(event.toolName)) return;
       if (event.toolName === RETRIEVE_TOOL) return;
 
@@ -424,7 +442,7 @@ export default async function (pi: ExtensionAPI) {
   // History compression: shrink stale toolResult messages in the outgoing
   // request payload. Non-destructive — session history keeps originals.
   // ------------------------------------------------------------------
-  const cache = new CompressionCache();
+  const cache: CompressionCache = new BoundedMap();
   let contextBusy = false;
 
   pi.on('context', async (event, ctx) => {
@@ -450,7 +468,14 @@ export default async function (pi: ExtensionAPI) {
         };
         if (msg.role !== 'toolResult') continue;
         if (msg.isError) continue;
-        if (msg.toolName === RETRIEVE_TOOL) continue; // model asked for the original
+        // headroom_retrieve results are protected while fresh (the model asked for
+        // the exact original), but once well past the recent window they are just
+        // stale bulk — recompress them; they stay retrievable by definition.
+        if (
+          msg.toolName === RETRIEVE_TOOL &&
+          i > event.messages.length - 1 - KEEP_RECENT * 3
+        )
+          continue;
         if (!Array.isArray(msg.content)) continue;
 
         for (const block of msg.content as Array<{ type: string; text?: string }>) {
@@ -494,16 +519,16 @@ export default async function (pi: ExtensionAPI) {
   });
 }
 
-/** Bounded FIFO cache: content hash → compression result (null = not worth it). */
-class CompressionCache {
-  private map = new Map<string, { text: string; saved: number } | null>();
+/** Bounded FIFO map (oldest entries evicted first). */
+class BoundedMap<V> {
+  private map = new Map<string, V>();
 
-  get(key: string): { text: string; saved: number } | null | undefined {
+  get(key: string): V | undefined {
     return this.map.get(key);
   }
 
-  set(key: string, value: { text: string; saved: number } | null): void {
-    if (this.map.has(key)) return;
+  set(key: string, value: V): void {
+    this.map.delete(key); // allow value updates without duplicating entries
     this.map.set(key, value);
     while (this.map.size > MAX_CACHE_ENTRIES) {
       const oldest = this.map.keys().next().value;
@@ -513,8 +538,64 @@ class CompressionCache {
   }
 }
 
+/** Content hash → compression result (null = not worth it). */
+type CompressionCache = BoundedMap<{ text: string; saved: number } | null>;
+
 function sha256(text: string): string {
   return createHash('sha256').update(text).digest('hex');
+}
+
+/**
+ * Replace a repeat `read` (same input, identical content) with a short marker.
+ * The full text already exists earlier in history; the marker carries a CCR hash
+ * so the model can always recover the exact bytes via headroom_retrieve.
+ */
+async function dedupRead(
+  mcp: HeadroomMcp,
+  readSeen: BoundedMap<{ hash: string } | null>,
+  event: { input: Record<string, unknown>; content: Array<{ type: string; text?: string }> },
+  signal?: AbortSignal
+): Promise<{ content: Array<{ type: 'text'; text: string }> } | undefined> {
+  const text = event.content
+    .filter((b) => b.type === 'text' && typeof b.text === 'string')
+    .map((b) => b.text)
+    .join('\n');
+  if (text.length < MIN_CHARS) return undefined;
+  if (text.includes('headroom_retrieve hash=')) return undefined; // already a marker
+
+  const key = sha256(JSON.stringify(event.input) + '\0' + text);
+  const seen = readSeen.get(key);
+  if (seen === undefined) {
+    readSeen.set(key, null); // first read — pass through untouched
+    return undefined;
+  }
+
+  // Duplicate. Ensure the original is in the CCR store (compress stores it).
+  let hash = seen?.hash;
+  if (!hash) {
+    const result = await mcp
+      .callTool('headroom_compress', { content: text }, COMPRESS_TIMEOUT_MS, signal)
+      .catch((err) => {
+        debugLog('read dedup store failed:', err);
+        return null;
+      });
+    if (!result || typeof result.hash !== 'string') return undefined;
+    hash = result.hash;
+    readSeen.set(key, { hash });
+  }
+
+  const approxTokens = Math.ceil(text.length / 4);
+  return {
+    content: [
+      {
+        type: 'text',
+        text:
+          `[headroom: file content unchanged since your previous read (~${approxTokens} tokens deduped). ` +
+          `It is identical to the earlier read result in this conversation. ` +
+          `Full exact content available via ${RETRIEVE_TOOL} hash=${hash}]`
+      }
+    ]
+  };
 }
 
 /**
