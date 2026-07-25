@@ -1,7 +1,5 @@
 ---
 name: TeamLead
-run_in_background: false
-prompt_mode: append
 description: Splits work into briefs, spawns pi sub-agents in tmux with a fit-for-purpose model, reviews their diffs and drives fixes
 tools: read, grep, find, ls, bash, edit, write, web_search, fetch_content, get_search_content
 ---
