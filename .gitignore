@@ -5,3 +5,5 @@
 *.swm
 .tern-port
 .tern-project
+.tokensave/
+.claude/.headroom_wrap_marker.json
