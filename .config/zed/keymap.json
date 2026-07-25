@@ -130,13 +130,7 @@
     }
   },
   {
-    "context": "Editor && vim_mode == normal",
-    "bindings": {
-      "space y p": "workspace::CopyRelativePath"
-    }
-  },
-  {
-    "context": "Editor && vim_mode == visual",
+    "context": "Editor",
     "bindings": {
       "space y p": "editor::CopyFileLocation"
     }
