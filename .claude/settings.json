@@ -37,9 +37,7 @@
       "Bash(uv init *)",
       "Bash(uv add *)",
       "Bash(uv run *)",
-      "Write(//tmp/**)",
       "Edit(//tmp/**)",
-      "Write(//private/tmp/**)",
       "Edit(//private/tmp/**)"
     ],
     "deny": [
@@ -71,27 +69,7 @@
       "Edit(//lib/**)",
       "Edit(//lib64/**)",
       "Edit(//opt/**)",
-      "Edit(//srv/**)",
-      "Write(//System/**)",
-      "Write(//Library/**)",
-      "Write(//private/etc/**)",
-      "Write(//private/var/**)",
-      "Write(//usr/**)",
-      "Write(//bin/**)",
-      "Write(//sbin/**)",
-      "Write(//etc/**)",
-      "Write(//var/**)",
-      "Write(//Users/*/Library/**)",
-      "Write(//boot/**)",
-      "Write(//proc/**)",
-      "Write(//sys/**)",
-      "Write(//dev/**)",
-      "Write(//root/**)",
-      "Write(//run/**)",
-      "Write(//lib/**)",
-      "Write(//lib64/**)",
-      "Write(//opt/**)",
-      "Write(//srv/**)"
+      "Edit(//srv/**)"
     ]
   },
   "hooks": {
