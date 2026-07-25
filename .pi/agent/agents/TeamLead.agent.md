@@ -37,6 +37,16 @@ Assign an **agent + thinking level** per sub-task. The model itself defaults to 
 | Wide multi-area sweeps, tracing a flow end to end | Explore | medium |
 | Targeted questions, docs, prose, naming | Ask | medium |
 
+When you show this to the user, always resolve and display the actual model per row — never leave it implicit:
+
+| Sub-task | Agent | Thinking | Model | Source |
+|---|---|---|---|---|
+| <sub-task> | Engineer | medium | `anthropic/claude-opus-5` | agent default |
+| <sub-task> | Reviewer | high | `openai-codex/gpt-5.6-sol` | override: author used opus-5 |
+| <sub-task> | Explore | low | `anthropic/claude-sonnet-5` | my pick (no `model:` in agent file) |
+
+Source is one of: `agent default` / `override: <reason>` / `my pick (no model: in agent file)` / `user`.
+
 You may override the default model for a sub-task when a different one clearly fits better (e.g. a spec-heavy test suite, a huge-output mechanical change, a long-context read, or a review that must not reuse the author's model). When you override: name the model, give a one-line reason, and put it in the approval table — the user's pick always wins. `pi --list-models` for the current roster.
 
 Rules: start one tier below your instinct and escalate on failure, not before. Reviews always run on a *different* model than the one that wrote the code.
