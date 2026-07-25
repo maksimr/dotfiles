@@ -14,24 +14,44 @@
 //
 // Config (env):
 //   HEADROOM_PI_DISABLED=1        disable entirely
-//   HEADROOM_PI_TOOLS             comma list of tool names to compress
-//                                 (default: "bash,grep,find,ls,web_search,fetch_content,get_search_content")
+//   HEADROOM_PI_TOOLS             comma list of tools whose FRESH output is compressed
+//                                 (default: "web_search,fetch_content,get_search_content")
+//                                 Deliberately narrow — see "Fresh vs stale" below.
 //                                 NOTE: do NOT add "read" — edit.oldText must match
 //                                 file contents exactly; compressing reads breaks edits.
 //                                 (Stale reads are still compressed via history compression,
 //                                 and duplicate reads are deduped — see below.)
 //   HEADROOM_PI_MIN_CHARS         min output size to compress (default: 2500)
-//   HEADROOM_PI_MIN_SAVINGS_PCT   keep original unless savings >= this (default: 10)
+//   HEADROOM_PI_MIN_SAVINGS_PCT   keep original unless savings >= this (default: 10). The
+//                                 retrieval marker's own cost is subtracted on top, so a
+//                                 block is only replaced when it is a net token win.
 //   HEADROOM_PI_TIMEOUT_MS        per-compression timeout (default: 20000)
 //   HEADROOM_PI_DEBUG=1           log MCP server stderr
 //   HEADROOM_PI_CONTEXT=0         disable history compression (context event)
 //   HEADROOM_PI_MIN_CONTEXT_TOKENS  history compression kicks in at this context size (default: 10000)
 //   HEADROOM_PI_KEEP_RECENT       never compress the last N history messages (default: 4)
-//   HEADROOM_PI_MAX_PER_TURN      max new compressions per LLM call (default: 3)
+//   HEADROOM_PI_MAX_PER_TURN      max new compressions per LLM call (default: 3).
+//                                 Sets the startup value; change it live with
+//                                 `/headroom batch <n>`.
 //
 // Read dedup: a repeat `read` of a file whose content hasn't changed is replaced
 // with a short marker (destructive, in-history — safe because the identical full
 // text already exists earlier in history and is retrievable via headroom_retrieve).
+//
+// Fresh vs stale: compressing FRESH tool output is the risky half of this extension.
+// It hits exactly when the model is about to act on the result, and one unnecessary
+// headroom_retrieve costs a round trip plus the full original re-entering context
+// (protected for KEEP_RECENT*3 messages) — wiping out many compressions. So the
+// default tool list is limited to research payloads: fat, prose-shaped, and rarely
+// needed byte-exact. Tools whose output the model parses for exact strings (bash,
+// grep line numbers, find paths) are left alone; history compression still shrinks
+// them once they go stale, at no fidelity risk.
+//
+// TODO: consider dropping the fresh-output path entirely and relying on history
+// compression alone. History compression is non-destructive and strictly safer;
+// the only thing the fresh path buys is savings on the turn the output arrives.
+// Worth measuring before removing — if `/headroom` shows most savings coming from
+// the context handler, delete the tool_result compression branch.
 //
 // History compression (idea borrowed from @raquezha/noheadroom): pi's `context`
 // event provides a deep copy of messages, mutated per-request only — the real
@@ -62,7 +82,7 @@ const MIN_CHARS = intEnv('HEADROOM_PI_MIN_CHARS', 2500);
 const MIN_SAVINGS_PCT = intEnv('HEADROOM_PI_MIN_SAVINGS_PCT', 10);
 const COMPRESS_TIMEOUT_MS = intEnv('HEADROOM_PI_TIMEOUT_MS', 20_000);
 const COMPRESS_TOOLS = new Set(
-  (process.env.HEADROOM_PI_TOOLS ?? 'bash,grep,find,ls,web_search,fetch_content,get_search_content')
+  (process.env.HEADROOM_PI_TOOLS ?? 'web_search,fetch_content,get_search_content')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)
@@ -263,6 +283,7 @@ export default async function (pi: ExtensionAPI) {
   const mcp = new HeadroomMcp();
   let enabled = false; // headroom CLI found (probe succeeded)
   let active = true; // user toggle via /headroom on|off
+  let batchSize = MAX_PER_TURN; // new compressions per LLM call; /headroom batch <n>
 
   // Footer status: a simple "headroom: on|off" indicator (no stats).
   let compressions = 0;
@@ -299,16 +320,16 @@ export default async function (pi: ExtensionAPI) {
     void probe.then((ok) => ok && updateStatus(ctx));
   });
 
-  const SUBCOMMANDS = ['stats', 'on', 'off'] as const;
+  const SUBCOMMANDS = ['stats', 'on', 'off', 'batch'] as const;
   pi.registerCommand('headroom', {
-    description: 'Headroom compression. Usage: /headroom [stats|on|off]',
+    description: 'Headroom compression. Usage: /headroom [stats|on|off|batch <n>]',
     getArgumentCompletions: (prefix) =>
       SUBCOMMANDS.filter((c) => c.startsWith(prefix.trim().toLowerCase())).map((c) => ({
         value: c,
         label: c
       })),
     handler: async (args, ctx) => {
-      const sub = args.trim().toLowerCase();
+      const [sub, arg] = args.trim().toLowerCase().split(/\s+/);
       if (!(await probe)) {
         ctx.ui.notify('headroom CLI not available', 'warning');
         return;
@@ -328,13 +349,29 @@ export default async function (pi: ExtensionAPI) {
             ctx.ui.notify(`headroom stats failed: ${err}`, 'error');
           }
           return;
+        case 'batch': {
+          if (!arg) {
+            ctx.ui.notify(`headroom batch: ${batchSize} new compressions per LLM call`, 'info');
+            return;
+          }
+          // Number() rejects junk like "3abc" and "3.5" that parseInt would accept.
+          const n = Number(arg);
+          if (!Number.isInteger(n) || n < 1) {
+            ctx.ui.notify(`invalid batch size "${arg}" — expected a positive integer`, 'warning');
+            return;
+          }
+          batchSize = n;
+          ctx.ui.notify(`headroom batch set to ${n} new compressions per LLM call`, 'info');
+          return;
+        }
         default: {
           const fmt = (n: number) => n.toLocaleString();
           ctx.ui.notify(
             [
               `headroom: ${mcp.dead ? 'server dead' : active ? 'on' : 'off'}`,
               `session: ${compressions} compressions, ~${fmt(tokensSaved)} tokens saved`,
-              'usage: /headroom [stats|on|off]'
+              `batch: ${batchSize} new compressions per LLM call`,
+              'usage: /headroom [stats|on|off|batch <n>]'
             ].join('\n'),
             'info'
           );
@@ -359,6 +396,9 @@ export default async function (pi: ExtensionAPI) {
       if (!COMPRESS_TOOLS.has(event.toolName)) return;
       if (event.toolName === RETRIEVE_TOOL) return;
 
+      // Fresh-output compression. Narrow by design (see "Fresh vs stale" at top) and
+      // a candidate for removal — history compression covers the same content later
+      // without touching what the model is about to reason over.
       // Compress qualifying text blocks sequentially (usually exactly one).
       let changed = false;
       const out: typeof event.content = [];
@@ -410,7 +450,7 @@ export default async function (pi: ExtensionAPI) {
       if (typeof tokens === 'number' && tokens < MIN_CONTEXT_TOKENS) return;
 
       const lastCompressible = event.messages.length - 1 - KEEP_RECENT;
-      let budget = MAX_PER_TURN;
+      let budget = batchSize;
       let changed = false;
       let freshCompressions = 0;
       let freshSaved = 0;
@@ -495,6 +535,11 @@ function sha256(text: string): string {
   return createHash('sha256').update(text).digest('hex');
 }
 
+/** Cheap token estimate; exact tokenization isn't worth a dependency here. */
+function approxTokens(text: string): number {
+  return Math.ceil(text.length / 4);
+}
+
 /**
  * Replace a repeat `read` (same input, identical content) with a short marker.
  * The full text already exists earlier in history; the marker carries a CCR hash
@@ -506,10 +551,10 @@ async function dedupRead(
   event: { input: Record<string, unknown>; content: Array<{ type: string; text?: string }> },
   signal?: AbortSignal
 ): Promise<{ content: Array<{ type: 'text'; text: string }> } | undefined> {
-  const text = event.content
-    .filter((b) => b.type === 'text' && typeof b.text === 'string')
-    .map((b) => b.text)
-    .join('\n');
+  // Replacing mixed content with a single text block would drop image blocks,
+  // so only dedup reads that are pure text.
+  if (!event.content.every((b) => b.type === 'text' && typeof b.text === 'string')) return undefined;
+  const text = event.content.map((b) => b.text).join('\n');
   if (text.length < MIN_CHARS) return undefined;
   if (text.includes('headroom_retrieve hash=')) return undefined; // already a marker
 
@@ -534,15 +579,11 @@ async function dedupRead(
     readSeen.set(key, { hash });
   }
 
-  const approxTokens = Math.ceil(text.length / 4);
   return {
     content: [
       {
         type: 'text',
-        text:
-          `[headroom: file content unchanged since your previous read (~${approxTokens} tokens deduped). ` +
-          `It is identical to the earlier read result in this conversation. ` +
-          `Full exact content available via ${RETRIEVE_TOOL} hash=${hash}]`
+        text: `[headroom: unchanged since previous read. Full content via ${RETRIEVE_TOOL} hash=${hash}]`
       }
     ]
   };
@@ -563,19 +604,20 @@ async function compressText(
   const savingsPct = Number(result.savings_percent ?? 0);
   const tokensSaved = Number(result.tokens_saved ?? 0);
   const hash = typeof result.hash === 'string' ? result.hash : null;
-  let compressed = result.compressed;
-  if (compressed == null || !hash) return null;
-  if (typeof compressed !== 'string') compressed = JSON.stringify(compressed);
+  if (result.compressed == null || !hash) return null;
+  const compressed: string =
+    typeof result.compressed === 'string' ? result.compressed : JSON.stringify(result.compressed);
   if (tokensSaved <= 0 || savingsPct < MIN_SAVINGS_PCT) return null;
-  if ((compressed as string).length >= text.length) return null;
 
-  return {
-    text:
-      compressed +
-      `\n\n[headroom: output compressed, ${result.original_tokens}→${result.compressed_tokens} tokens` +
-      ` (${savingsPct}% saved). Full original available via ${RETRIEVE_TOOL} hash=${hash}]`,
-    saved: tokensSaved
-  };
+  // The marker is part of what we send, so its cost must come out of the savings.
+  // Carries no telemetry (before/after counts help the reader, not the model) —
+  // only what the model needs: this is compressed, and the key to get it back.
+  const marker = `\n[headroom: compressed. Full original via ${RETRIEVE_TOOL} hash=${hash}]`;
+  const netSaved = tokensSaved - approxTokens(marker);
+  if (netSaved <= 0) return null;
+  if (compressed.length + marker.length >= text.length) return null;
+
+  return { text: compressed + marker, saved: netSaved };
 }
 
 function registerRetrieveTool(pi: ExtensionAPI, mcp: HeadroomMcp) {
@@ -584,7 +626,7 @@ function registerRetrieveTool(pi: ExtensionAPI, mcp: HeadroomMcp) {
     label: 'Headroom Retrieve',
     description:
       'Retrieve the full original content of a headroom-compressed tool output by hash. ' +
-      "Use when compressed output (marked with '[headroom: ... hash=XYZ]') lacks details you need.",
+      "Use when output marked '[headroom: ... hash=XYZ]' lacks details you need.",
     promptSnippet: "Retrieve full originals of compressed tool outputs (see '[headroom: ... hash=XYZ]' markers)",
     parameters: Type.Object({
       hash: Type.String({
