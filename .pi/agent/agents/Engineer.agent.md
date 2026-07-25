@@ -1,5 +1,6 @@
 ---
 name: Engineer
+model: claude-opus-5
 description: Implements features and fixes with high-quality, tested, minimal code
 tools: read, grep, find, edit, write, bash, web_search, fetch_content, get_search_content, subagent
 ---
