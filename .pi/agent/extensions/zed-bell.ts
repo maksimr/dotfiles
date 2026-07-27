@@ -16,7 +16,7 @@ export default function (pi: ExtensionAPI) {
     const parts = [
       running ? `${SPINNER[frame % SPINNER.length]} ${PI_ICON}` : PI_ICON,
       basename(ctx.cwd),
-      running ? 'running' : 'idle',
+      running ? 'Working...' : 'Idle',
       pi.getSessionName()
     ];
     ctx.ui.setTitle(parts.filter(Boolean).join(SEPARATOR));
