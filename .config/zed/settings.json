@@ -24,10 +24,10 @@
       "default_config_options": {
         "model": "claude-fable-5[1m]",
         "mode": "acceptEdits",
-        "agent": "default",
+        "agent": "default"
       },
-      "type": "registry",
-    },
+      "type": "registry"
+    }
   },
   "diff_view_style": "unified",
   "lsp": {
@@ -35,78 +35,79 @@
       "settings": {
         "typescript": {
           "updateImportsOnFileMove": {
-            "enabled": "always",
-          },
+            "enabled": "always"
+          }
         },
         "javascript": {
           "updateImportsOnFileMove": {
-            "enabled": "always",
-          },
-        },
+            "enabled": "always"
+          }
+        }
       },
-      "enable_lsp_tasks": true,
+      "enable_lsp_tasks": true
     },
     "eslint": {
       "initialization_options": {
-        "run": "onSave",
-      },
-    },
+        "run": "onSave"
+      }
+    }
   },
   "cli_default_open_behavior": "new_window",
   "project_panel": {
-    "dock": "left",
+    "dock": "left"
   },
   "outline_panel": {
-    "dock": "left",
+    "dock": "left"
   },
   "collaboration_panel": {
-    "dock": "left",
+    "dock": "left"
   },
   "auto_update": true,
   "git_panel": {
     "dock": "left",
-    "tree_view": false,
+    "tree_view": false
   },
   "edit_predictions": {
-    "provider": "zed",
+    "provider": "zed"
   },
   "agent": {
     "dock": "right",
     "default_profile": "ask",
+    "terminal_init_command": "pi",
     "inline_assistant_model": {
       "provider": "copilot_chat",
       "model": "gpt-4.1",
-      "enable_thinking": false,
+      "enable_thinking": false
     },
     "tool_permissions": {
       "tools": {
         "terminal": {
-          "default": "allow",
-        },
-      },
+          "default": "allow"
+        }
+      }
     },
     "default_model": {
       "effort": "high",
       "enable_thinking": false,
       "provider": "deepseek",
-      "model": "deepseek-v4-pro",
-    },
+      "model": "deepseek-v4-pro"
+    }
   },
   "tab_bar": {
-    "show": false,
+    "show": false
   },
   "scrollbar": {
-    "show": "system",
+    "show": "system"
   },
   "git": {
-    "git_gutter": "hide",
+    "git_gutter": "hide"
   },
   "gutter": {
     "line_numbers": true, // Show/hide line numbers in the gutter.
     "runnables": true, // Show/hide runnables buttons in the gutter.
     "breakpoints": true, // Show/hide show breakpoints in the gutter.
     "folds": false, // Show/hide show fold buttons in the gutter.
-    "min_line_number_digits": 3, // Reserve space for N digit line numbers
+    "min_line_number_digits": 3 // Reserve space for N digit line numbers
   },
   "inline_code_actions": true, // Show lighting bold icon for inline code actions
   "indent_guides": {
@@ -114,13 +115,13 @@
     "line_width": 1, // Width of guides in pixels [1-10]
     "active_line_width": 1, // Width of active guide in pixels [1-10]
     "coloring": "fixed", // disabled, fixed, indent_aware
-    "background_coloring": "disabled", // disabled, indent_aware
+    "background_coloring": "disabled" // disabled, indent_aware
   },
   "ensure_final_newline_on_save": false,
   "unnecessary_code_fade": 0.8,
   "vim_mode": true,
   "vim": {
-    "toggle_relative_line_numbers": true,
+    "toggle_relative_line_numbers": true
   },
   "agent_ui_font_size": 20,
   "agent_buffer_font_size": 18,
@@ -132,7 +133,7 @@
   "theme": {
     "mode": "system",
     "light": "One Light",
-    "dark": "One Dark",
+    "dark": "One Dark"
   },
   // https://github.com/zed-industries/zed/blob/main/assets/themes/one/one.json
   // https://zed.dev/docs/extensions/languages#syntax-highlighting
@@ -275,267 +276,267 @@
       {
         "cursor": "#5AC1FEFF",
         "background": "#5AC1FEFF",
-        "selection": "#5AC1FE3D",
+        "selection": "#5AC1FE3D"
       },
       {
         "cursor": "#39BAE5FF",
         "background": "#39BAE5FF",
-        "selection": "#39BASE53D",
+        "selection": "#39BASE53D"
       },
       {
         "cursor": "#FE8F40FF",
         "background": "#FE8F40FF",
-        "selection": "#FE8f403D",
+        "selection": "#FE8f403D"
       },
       {
         "cursor": "#D2A6FEFF",
         "background": "#D2A6FEFF",
-        "selection": "#D2A6FE3D",
+        "selection": "#D2A6FE3D"
       },
       {
         "cursor": "#95E5CBFF",
         "background": "#95E5CBFF",
-        "selection": "#95E5CB3D",
+        "selection": "#95E5CB3D"
       },
       {
         "cursor": "#EF7177FF",
         "background": "#EF7177FF",
-        "selection": "#EF71773D",
+        "selection": "#EF71773D"
       },
       {
         "cursor": "#FEB454FF",
         "background": "#FEB454FF",
-        "selection": "#FEB4543D",
+        "selection": "#FEB4543D"
       },
       {
         "cursor": "#AAD84CFF",
         "background": "#AAD84CFF",
-        "selection": "#AAD84C3D",
-      },
+        "selection": "#AAD84C3D"
+      }
     ],
     "syntax": {
       "attribute": {
         "color": "#9CDCFE",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "boolean": {
         "color": "#569CD6",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "comment": {
         "color": "#565656",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "comment.doc": {
         "color": "#565656",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "type.jsdoc": {
         "color": "#565656",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "keyword.jsdoc": {
         "color": "#565656",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "constant": {
         "color": "#569CD6",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "constructor": {
         "color": "#569CD6",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "embedded": {
         "color": "#D4D4D4",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "emphasis.strong": {
         "color": "#569CD6",
         "background_color": null,
         "font_style": null,
-        "font_weight": 700,
+        "font_weight": 700
       },
       "function": {
         "color": "#e0e0e0",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "keyword": {
         "color": "#afd787",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "number": {
         "color": "#87d7d7",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "operator": {
         "color": "#D4D4D4",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "preproc": {
         "color": "#569CD6",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "property": {
         "color": "#e0e0e0",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "property.json_key": {
         "color": "#afd787",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "punctuation": {
         "color": "#808080",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "punctuation.bracket": {
         "color": "#808080",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "punctuation.delimiter": {
         "color": "#808080",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "punctuation.list_marker": {
         "color": "#808080",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "punctuation.special": {
         "color": "#808080",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "string": {
         "color": "#87afd7",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "string.escape": {
         "color": "#569CD6",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "string.regex": {
         "color": "#CE9178",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "string.special": {
         "color": "#CE9178",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "string.special.symbol": {
         "color": "#CE9178",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "tag": {
         "color": "#569CD6",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "text.literal": {
         "color": "#CE9178",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "type": {
         "color": "#afd787",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "variable": {
         "color": "#e0e0e0",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
+        "font_weight": null
       },
       "variable.special": {
         "color": "#569CD6",
         "background_color": null,
         "font_style": null,
-        "font_weight": null,
-      },
-    },
+        "font_weight": null
+      }
+    }
   },
   "languages": {
     "JavaScript": {
       "code_actions_on_format": {
-        "source.fixAll.eslint": true,
-      },
+        "source.fixAll.eslint": true
+      }
     },
     "TypeScript": {
       "code_actions_on_format": {
-        "source.fixAll.eslint": true,
-      },
+        "source.fixAll.eslint": true
+      }
     },
     "TSX": {
       "code_actions_on_format": {
-        "source.fixAll.eslint": true,
-      },
-    },
+        "source.fixAll.eslint": true
+      }
+    }
   },
   "format_on_save": "off",
   "prettier": {
     "singleQuote": true,
     "trailingComma": "none",
-    "printWidth": 120,
+    "printWidth": 120
   },
   "journal": {
-    "path": "~/.zed",
+    "path": "~/.zed"
   },
   "inlay_hints": {
-    "show_value_hints": false,
+    "show_value_hints": false
   },
-  "max_tabs": 20,
+  "max_tabs": 20
 }
