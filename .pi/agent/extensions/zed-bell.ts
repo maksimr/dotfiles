@@ -2,7 +2,7 @@ import { basename } from 'node:path';
 import type { ExtensionAPI, ExtensionContext } from '@earendil-works/pi-coding-agent';
 
 const SPINNER = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
-const IDLE_ICON = 'π';
+const PI_ICON = 'π';
 const SPINNER_INTERVAL_MS = 120;
 const SEPARATOR = ' · ';
 
@@ -14,7 +14,7 @@ export default function (pi: ExtensionAPI) {
   const render = (ctx: ExtensionContext) => {
     if (!ctx.hasUI) return;
     const parts = [
-      running ? SPINNER[frame % SPINNER.length] : IDLE_ICON,
+      running ? `${SPINNER[frame % SPINNER.length]} ${PI_ICON}` : PI_ICON,
       basename(ctx.cwd),
       running ? 'running' : 'idle',
       pi.getSessionName()
