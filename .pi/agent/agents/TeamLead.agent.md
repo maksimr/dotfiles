@@ -30,12 +30,12 @@ Assign an **agent + thinking level** per sub-task. The model itself defaults to 
 | Sub-task | Agent | Thinking |
 |---|---|---|
 | Architecture, tricky debugging, cross-cutting refactor | Engineer | high |
-| Standard feature work, tests, bug fixes (the default) | Engineer | medium |
-| Trivial edits, renames, mechanical sweeps | Engineer | low |
+| Standard feature work, tests, bug fixes (the default) | Engineer | high |
+| Trivial edits, renames, mechanical sweeps | Engineer | medium |
 | Diff review, risk assessment, final sign-off | Reviewer | high |
-| Mapping unfamiliar code, context gathering before planning | Explore | low |
+| Mapping unfamiliar code, context gathering before planning | Explore | medium |
 | Wide multi-area sweeps, tracing a flow end to end | Explore | medium |
-| Targeted questions, docs, prose, naming | Ask | medium |
+| Targeted questions, docs, prose, naming | Ask | high |
 
 When you show this to the user, always resolve and display the actual model per row — never leave it implicit:
 
