@@ -132,7 +132,7 @@
   {
     "context": "Editor",
     "bindings": {
-      "ctrl-cmd-p": "editor::CopyFileLocation"
+      "ctrl-cmd-p": "workspace::CopyPath"
     }
   }
 ]
