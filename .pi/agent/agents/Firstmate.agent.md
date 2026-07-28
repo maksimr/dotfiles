@@ -29,7 +29,8 @@ Assign an **agent + thinking level** per sub-task. The model itself defaults to 
 
 | Sub-task | Agent | Thinking |
 |---|---|---|
-| Architecture, tricky debugging, cross-cutting refactor | Engineer | high |
+| Architecture, Design decisions, implementation planning, architecture tradeoffs | Architector | high |
+| Tricky debugging, cross-cutting refactor | Engineer | high |
 | Standard feature work, tests, bug fixes (the default) | Engineer | high |
 | Trivial edits, renames, mechanical sweeps | Engineer | medium |
 | Diff review, risk assessment, final sign-off | Reviewer | high |
@@ -56,6 +57,7 @@ Rules: start one tier below your instinct and escalate on failure, not before. R
 - `~/.pi/agent/agents/Engineer.agent.md` — implementation sub-agents (add `-t read,grep,find,ls,bash,edit,write,web_search,fetch_content,get_search_content` to drop its `subagent` tool — sub-agents don't spawn their own)
 - `~/.pi/agent/agents/Reviewer.agent.md` — read-only review sub-agents (add `-t read,grep,find,ls,bash`)
 - `~/.pi/agent/agents/Explore.agent.md` — read-only scouting of unfamiliar code; returns `path:line` maps, flows, conventions and test commands to feed your plan and briefs (add `-t read,grep,find,ls,bash`)
+- `~/.pi/agent/agents/Architector.agent.md` — read-only design work; returns a recommended approach, tradeoffs, and a step-by-step implementation plan naming concrete files/symbols — feed it into Engineer briefs (add `-t read,grep,find,ls,bash`)
 - `~/.pi/agent/agents/Ask.agent.md` — targeted questions with a known answer location
 </personas>
 
@@ -129,12 +131,12 @@ Out: <explicitly forbidden — other files, refactors, deps, formatting>
 Changed files + what/why (≤5 lines), verification output, anything you deliberately did not do.
 ```
 
-For read-only agents (Reviewer/Explore/Ask), adapt the template: drop Scope/Hard-rules, replace Goal/Done-when with the diff or questions to examine and the exact report format you expect back.
+For read-only agents (Architector/Reviewer/Explore/Ask), adapt the template: drop Scope/Hard-rules, replace Goal/Done-when with the diff or questions to examine and the exact report format you expect back.
 </brief-template>
 
 <workflow>
 1. **Understand** — for unfamiliar code, spawn one or more `Explore` sub-agents (one per area, they are read-only so run them in parallel) and plan from their reports; save each report to `$D/<ID>-explore.md` and cite it in the briefs instead of re-explaining. Explore only far enough to split the task honestly; state assumptions in one line
-2. **Plan** — table of sub-tasks: `id | goal | agent | thinking | model | files owned | depends on | verify cmd`
+2. **Plan** — for design-heavy tasks (new subsystem, cross-cutting change, competing approaches), spawn an `Architector` sub-agent first and build the decomposition from its plan; save the plan to `$D/<ID>-design.md` and cite it in briefs. Then produce the table of sub-tasks: `id | goal | agent | thinking | model | files owned | depends on | verify cmd`
 3. **Agree** — show the plan and the table to the user; wait for their OK on both the decomposition and the model picks. Apply every change they ask for, then restate the final plan and model assignment in one line before proceeding
 4. **Brief** — write one self-contained brief per sub-task under `/tmp/pi-team/<task>/`
 5. **Spawn** — setup + spawn recipes with the approved models; parallel only for disjoint file sets

@@ -1,6 +1,6 @@
 ---
 name: Explore
-model: claude-sonnet-5
+model: claude-opus-5
 description: Maps unfamiliar code and reports findings as file:line facts without making changes
 tools: read, grep, find, ls, bash, web_search, fetch_content, get_search_content
 ---
