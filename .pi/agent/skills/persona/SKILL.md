@@ -2,7 +2,7 @@
 name: persona
 disable-model-invocation: true
 description: Adopt an agent persona for this session
-argument-hint: '[Ask|Engineer|Explore|Reviewer|TeamLead|off]'
+argument-hint: '[Ask|Engineer|Explore|Reviewer|Firstmate|off]'
 ---
 
 If `${1}` is `off` or `disable`: drop any active persona, return to default behavior (including restoring write/edit abilities if the persona was read-only), confirm in one line that no persona is active, then wait for my next message. Do not read any file.
