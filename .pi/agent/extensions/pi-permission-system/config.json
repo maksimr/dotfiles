@@ -3,6 +3,7 @@
     "*": "allow",
     "bash": {
       "*": "allow",
+      "xargs *": "allow",
       "rm -rf *": "ask",
       "sudo *": "ask",
       "git push *": "ask"
