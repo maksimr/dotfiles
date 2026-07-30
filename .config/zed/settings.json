@@ -501,6 +501,12 @@
         "font_style": null,
         "font_weight": null
       },
+      "variable.parameter": {
+        "color": "#e0e0e0",
+        "background_color": null,
+        "font_style": null,
+        "font_weight": null
+      },
       "variable.special": {
         "color": "#569CD6",
         "background_color": null,
