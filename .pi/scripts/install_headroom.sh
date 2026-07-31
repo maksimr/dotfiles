@@ -2,7 +2,11 @@
 # Install Headroom into one self-contained directory on macOS or Linux.
 #
 # Usage:
-#   ./install_headroom.sh /path/to/headroom
+#   ./install_headroom.sh [/path/to/headroom]
+#
+# With no argument, Headroom is installed into $HOME/.local/share/headroom and
+# the command is linked into $HOME/.local/bin. With an explicit directory,
+# everything (including bin/) stays inside that directory.
 #
 # Nothing is added to the system Python or to the user's global PATH. If no
 # Python 3.10+ is available on PATH, a uv-managed Python 3.13 is placed under
@@ -15,10 +19,18 @@ PY_MIN_CHECK='import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else
 
 die() { printf 'Error: %s\n' "$*" >&2; exit 1; }
 
-if [[ $# -ne 1 || -z "$1" ]]; then
-    printf 'Usage: %s INSTALL_DIR\nExample: %s "$HOME/.headroom"\n' \
+if [[ $# -gt 1 || ( $# -eq 1 && -z "$1" ) ]]; then
+    printf 'Usage: %s [INSTALL_DIR]\nExample: %s "$HOME/.headroom"\n' \
         "${0##*/}" "${0##*/}" >&2
     exit 2
+fi
+
+if [[ $# -eq 1 ]]; then
+    TARGET_DIR="$1"
+    LINK_DIR=''
+else
+    TARGET_DIR="$HOME/.local/share/headroom"
+    LINK_DIR="$HOME/.local/bin"
 fi
 
 KERNEL="$(uname -s)"
@@ -29,10 +41,17 @@ for cmd in curl tar mktemp install grep; do
     command -v "$cmd" >/dev/null 2>&1 || die "required command not found: $cmd"
 done
 
-mkdir -p -- "$1"
-INSTALL_DIR="$(CDPATH='' cd -- "$1" && pwd -P)"
+mkdir -p -- "$TARGET_DIR"
+INSTALL_DIR="$(CDPATH='' cd -- "$TARGET_DIR" && pwd -P)"
 VENV_DIR="$INSTALL_DIR/venv"
-BIN_DIR="$INSTALL_DIR/bin"
+if [[ -n "$LINK_DIR" ]]; then
+    mkdir -p -- "$LINK_DIR"
+    BIN_DIR="$(CDPATH='' cd -- "$LINK_DIR" && pwd -P)"
+    LINK_TARGET="$VENV_DIR/bin/headroom"
+else
+    BIN_DIR="$INSTALL_DIR/bin"
+    LINK_TARGET='../venv/bin/headroom'
+fi
 UV_BIN="$INSTALL_DIR/.tools/uv"
 mkdir -p "$INSTALL_DIR/.tools" "$INSTALL_DIR/.cache/uv" "$BIN_DIR"
 
@@ -159,7 +178,7 @@ uv pip install --python "$VENV_DIR/bin/python" --upgrade "$HEADROOM_PACKAGE"
 # symlink inside it); refuse rather than delete user data.
 [[ -d "$BIN_DIR/headroom" && ! -L "$BIN_DIR/headroom" ]] &&
     die "cannot create the headroom command: $BIN_DIR/headroom is a directory"
-ln -sfn '../venv/bin/headroom' "$BIN_DIR/headroom"
+ln -sfn "$LINK_TARGET" "$BIN_DIR/headroom"
 
 PYTHON_VERSION="$("$VENV_DIR/bin/python" -c 'import platform; print(platform.python_version())')"
 HEADROOM_VERSION="$("$VENV_DIR/bin/python" -c \
@@ -167,6 +186,5 @@ HEADROOM_VERSION="$("$VENV_DIR/bin/python" -c \
 
 printf '\nHeadroom %s installed successfully with Python %s.\n' \
     "$HEADROOM_VERSION" "$PYTHON_VERSION"
-printf 'Command: %s\n' "$BIN_DIR/headroom"
-printf 'Run now: "%s" doctor\n' "$BIN_DIR/headroom"
-printf 'Optional PATH setup: export PATH="%s:$PATH"\n' "$BIN_DIR"
+printf '"%s" doctor\n' "$BIN_DIR/headroom"
+printf 'export PATH="%s:$PATH"\n' "$BIN_DIR"
