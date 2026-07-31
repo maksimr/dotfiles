@@ -79,6 +79,7 @@
       "model": "claude-opus-5",
       "enable_thinking": false
     },
+    "commit_message_instructions": "Use Conventional Commits: <type>(<scope>): <short imperative description>. No body unless the change is non-obvious.",
     "tool_permissions": {
       "tools": {
         "terminal": {
