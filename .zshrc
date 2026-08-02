@@ -163,6 +163,47 @@ function copilot() {
 alias '??'='copilot'
 alias '???'='npx -y @github/copilot'
 
+# Grab the last command + its output from the terminal scrollback and open pi with it
+# Usage: wtf [extra context...]   (lines of scrollback: WTF_LINES, default 1000)
+function wtf() {
+  local last_cmd=$(fc -ln -1)
+  local lines=${WTF_LINES:-1000}
+  local screen
+
+  if [ -n "$TMUX" ]; then
+    screen=$(tmux capture-pane -p -S -$lines)
+  else
+    echo "wtf: need tmux to read scrollback" >&2
+    return 1
+  fi
+
+  # keep only the output of last_cmd: drop the trailing 'wtf' prompt line, then
+  # everything up to and including the prompt line where last_cmd was typed
+  local -a buf
+  buf=("${(@f)screen}")
+  buf=("${(@)buf[1,-2]}")
+  local i cmd_head=${last_cmd%%$'\n'*}
+  for (( i = ${#buf}; i > 0; i-- )); do
+    if [[ ${buf[i]} == *"$cmd_head" ]]; then
+      buf=("${(@)buf[i+1,-1]}")
+      break
+    fi
+  done
+  screen=${(F)buf}
+
+  pi "Last command:
+\`\`\`sh
+$last_cmd
+\`\`\`
+
+Terminal output:
+\`\`\`
+$screen
+\`\`\`
+
+$*"
+}
+
 if [ "$(command -v bat)" ]
 then
   alias cat="bat --style=plain"
