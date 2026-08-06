@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "typeRoots": [
+      "../../../../.local/share/fnm/aliases/default/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/@types"
+    ],
+    "paths": {
+      "@earendil-works/pi-coding-agent": [
+        "../../../../.local/share/fnm/aliases/default/lib/node_modules/@earendil-works/pi-coding-agent/dist/index.d.ts"
+      ],
+      "*": [
+        "../../../../.local/share/fnm/aliases/default/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/*"
+      ]
+    }
+  },
+  "include": ["*.ts"]
+}
