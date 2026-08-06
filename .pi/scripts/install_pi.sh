@@ -6,10 +6,17 @@
 #   4. Install the pi coding agent.
 #   5. Run install_headroom.sh and install_rtk.sh.
 #   6. Add ~/.local/bin to PATH in the bash profile.
+#
+# Run directly via curl:
+#   curl -fsSL https://raw.githubusercontent.com/maksimr/dotfiles/main/.pi/scripts/install_pi.sh | bash
 
 set -Eeuo pipefail
 
-SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+# Empty when piped via curl; the dotfiles clone is used as a fallback below.
+SCRIPT_DIR=''
+if [[ -f "${BASH_SOURCE:-}" ]]; then
+    SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE:-}")" && pwd -P)"
+fi
 DOTFILES_REPO='https://github.com/maksimr/dotfiles'
 DOTFILES_DIR="$HOME/.dotfiles"
 BASH_PROFILE="$HOME/.bashrc"
@@ -49,6 +56,8 @@ printf 'Installing pi...\n'
 npm install -g @earendil-works/pi-coding-agent
 
 # 5. headroom + rtk
+[[ -n "$SCRIPT_DIR" && -f "$SCRIPT_DIR/install_headroom.sh" ]] ||
+    SCRIPT_DIR="$DOTFILES_DIR/.pi/scripts"
 bash "$SCRIPT_DIR/install_headroom.sh"
 bash "$SCRIPT_DIR/install_rtk.sh"
 
