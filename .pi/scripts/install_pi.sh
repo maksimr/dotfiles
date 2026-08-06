@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# apt update && apt install -y curl unzip git
+# curl -fsSL https://raw.githubusercontent.com/maksimr/dotfiles/main/.pi/scripts/install_pi.sh | bash
+#
 # Set up the pi coding agent on Linux (e.g. inside a Docker container):
 #   1. Install fnm (checking its required dependencies).
 #   2. Install Node.js 24 via fnm and make it the default.
@@ -6,9 +9,6 @@
 #   4. Install the pi coding agent.
 #   5. Run install_headroom.sh and install_rtk.sh.
 #   6. Add ~/.local/bin to PATH in the bash profile.
-#
-# Run directly via curl:
-#   curl -fsSL https://raw.githubusercontent.com/maksimr/dotfiles/main/.pi/scripts/install_pi.sh | bash
 
 set -Eeuo pipefail
 
