@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.83.0",
+  "lastChangelogVersion": "0.84.0",
   "theme": "dark",
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-5",
@@ -21,5 +21,6 @@
     "npm:pi-web-access",
     "npm:@gotgenes/pi-permission-system",
     "git:github.com/maksimr/pi-prompt-history"
-  ]
+  ],
+  "tuiMode": "fullscreen"
 }
