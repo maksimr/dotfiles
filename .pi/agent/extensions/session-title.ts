@@ -52,13 +52,13 @@ export default function (pi: ExtensionAPI) {
     setRunning(lastCtx, running);
   };
 
-  function sendBell() {
+  function ringBell() {
     process.stdout.write('\x07');
   }
 
   pi.events.on(PERMISSION_PROMPT_CHANNEL, () => {
     setWaiting(true);
-    sendBell();
+    ringBell();
   });
   pi.events.on(PERMISSION_DECISION_CHANNEL, () => setWaiting(false));
 
@@ -69,7 +69,7 @@ export default function (pi: ExtensionAPI) {
   pi.on('agent_end', async (_e, ctx) => {
     waiting = false;
     setRunning(ctx, false);
-    sendBell();
+    ringBell();
   });
 
   pi.on('session_shutdown', () => stopTimer());
