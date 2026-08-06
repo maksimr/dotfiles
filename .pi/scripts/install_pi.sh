@@ -7,7 +7,7 @@
 #   2. Install Node.js 24 via fnm and make it the default.
 #   3. Install dotfiles from https://github.com/maksimr/dotfiles.
 #   4. Install the pi coding agent.
-#   5. Run install_headroom.sh and install_rtk.sh.
+#   5. Run install_rtk.sh.
 #   6. Add ~/.local/bin to PATH in the bash profile.
 
 set -Eeuo pipefail
@@ -56,9 +56,8 @@ printf 'Installing pi...\n'
 npm install -g @earendil-works/pi-coding-agent
 
 # 5. headroom + rtk
-[[ -n "$SCRIPT_DIR" && -f "$SCRIPT_DIR/install_headroom.sh" ]] ||
+[[ -n "$SCRIPT_DIR" && -f "$SCRIPT_DIR/install_rtk.sh" ]] ||
     SCRIPT_DIR="$DOTFILES_DIR/.pi/scripts"
-bash "$SCRIPT_DIR/install_headroom.sh"
 bash "$SCRIPT_DIR/install_rtk.sh"
 
 # 6. PATH and fnm in the bash profile
