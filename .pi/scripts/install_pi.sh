@@ -55,7 +55,7 @@ bash "$DOTFILES_DIR/bootstrap.sh"
 printf 'Installing pi...\n'
 npm install -g @earendil-works/pi-coding-agent
 
-# 5. headroom + rtk
+# 5. rtk
 [[ -n "$SCRIPT_DIR" && -f "$SCRIPT_DIR/install_rtk.sh" ]] ||
     SCRIPT_DIR="$DOTFILES_DIR/.pi/scripts"
 bash "$SCRIPT_DIR/install_rtk.sh"
