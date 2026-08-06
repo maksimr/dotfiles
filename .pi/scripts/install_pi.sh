@@ -68,6 +68,7 @@ fi
 if ! grep -qs 'fnm env' "$BASH_PROFILE"; then
     {
         printf 'export PATH="$HOME/.local/share/fnm:$PATH"\n'
+        printf 'eval "$(fnm env --shell bash)"\n'
     } >>"$BASH_PROFILE"
 fi
 
