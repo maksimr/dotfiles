@@ -134,5 +134,14 @@
     "bindings": {
       "ctrl-cmd-p": "workspace::CopyPath"
     }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-shift-k": "git::Push"
+    },
+    "unbind": {
+      "cmd-shift-k": "editor::DeleteLine"
+    }
   }
 ]
