@@ -25,6 +25,8 @@ interface HistoryEntry {
 const HISTORY_FILE = join(process.env.HOME ?? homedir(), '.pi_history.jsonl');
 const MAX_ENTRIES = 1000;
 const MAX_VISIBLE = 10;
+// Columns reserved for the relative-time column (e.g. "just now") plus gap
+const TIMESTAMP_COLUMN_WIDTH = 16;
 
 async function loadHistory(): Promise<HistoryEntry[]> {
   try {
@@ -135,14 +137,20 @@ export default function (pi: ExtensionAPI) {
               description: relativeTime(e.ts)
             }));
 
-          const makeList = (listItems: SelectItem[]): SelectList => {
-            const list = new SelectList(listItems, Math.min(Math.max(listItems.length, 1), MAX_VISIBLE), {
-              selectedPrefix: (text) => theme.fg('accent', text),
-              selectedText: (text) => theme.fg('accent', text),
-              description: (text) => theme.fg('muted', text),
-              scrollInfo: (text) => theme.fg('dim', text),
-              noMatch: (text) => theme.fg('warning', text)
-            });
+          const makeList = (listItems: SelectItem[], width: number): SelectList => {
+            const list = new SelectList(
+              listItems,
+              Math.min(Math.max(listItems.length, 1), MAX_VISIBLE),
+              {
+                selectedPrefix: (text) => theme.fg('accent', text),
+                selectedText: (text) => theme.fg('accent', text),
+                description: (text) => theme.fg('muted', text),
+                scrollInfo: (text) => theme.fg('dim', text),
+                noMatch: (text) => theme.fg('warning', text)
+              },
+              // Let prompts use the full dialog width, reserving room for the timestamp column
+              { maxPrimaryColumnWidth: Math.max(20, width - TIMESTAMP_COLUMN_WIDTH) }
+            );
             list.onSelect = (item) => {
               const entry = filtered[Number(item.value)];
               done(entry ? entry.text : null);
@@ -151,13 +159,18 @@ export default function (pi: ExtensionAPI) {
             return list;
           };
 
-          let selectList = makeList(makeItems());
+          let listWidth = 0;
+          let selectList = makeList(makeItems(), listWidth);
 
           const spacer = new Spacer(1);
           const border = new DynamicBorder((str: string) => theme.fg('border', str));
 
           return {
             render(width: number) {
+              if (width !== listWidth) {
+                listWidth = width;
+                selectList = makeList(makeItems(), listWidth);
+              }
               return [
                 ...border.render(width),
                 ...input.render(width),
@@ -184,7 +197,7 @@ export default function (pi: ExtensionAPI) {
                 input.handleInput(data);
                 if (input.getValue() !== before) {
                   applyFilter();
-                  selectList = makeList(makeItems());
+                  selectList = makeList(makeItems(), listWidth);
                 }
               }
               tui.requestRender();
@@ -192,7 +205,8 @@ export default function (pi: ExtensionAPI) {
           };
         },
         {
-          overlay: true
+          overlay: true,
+          overlayOptions: { width: '100%' }
         }
       );
 
