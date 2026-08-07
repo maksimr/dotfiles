@@ -5,6 +5,8 @@ const SPINNER = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', 
 const PI_ICON = 'π';
 const SPINNER_INTERVAL_MS = 120;
 const SEPARATOR = ' · ';
+const DOTS = ['...', '.  ', '.. '];
+const DOTS_FRAMES_PER_STEP = 4;
 const WAITING_ICON = '⏸';
 const PERMISSION_PROMPT_CHANNEL = 'permissions:ui_prompt';
 const PERMISSION_DECISION_CHANNEL = 'permissions:decision';
@@ -24,7 +26,9 @@ export default function (pi: ExtensionAPI) {
       : running
         ? `${SPINNER[frame % SPINNER.length]} ${PI_ICON}`
         : PI_ICON;
-    const parts = [icon, basename(ctx.cwd), waiting ? 'waiting' : running ? 'working...' : 'idle', pi.getSessionName()];
+    const dots = DOTS[Math.floor(frame / DOTS_FRAMES_PER_STEP) % DOTS.length];
+    const status = waiting ? 'waiting' : running ? `working${dots}` : 'idle';
+    const parts = [icon, basename(ctx.cwd), status, pi.getSessionName()];
     ctx.ui.setTitle(parts.filter(Boolean).join(SEPARATOR));
   };
 
