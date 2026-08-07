@@ -3,6 +3,7 @@ font-size = 32
 background = "#333333"
 background-opacity = 0.9
 title = " "
+bell-features = no-title
 quit-after-last-window-closed = true
 maximize = true
 
