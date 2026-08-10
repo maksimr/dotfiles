@@ -32,20 +32,8 @@ In order to solve this problem for myself and I wrote the dotfile script.
 That should solve the problem with the synchronization and organization of system files.
 Load and run.
 
-
 ### Installation
 
-```
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash \
-&& export NVM_DIR="$HOME/.nvm" \
-&& . "$NVM_DIR/nvm.sh" \
-&& nvm install stable
-```
-
 ```bash
-npx -y github:maksimr/udot use https://github.com/maksimr/dotfiles
-```
-
-```bash
-npx -y github:maksimr/udot install --module-path=~/.local/bin/udot
+curl -sL https://raw.githubusercontent.com/maksimr/dotfiles/main/.local/bin/udot | bash -s -- use https://github.com/maksimr/dotfiles
 ```
