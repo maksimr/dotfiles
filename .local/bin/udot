@@ -1,0 +1,364 @@
+#!/usr/bin/env bash
+set -o pipefail
+shopt -s dotglob nullglob
+
+DRY_RUN=''
+FORCE=''
+MODULE_PATH=''
+MODULE_URL=''
+EXCLUDES_FILE=''
+BASE_DIR_OPT=''
+HOME_DIR_OPT=''
+EXCLUDES=()
+POSITIONAL=()
+
+IGNORE_PATTERNS=()
+PREV_LINKS=()
+LINKS=()
+
+bold() { printf '\033[1m%s\033[0m' "$1"; }
+red() { printf '\033[31m%s\033[0m' "$1"; }
+green() { printf '\033[32m%s\033[0m' "$1"; }
+yellow() { printf '\033[33m%s\033[0m' "$1"; }
+
+is_dry_run() { [[ -n $DRY_RUN ]]; }
+
+# Skip execution of mutating commands in dry-run mode
+mut() {
+  if is_dry_run; then
+    return 0
+  fi
+  "$@"
+}
+
+tilde_expansion() {
+  local p=$1
+  [[ $p == '~'* ]] && p="${HOME}${p#\~}"
+  [[ $p != /* ]] && p="$PWD/$p"
+  printf '%s' "$p"
+}
+
+sha1() {
+  if command -v sha1sum > /dev/null 2>&1; then
+    sha1sum | awk '{print $1}'
+  else
+    shasum -a 1 | awk '{print $1}'
+  fi
+}
+
+links_file() {
+  local state_dir=${XDG_STATE_HOME:-$HOME_DIR/.local/state}
+  local id
+  id=$(printf '%s\0%s' "$BASE_DIR" "$HOME_DIR" | sha1 | cut -c1-16)
+  printf '%s' "$state_dir/udot/$id.json"
+}
+
+read_links() {
+  PREV_LINKS=()
+  local file content
+  file=$(links_file)
+  [[ -f $file ]] || return 0
+  content=$(cat "$file" 2> /dev/null) || return 0
+  content=${content#*\[}
+  content=${content%%\]*}
+  [[ -z $content ]] && return 0
+  content=${content#\"}
+  content=${content%\"}
+  local IFS=$'\n'
+  local line
+  while IFS= read -r line; do
+    [[ -n $line ]] && PREV_LINKS+=("$line")
+  done <<< "${content//\",\"/$'\n'}"
+}
+
+write_links() {
+  local file out='' l
+  file=$(links_file)
+  mut mkdir -p "$(dirname "$file")"
+  while IFS= read -r l; do
+    [[ -n $l ]] && out+="\"$l\","
+  done < <(printf '%s\n' "${LINKS[@]:-}" | sort)
+  out=${out%,}
+  is_dry_run || printf '{"links":[%s]}' "$out" > "$file"
+}
+
+load_ignore_patterns() {
+  IGNORE_PATTERNS=()
+  local line
+  if [[ -e $EXCLUDES_FILE ]]; then
+    while IFS= read -r line; do
+      line=${line#"${line%%[![:space:]]*}"}
+      line=${line%"${line##*[![:space:]]}"}
+      [[ -n $line ]] && IGNORE_PATTERNS+=("$line")
+    done < "$EXCLUDES_FILE"
+  else
+    IGNORE_PATTERNS=('.gitignore' '.vscode' '.DS_Store' 'node_modules' 'package-lock.json' 'package.json')
+  fi
+  IGNORE_PATTERNS+=('.git' 'README.md')
+  local e
+  for e in "${EXCLUDES[@]:-}"; do
+    [[ -n $e ]] && IGNORE_PATTERNS+=("$e")
+  done
+}
+
+is_ignored() {
+  local name=$1 pattern
+  for pattern in "${IGNORE_PATTERNS[@]:-}"; do
+    [[ -z $pattern ]] && continue
+    pattern=${pattern%/}
+    # shellcheck disable=SC2053
+    [[ $name == $pattern ]] && return 0
+  done
+  return 1
+}
+
+is_symlink_from() {
+  [[ -L $1 ]] && [[ $(readlink "$1") == "$2"* ]]
+}
+
+in_links() {
+  local l
+  for l in "${LINKS[@]:-}"; do
+    [[ $l == "$1" ]] && return 0
+  done
+  return 1
+}
+
+cmd_apply() {
+  [[ -e $HOME_DIR ]] || mut mkdir "$HOME_DIR"
+  load_ignore_patterns
+  read_links
+  LINKS=()
+  apply_dir "$BASE_DIR"
+  remove_broken_links
+  write_links
+}
+
+apply_dir() {
+  local dir=$1 source name target
+  for source in "$dir"/*; do
+    name=$(basename "$source")
+    is_ignored "$name" && continue
+    target="$HOME_DIR/${source#"$BASE_DIR"/}"
+    if [[ -d $source && ! -L $source ]]; then
+      [[ -e $target ]] || mut mkdir "$target"
+      apply_dir "$source"
+    elif [[ -f $source ]]; then
+      LINKS+=("${target#"$HOME_DIR"/}")
+      if [[ -n $FORCE || ! -e $target ]]; then
+        [[ -n $FORCE && -e $target ]] && mut rm "$target"
+        mut ln -s "$source" "$target"
+      fi
+    fi
+  done
+}
+
+# Links created by the previous run and gone from <base-dir> since then
+remove_broken_links() {
+  local link target source
+  for link in "${PREV_LINKS[@]:-}"; do
+    [[ -z $link ]] && continue
+    in_links "$link" && continue
+    target="$HOME_DIR/$link"
+    [[ -L $target ]] || continue
+    source=$(readlink "$target")
+    [[ $source == "$BASE_DIR"* ]] || continue
+    [[ -e $source ]] && continue
+    echo "$(red '-') $target"
+    mut rm "$target"
+  done
+}
+
+cmd_ls() {
+  [[ -e $HOME_DIR && -e $BASE_DIR ]] || return 0
+  load_ignore_patterns
+  ls_dir "$BASE_DIR"
+}
+
+ls_dir() {
+  local dir=$1 source name target
+  for source in "$dir"/*; do
+    name=$(basename "$source")
+    is_ignored "$name" && continue
+    target="$HOME_DIR/${source#"$BASE_DIR"/}"
+    if [[ -d $source && ! -L $source ]]; then
+      ls_dir "$source"
+    elif [[ -f $source && -e $target ]]; then
+      if is_symlink_from "$target" "$BASE_DIR"; then
+        echo "$(green '⊙') $target -> $source"
+      else
+        echo "$(yellow '○') $target"
+      fi
+    fi
+  done
+}
+
+cmd_restore() {
+  local file_path=$1
+  if [[ -n $file_path ]]; then
+    if [[ -L $file_path ]]; then
+      echo "$(red '-') $file_path"
+      mut rm "$file_path"
+      return 0
+    fi
+    [[ -d $file_path ]] || return 0
+    restore_dir "$file_path"
+  else
+    restore_dir "$BASE_DIR"
+  fi
+}
+
+restore_dir() {
+  local dir=$1 source target target_dir
+  for source in "$dir"/*; do
+    target="$HOME_DIR/${source#"$BASE_DIR"/}"
+    if [[ -d $source && ! -L $source ]]; then
+      restore_dir "$source"
+    elif [[ -f $source ]] && is_symlink_from "$target" "$BASE_DIR"; then
+      echo "$(red '-') $target"
+      mut rm "$target"
+    fi
+  done
+
+  target_dir="$HOME_DIR/${dir#"$BASE_DIR"}"
+  target_dir=${target_dir%/}
+  if [[ -d $target_dir && $target_dir != "$HOME_DIR" ]] && [[ -z $(ls -A "$target_dir") ]]; then
+    mut rmdir "$target_dir"
+  fi
+}
+
+cmd_use() {
+  local url=$1
+  if [[ ! -e $BASE_DIR ]]; then
+    if ! mut git clone "$url" "$BASE_DIR"; then
+      exit 1
+    fi
+  fi
+  cmd_apply
+}
+
+cmd_update() {
+  git_push
+  git_pull
+  cmd_apply
+}
+
+git_push() {
+  local output err
+  if ! output=$(git -C "$BASE_DIR" status --porcelain 2>&1); then
+    echo "$(yellow "$output")" >&2
+    return 0
+  fi
+  [[ -z $output ]] && return 0
+
+  if ! err=$( (mut git -C "$BASE_DIR" add -A &&
+    mut git -C "$BASE_DIR" commit -m "$output" &&
+    GIT_TERMINAL_PROMPT=0 GIT_ASKPASS='' SSH_ASKPASS='' GIT_SSH_COMMAND='ssh -o BatchMode=yes' \
+      mut git -C "$BASE_DIR" push --set-upstream origin main --progress) 2>&1); then
+    echo "$(yellow "$err")" >&2
+  fi
+}
+
+git_pull() {
+  local output
+  if ! output=$(git -C "$BASE_DIR" pull --progress 2>&1); then
+    echo "$output" >&2
+    exit 1
+  fi
+  echo "$output"
+}
+
+cmd_install() {
+  local url=${MODULE_URL:-https://raw.github.com/maksimr/udot/main/index.sh}
+  local module_path=${MODULE_PATH:-$(tilde_expansion "$0")}
+
+  if [[ -z $module_path ]]; then
+    echo 'Cannot determine install path. Please specify --module-path option' >&2
+    return 0
+  fi
+
+  mut curl -sL "$url" --output "$module_path"
+  mut chmod +x "$module_path"
+  echo "$(green '✓') sucessfully installed \"$module_path\" from \"$url\""
+}
+
+usage() {
+  local cmd
+  cmd=$(basename "${MODULE_PATH:-$0}")
+  cat << EOF
+Usage: $cmd <command> [options]
+
+  $cmd apply          --base-dir=<path> --home-dir=<path> [--exclude=<path1> --exclude=<path2>]
+  $cmd ls             --base-dir=<path> --home-dir=<path>
+  $cmd restore        --base-dir=<path> --home-dir=<path>
+  $cmd restore <path> --base-dir=<path> --home-dir=<path>
+  $cmd update         --base-dir=<path> --home-dir=<path>
+  $cmd use <url>      --base-dir=<path> --home-dir=<path> [--exclude=<path1> --exclude=<path2>]
+  $cmd install        --module-path=<path> --module-url=<url>
+
+Commands
+  apply     Create symlinks from <base-dir> to <home-dir>
+  ls        List of created symlinks
+  restore   Remove created symlinks
+  update    Save changes and sync with remote repository
+  use       Clone repostory from <url> to <base-dir> and apply
+  install   Install or upgrade "$cmd" to the latest version
+
+Options
+  --base-dir       Source directory. By default "~/.dotfiles"
+  --home-dir       Destination directory. By default "~"
+  --module-path    Path to "$cmd" module
+  --module-url     URL to "$cmd" module
+  --dry-run        Don't make real modification, just print what will be done
+  --exclude        Exclude files or directories from processing
+  --excludes-file  Path to file with exclude patterns. By default "$DEFAULT_EXCLUDES_FILE"
+  --force          Force to overwrite existing files
+
+$BASH $BASH_VERSION $OSTYPE $SHELL
+EOF
+}
+
+main() {
+  local arg
+  for arg in "$@"; do
+    case $arg in
+      --base-dir=*) BASE_DIR_OPT=${arg#*=} ;;
+      --home-dir=*) HOME_DIR_OPT=${arg#*=} ;;
+      --exclude=*) EXCLUDES+=("${arg#*=}") ;;
+      --excludes-file=*) EXCLUDES_FILE=${arg#*=} ;;
+      --module-path=*) MODULE_PATH=${arg#*=} ;;
+      --module-url=*) MODULE_URL=${arg#*=} ;;
+      --dry-run) DRY_RUN=1 ;;
+      --force) FORCE=1 ;;
+      -*) ;;
+      *) POSITIONAL+=("$arg") ;;
+    esac
+  done
+
+  local command=${POSITIONAL[0]:-}
+  local url=${POSITIONAL[1]:-}
+
+  BASE_DIR=${BASE_DIR_OPT:-$HOME/.dotfiles}
+  HOME_DIR=${HOME_DIR_OPT:-${HOME:-$USERPROFILE}}
+
+  [[ -z $BASE_DIR ]] && { echo '--base-dir is required' >&2; exit 1; }
+  [[ -z $HOME_DIR ]] && { echo '--home-dir is required' >&2; exit 1; }
+
+  # symlinks are resolved relative to their own directory, so keep paths absolute
+  BASE_DIR=$(tilde_expansion "$BASE_DIR")
+  HOME_DIR=$(tilde_expansion "$HOME_DIR")
+  DEFAULT_EXCLUDES_FILE="$BASE_DIR/.ignore"
+  EXCLUDES_FILE=${EXCLUDES_FILE:-$DEFAULT_EXCLUDES_FILE}
+
+  case $command in
+    apply) cmd_apply ;;
+    use) cmd_use "$url" ;;
+    ls) cmd_ls ;;
+    restore) cmd_restore "$url" ;;
+    update) cmd_update ;;
+    install) cmd_install ;;
+    *) usage ;;
+  esac
+}
+
+main "$@"
