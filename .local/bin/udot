@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# curl -sL https://raw.github.com/maksimr/udot/main/index.sh | bash -s -- use <url>
+# curl -sL https://raw.github.com/maksimr/udot/main/index.sh | bash -s -- install --module-path=~/.local/bin/udot
+# wget -qO- https://raw.github.com/maksimr/udot/main/index.sh | bash -s -- use <url>
+
 set -o pipefail
 shopt -s dotglob nullglob
 
