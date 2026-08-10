@@ -1,4 +1,6 @@
 {
+  "darkMode": false,
+  "ui": "sketch",
   "defaultEdgeStyle": {
     "edgeStyle": "orthogonalEdgeStyle"
   }
