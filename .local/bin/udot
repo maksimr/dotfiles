@@ -289,6 +289,7 @@ cmd_install() {
 usage() {
   local cmd
   cmd=$(basename "${MODULE_PATH:-$0}")
+  case $cmd in bash|sh|zsh|dash|-*) cmd=udot ;; esac
   cat << EOF
 Usage: $cmd <command> [options]
 
