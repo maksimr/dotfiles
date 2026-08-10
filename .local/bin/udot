@@ -281,7 +281,8 @@ cmd_install() {
     return 0
   fi
 
-  mut curl -sL "$url" --output "$module_path"
+  # bypass CDN cache (raw.githubusercontent.com caches ~5 min)
+  mut curl -sL -H 'Cache-Control: no-cache' "$url?$(date +%s)" --output "$module_path"
   mut chmod +x "$module_path"
   echo "$(green '✓') sucessfully installed \"$module_path\" from \"$url\""
 }
