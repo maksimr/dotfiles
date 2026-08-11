@@ -46,10 +46,9 @@ fnm use default
 
 # 3. Dotfiles
 if [[ ! -d "$DOTFILES_DIR/.git" ]]; then
-    printf 'Cloning dotfiles...\n'
-    git clone --depth 1 "$DOTFILES_REPO" "$DOTFILES_DIR"
+    printf 'Installing dotfiles...\n'
+    curl -sL https://raw.githubusercontent.com/maksimr/dotfiles/main/.local/bin/udot | bash -s -- use $DOTFILES_REPO --base-dir="$DOTFILES_DIR" --only=.pi --only=.local/bin
 fi
-bash "$DOTFILES_DIR/bootstrap.sh"
 
 # 4. pi coding agent
 printf 'Installing pi...\n'
