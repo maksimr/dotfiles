@@ -9,8 +9,15 @@ if docker container inspect "$NAME" >/dev/null 2>&1; then
   exec docker start -ai "$NAME"
 fi
 
+# Pre-create the node_modules volume owned by agent (anonymous volumes are root-owned)
+VOL="$NAME-node_modules"
+if ! docker volume inspect "$VOL" >/dev/null 2>&1; then
+  docker volume create "$VOL" >/dev/null
+  docker run --rm -u root --entrypoint chown -v "$VOL:/v" pi agent:agent /v
+fi
+
 exec docker run -it --name "$NAME" \
   -v "$PWD:/workspace" -w /workspace \
   -v "$HOME/.pi/agent/auth.json:/home/agent/.pi/agent/auth.json" \
-  -v /workspace/node_modules \
+  -v "$VOL:/workspace/node_modules" \
   pi "$@"
