@@ -36,7 +36,7 @@ if ! command -v fnm >/dev/null 2>&1 && [[ ! -x "$HOME/.local/share/fnm/fnm" ]]; 
     curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
 fi
 export PATH="$HOME/.local/share/fnm:$PATH"
-eval "$(fnm env)"
+eval "$(fnm env --shell bash)"
 
 # 2. Node.js 24 as default
 printf 'Installing Node.js 24...\n'
@@ -47,7 +47,7 @@ fnm use default
 # 3. Dotfiles
 if [[ ! -d "$DOTFILES_DIR/.git" ]]; then
     printf 'Installing dotfiles...\n'
-    curl -sL https://raw.githubusercontent.com/maksimr/dotfiles/main/.local/bin/udot | bash -s -- use $DOTFILES_REPO --base-dir="$DOTFILES_DIR" --only=.pi --only=.local/bin
+    curl -fsSL https://raw.githubusercontent.com/maksimr/dotfiles/main/.local/bin/udot | bash -s -- use "$DOTFILES_REPO" --base-dir="$DOTFILES_DIR" --only=.pi --only=.local/bin
 fi
 
 # 4. pi coding agent
