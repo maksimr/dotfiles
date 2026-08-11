@@ -301,7 +301,6 @@ export default async function (pi: ExtensionAPI) {
   const probe = (async () => {
     const ver = await pi.exec('headroom', ['--version'], { timeout: PROBE_TIMEOUT_MS });
     if (ver.code !== 0) {
-      console.warn('[headroom] headroom CLI not found in PATH — extension disabled');
       return false;
     }
     debugLog('found', ver.stdout.trim());
