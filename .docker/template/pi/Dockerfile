@@ -4,7 +4,5 @@ USER root
 RUN echo 'unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN OPENAI_API_KEY GEMINI_API_KEY GOOGLE_API_KEY OPENROUTER_API_KEY XAI_API_KEY NEBIUS_API_KEY MISTRAL_API_KEY' >> /etc/sandbox-persistent.sh
 
 USER agent
-RUN uv tool install --python 3.13 "headroom-ai[all]"
-RUN npm install -g --fetch-timeout=600000 @earendil-works/pi-coding-agent
-RUN npm install -g --maxsockets=1 --fetch-timeout=600000 github:maksimr/udot
-RUN udot use https://github.com/maksimr/dotfiles
+RUN curl -sL https://raw.githubusercontent.com/maksimr/dotfiles/main/.local/bin/udot | bash -s -- use https://github.com/maksimr/dotfiles --only .pi --only .local/bin
+RUN ~/.pi/scripts/install_pi.sh
