@@ -14,6 +14,7 @@ EXCLUDES_FILE=''
 BASE_DIR_OPT=''
 HOME_DIR_OPT=''
 EXCLUDES=()
+ONLY=()
 POSITIONAL=()
 
 IGNORE_PATTERNS=()
@@ -57,33 +58,48 @@ links_file() {
   printf '%s' "$state_dir/udot/$id.json"
 }
 
-read_links() {
-  PREV_LINKS=()
-  local file content
+read_json_array() {
+  local key=$1 file content
   file=$(links_file)
   [[ -f $file ]] || return 0
   content=$(cat "$file" 2> /dev/null) || return 0
-  content=${content#*\[}
+  [[ $content == *"\"$key\":["* ]] || return 0
+  content=${content#*\"$key\":\[}
   content=${content%%\]*}
   [[ -z $content ]] && return 0
   content=${content#\"}
   content=${content%\"}
-  local IFS=$'\n'
+  printf '%s\n' "${content//\",\"/$'\n'}"
+}
+
+read_links() {
+  PREV_LINKS=()
   local line
   while IFS= read -r line; do
     [[ -n $line ]] && PREV_LINKS+=("$line")
-  done <<< "${content//\",\"/$'\n'}"
+  done < <(read_json_array links)
+}
+
+read_only() {
+  local line
+  while IFS= read -r line; do
+    [[ -n $line ]] && ONLY+=("$line")
+  done < <(read_json_array only)
 }
 
 write_links() {
-  local file out='' l
+  local file out='' only_out='' l
   file=$(links_file)
   mut mkdir -p "$(dirname "$file")"
   while IFS= read -r l; do
     [[ -n $l ]] && out+="\"$l\","
   done < <(printf '%s\n' "${LINKS[@]:-}" | sort)
   out=${out%,}
-  is_dry_run || printf '{"links":[%s]}' "$out" > "$file"
+  for l in "${ONLY[@]:-}"; do
+    [[ -n $l ]] && only_out+="\"$l\","
+  done
+  only_out=${only_out%,}
+  is_dry_run || printf '{"links":[%s],"only":[%s]}' "$out" "$only_out" > "$file"
 }
 
 load_ignore_patterns() {
@@ -128,10 +144,30 @@ in_links() {
   return 1
 }
 
+only_match() {
+  local rel=$1 o
+  [[ ${#ONLY[@]} -eq 0 ]] && return 0
+  for o in "${ONLY[@]}"; do
+    [[ $rel == "$o" || $rel == "$o"/* ]] && return 0
+  done
+  return 1
+}
+
+# Directory matches also when it is an ancestor of an only entry
+only_match_dir() {
+  local rel=$1 o
+  [[ ${#ONLY[@]} -eq 0 ]] && return 0
+  for o in "${ONLY[@]}"; do
+    [[ $rel == "$o" || $rel == "$o"/* || $o == "$rel"/* ]] && return 0
+  done
+  return 1
+}
+
 cmd_apply() {
   [[ -e $HOME_DIR ]] || mut mkdir "$HOME_DIR"
   load_ignore_patterns
   read_links
+  [[ ${#ONLY[@]} -eq 0 ]] && read_only
   LINKS=()
   apply_dir "$BASE_DIR"
   remove_broken_links
@@ -139,15 +175,18 @@ cmd_apply() {
 }
 
 apply_dir() {
-  local dir=$1 source name target
+  local dir=$1 source name target rel
   for source in "$dir"/*; do
     name=$(basename "$source")
     is_ignored "$name" && continue
-    target="$HOME_DIR/${source#"$BASE_DIR"/}"
+    rel=${source#"$BASE_DIR"/}
+    target="$HOME_DIR/$rel"
     if [[ -d $source && ! -L $source ]]; then
+      only_match_dir "$rel" || continue
       [[ -e $target ]] || mut mkdir "$target"
       apply_dir "$source"
     elif [[ -f $source ]]; then
+      only_match "$rel" || continue
       LINKS+=("${target#"$HOME_DIR"/}")
       if [[ -n $FORCE || ! -e $target ]]; then
         [[ -n $FORCE && -e $target ]] && mut rm "$target"
@@ -299,7 +338,7 @@ Usage: $cmd <command> [options]
   $cmd restore        --base-dir=<path> --home-dir=<path>
   $cmd restore <path> --base-dir=<path> --home-dir=<path>
   $cmd update         --base-dir=<path> --home-dir=<path>
-  $cmd use <url>      --base-dir=<path> --home-dir=<path> [--exclude=<path1> --exclude=<path2>]
+  $cmd use <url>      --base-dir=<path> --home-dir=<path> [--exclude=<path1>] [--only=<path1> --only=<path2>]
   $cmd install        --module-path=<path> --module-url=<url>
 
 Commands
@@ -318,6 +357,7 @@ Options
   --dry-run        Don't make real modification, just print what will be done
   --exclude        Exclude files or directories from processing
   --excludes-file  Path to file with exclude patterns. By default "$DEFAULT_EXCLUDES_FILE"
+  --only           Process only matched files or directories. Remembered for future "update"/"apply" runs
   --force          Force to overwrite existing files
 
 $BASH $BASH_VERSION $OSTYPE $SHELL
@@ -325,9 +365,17 @@ EOF
 }
 
 main() {
-  local arg
+  local arg expect_only=''
   for arg in "$@"; do
+    if [[ -n $expect_only ]]; then
+      expect_only=''
+      arg=${arg%/}
+      ONLY+=("${arg#./}")
+      continue
+    fi
     case $arg in
+      --only) expect_only=1 ;;
+      --only=*) arg=${arg#*=}; arg=${arg%/}; ONLY+=("${arg#./}") ;;
       --base-dir=*) BASE_DIR_OPT=${arg#*=} ;;
       --home-dir=*) HOME_DIR_OPT=${arg#*=} ;;
       --exclude=*) EXCLUDES+=("${arg#*=}") ;;
