@@ -6,7 +6,7 @@ DOCKER_TEMPLATE_DIR="$(dirname "$CURRENT_FILE_PATH")"
 TEMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/pi-docker-build.XXXXXX")"
 TEMPLATE_TAR_PATH="$TEMP_DIR/${TEMPLATE_NAME}.tar"
 
-docker build -t ${TEMPLATE_NAME} "$DOCKER_TEMPLATE_DIR"
+docker build -t ${TEMPLATE_NAME} "$DOCKER_TEMPLATE_DIR" --no-cache
 
 if [[ -x "$(command -v sbx)" ]]; then
     docker image save ${TEMPLATE_NAME} -o "$TEMPLATE_TAR_PATH"
