@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Run the `pi` docker image (see .docker/template/pi/build_sandbox_template.sh)
+# with the current directory mounted. Reuses the container if it already exists.
+set -e
+
+NAME="pbx-$(basename "$PWD")-$(echo -n "$PWD" | cksum | cut -d' ' -f1)"
+
+if docker container inspect "$NAME" >/dev/null 2>&1; then
+  exec docker start -ai "$NAME"
+fi
+
+exec docker run -it --name "$NAME" \
+  -v "$PWD:/workspace" -w /workspace \
+  -v "$HOME/.pi/agent/auth.json:/home/agent/.pi/agent/auth.json" \
+  -v /workspace/node_modules \
+  pi "$@"
