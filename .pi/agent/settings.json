@@ -19,7 +19,8 @@
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-web-access",
-    "npm:@gotgenes/pi-permission-system"
+    "npm:@gotgenes/pi-permission-system",
+    "git:github.com/DietrichGebert/ponytail"
   ],
   "tuiMode": "fullscreen"
 }
