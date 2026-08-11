@@ -365,16 +365,14 @@ EOF
 }
 
 main() {
-  local arg expect_only=''
+  local arg expect=''
   for arg in "$@"; do
-    if [[ -n $expect_only ]]; then
-      expect_only=''
-      arg=${arg%/}
-      ONLY+=("${arg#./}")
-      continue
+    if [[ -n $expect ]]; then
+      arg="$expect=$arg"
+      expect=''
     fi
     case $arg in
-      --only) expect_only=1 ;;
+      --only | --base-dir | --home-dir | --exclude | --excludes-file | --module-path | --module-url) expect=$arg ;;
       --only=*) arg=${arg#*=}; arg=${arg%/}; ONLY+=("${arg#./}") ;;
       --base-dir=*) BASE_DIR_OPT=${arg#*=} ;;
       --home-dir=*) HOME_DIR_OPT=${arg#*=} ;;
