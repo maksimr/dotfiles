@@ -18,7 +18,10 @@ fi
 SHADOW_DIRS=(node_modules)
 VOL_ARGS=()
 while IFS= read -r dir; do
-  VOL="$NAME-nm-$(echo -n "$dir" | cksum | cut -d' ' -f1)"
+  SLUG=$(basename "$dir")
+  SLUG=${SLUG//[^[:alnum:]_.-]/-}
+  HASH=$(echo -n "$dir" | cksum | cut -d' ' -f1)
+  VOL="$NAME-$SLUG-$HASH"
   if ! docker volume inspect "$VOL" >/dev/null 2>&1; then
     docker volume create "$VOL" >/dev/null
     docker run --rm -u root --entrypoint chown -v "$VOL:/v" pi agent:agent /v
