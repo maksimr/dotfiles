@@ -9,8 +9,9 @@ if docker container inspect "$NAME" >/dev/null 2>&1; then
   exec docker start -ai "$NAME"
 fi
 
-# Shadow every node_modules in the workspace with a volume owned by agent
+# Shadow these folders in the workspace with volumes owned by agent
 # (anonymous volumes are root-owned)
+SHADOW_DIRS=(node_modules)
 VOL_ARGS=()
 while IFS= read -r dir; do
   VOL="$NAME-nm-$(echo -n "$dir" | cksum | cut -d' ' -f1)"
@@ -19,7 +20,7 @@ while IFS= read -r dir; do
     docker run --rm -u root --entrypoint chown -v "$VOL:/v" pi agent:agent /v
   fi
   VOL_ARGS+=(-v "$VOL:/workspace${dir#.}")
-done < <(find . -name node_modules -type d -prune)
+done < <(find . \( $(printf -- '-name %s -o ' "${SHADOW_DIRS[@]}" | sed 's/ -o $//') \) -type d -prune)
 
 exec docker run -it --name "$NAME" \
   -v "$PWD:/workspace" -w /workspace \
