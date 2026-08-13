@@ -9,7 +9,6 @@
   {
     "bindings": {
       "cmd-shift-c": "agent::ToggleFocus",
-      "alt-]": "copilot::NextSuggestion",
       "cmd-i": "assistant::InlineAssist"
       // "shift shift": "file_finder::Toggle"
     }
