@@ -287,7 +287,9 @@ cmd_update() {
 }
 
 git_push() {
-  local output err
+  local output err ident=()
+  git -C "$BASE_DIR" config user.email >/dev/null 2>&1 ||
+    ident=(-c "user.name=${GIT_AUTHOR_NAME:-udot}" -c "user.email=${GIT_AUTHOR_EMAIL:-udot@localhost}")
   if ! output=$(git -C "$BASE_DIR" status --porcelain 2>&1); then
     echo "$(yellow "$output")" >&2
     return 0
@@ -295,7 +297,7 @@ git_push() {
   [[ -z $output ]] && return 0
 
   if ! err=$( (mut git -C "$BASE_DIR" add -A &&
-    mut git -C "$BASE_DIR" commit -m "$output" &&
+    mut git -C "$BASE_DIR" "${ident[@]}" commit -m "$output" &&
     GIT_TERMINAL_PROMPT=0 GIT_ASKPASS='' SSH_ASKPASS='' GIT_SSH_COMMAND='ssh -o BatchMode=yes' \
       mut git -C "$BASE_DIR" push --set-upstream origin main --progress) 2>&1); then
     echo "$(yellow "$err")" >&2
