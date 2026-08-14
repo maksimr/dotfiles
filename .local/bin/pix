@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Run the `pi` docker image (see .docker/template/pi/build_sandbox_template.sh)
-# with the current directory mounted. Reuses the container if it already exists.
+# with the current directory mounted. Reuses the container if it already exists,
+# starting a fresh pi session in it rather than attaching to the running one.
 #
 # Remove all containers/volumes created by this script:
 #   docker rm -f $(docker ps -aq --filter name='^pi-') 2>/dev/null
@@ -10,7 +11,8 @@ set -e
 NAME="pi-$(basename "$PWD")-$(echo -n "$PWD" | cksum | cut -d' ' -f1)"
 
 if docker container inspect "$NAME" >/dev/null 2>&1; then
-  exec docker start -ai "$NAME"
+  docker start "$NAME" >/dev/null
+  exec docker exec -it -w /workspace "$NAME" pi "$@"
 fi
 
 # Shadow these folders in the workspace with volumes owned by agent
