@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.84.1",
+  "lastChangelogVersion": "0.84.2",
   "theme": "dark",
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-5",
@@ -20,7 +20,10 @@
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-web-access",
     "npm:@gotgenes/pi-permission-system",
-    { "source": "git:github.com/DietrichGebert/ponytail", "skills": [] },
+    {
+      "source": "git:github.com/DietrichGebert/ponytail",
+      "skills": []
+    },
     "npm:@ff-labs/pi-fff"
   ],
   "tuiMode": "fullscreen"

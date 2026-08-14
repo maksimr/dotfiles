@@ -6,7 +6,6 @@
 
 export USE_PATCHED_FONT="false"
 export EDITOR=vim
-export PI_FFF_MODE=override
 
 #Unfortunately, zsh's default history file size is limited to 10000 lines by default and will truncate the history to this length by deduplicating entries and removing old data.
 #Adding the following lines to .zshrc will remove the limits and deduplication of the history file.
