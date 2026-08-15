@@ -6,6 +6,25 @@
 # Remove all containers/volumes created by this script:
 #   docker rm -f $(docker ps -aq --filter name='^pi-') 2>/dev/null
 #   docker volume rm $(docker volume ls -q --filter name='^pi-') 2>/dev/null
+#
+# --- Editing the sandbox from VS Code / Zed -----------------------------------
+# Container name is printed by: docker ps --filter name='^pi-'
+#
+# VS Code (simplest, no setup): Dev Containers extension ->
+#   "Dev Containers: Attach to Running Container..." -> pick pi-<dir>-<hash>.
+#
+# Zed (needs SSH): add once to ~/.ssh/config --
+#   Host pi-*
+#     User agent
+#     ProxyCommand docker exec -i -u root %h sshd-stdio
+#     StrictHostKeyChecking no
+#     UserKnownHostsFile /dev/null
+# then `zed ssh://pi-<dir>-<hash>/workspace`, or Zed -> "Project: Open Remote"
+# -> add host `pi-<dir>-<hash>` -> open /workspace.
+# Same config makes plain `ssh pi-<dir>-<hash>` and VS Code Remote-SSH work.
+#
+# sshd runs over `docker exec` stdio, so no port is published and no SSH key is
+# needed -- entry is already gated by docker socket access.
 set -e
 
 NAME="pi-$(basename "$PWD")-$(echo -n "$PWD" | cksum | cut -d' ' -f1)"
