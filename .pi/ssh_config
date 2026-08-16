@@ -1,0 +1,5 @@
+Host pi-*
+  User agent
+  ProxyCommand docker exec -i -u root %h sshd-stdio
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
