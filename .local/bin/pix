@@ -11,7 +11,7 @@
 # Container name is printed by: docker ps --filter name='^pi-'
 #
 # VS Code (simplest, no setup): Dev Containers extension ->
-#   "Dev Containers: Attach to Running Container..." -> pick pi-<dir>-<hash>.
+#   "Dev Containers: Attach to Running Container..." -> pick pi-<dir>.
 #
 # Zed (needs SSH): add once to ~/.ssh/config --
 #   Host pi-*
@@ -19,15 +19,15 @@
 #     ProxyCommand docker exec -i -u root %h sshd-stdio
 #     StrictHostKeyChecking no
 #     UserKnownHostsFile /dev/null
-# then `zed ssh://pi-<dir>-<hash>/workspace`, or Zed -> "Project: Open Remote"
-# -> add host `pi-<dir>-<hash>` -> open /workspace.
-# Same config makes plain `ssh pi-<dir>-<hash>` and VS Code Remote-SSH work.
+# then `zed ssh://pi-<dir>/workspace`, or Zed -> "Project: Open Remote"
+# -> add host `pi-<dir>` -> open /workspace.
+# Same config makes plain `ssh pi-<dir>` and VS Code Remote-SSH work.
 #
 # sshd runs over `docker exec` stdio, so no port is published and no SSH key is
 # needed -- entry is already gated by docker socket access.
 set -e
 
-NAME="pi-$(basename "$PWD")-$(echo -n "$PWD" | cksum | cut -d' ' -f1)"
+NAME="pi-$(basename "$PWD")"
 
 if docker container inspect "$NAME" >/dev/null 2>&1; then
   docker start "$NAME" >/dev/null
