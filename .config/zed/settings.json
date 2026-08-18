@@ -518,16 +518,19 @@
   },
   "languages": {
     "JavaScript": {
+      "language_servers": ["!vtsls", "!typescript-language-server", "..."],
       "code_actions_on_format": {
         "source.fixAll.eslint": true
       }
     },
     "TypeScript": {
+      "language_servers": ["!vtsls", "!typescript-language-server", "..."],
       "code_actions_on_format": {
         "source.fixAll.eslint": true
       }
     },
     "TSX": {
+      "language_servers": ["!vtsls", "!typescript-language-server", "..."],
       "code_actions_on_format": {
         "source.fixAll.eslint": true
       }
