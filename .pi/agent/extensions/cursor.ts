@@ -9,7 +9,8 @@
 
 import type { ExtensionAPI } from '@earendil-works/pi-coding-agent';
 import { CustomEditor } from '@earendil-works/pi-coding-agent';
-import { execFile } from 'node:child_process';
+import { execFile, execFileSync } from 'node:child_process';
+import { fstatSync, statSync } from 'node:fs';
 
 // The editor draws the cursor as reverse-video: "\x1b[7m<grapheme>\x1b[0m".
 // Stripping that wrapping hides the cursor while keeping the character.
@@ -49,12 +50,36 @@ function setTerminalFocused(focused: boolean): void {
 const TMUX_PANE = process.env.TMUX_PANE;
 const TMUX_POLL_INTERVAL_MS = 300;
 
+// TMUX_PANE is inherited by everything the pane spawns, including editors
+// (`zed .`): their built-in terminals then claim to live in a pane they are
+// not in, and polling that pane reports "unfocused" forever. Trust the
+// variable only when our own terminal is that pane's tty (same device).
+let inTmuxPaneCache: boolean | undefined;
+function inTmuxPane(): boolean {
+  if (inTmuxPaneCache !== undefined) return inTmuxPaneCache;
+  inTmuxPaneCache = false;
+  if (TMUX_PANE) {
+    try {
+      const paneTty = execFileSync(
+        'tmux',
+        ['display-message', '-p', '-t', TMUX_PANE, '#{pane_tty}'],
+        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }
+      ).trim();
+      inTmuxPaneCache = statSync(paneTty).rdev === fstatSync(process.stdout.fd).rdev;
+    } catch {
+      // no tmux binary, dead pane, or stdout is not a tty
+    }
+  }
+  return inTmuxPaneCache;
+}
+
 function startTmuxFocusPolling(): void {
-  if (!TMUX_PANE || state.tmuxPollTimer) return;
+  if (!inTmuxPane() || state.tmuxPollTimer) return;
+  const pane = TMUX_PANE as string;
   state.tmuxPollTimer = setInterval(() => {
     execFile(
       'tmux',
-      ['display-message', '-p', '-t', TMUX_PANE, '#{&&:#{pane_active},#{window_active}}'],
+      ['display-message', '-p', '-t', pane, '#{&&:#{pane_active},#{window_active}}'],
       (err, stdout) => {
         if (err) return;
         setTerminalFocused(stdout.trim() === '1');
