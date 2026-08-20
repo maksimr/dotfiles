@@ -12,8 +12,8 @@
   "enabledModels": ["claude-fable-5", "claude-opus-5", "gpt-5.6-sol", "grok-4.6", "k3"],
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
-    "npm:pi-web-access",
     "npm:@gotgenes/pi-permission-system",
+    "npm:pi-web-access",
     "npm:@ff-labs/pi-fff",
     { "source": "git:github.com/DietrichGebert/ponytail", "skills": [] },
     { "source": "npm:modern-web-guidance", "skills": ["modern-web-guidance"] },
