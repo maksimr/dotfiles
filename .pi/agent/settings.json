@@ -9,27 +9,15 @@
   "warnings": {
     "anthropicExtraUsage": false
   },
-  "enabledModels": [
-    "claude-fable-5",
-    "claude-opus-5",
-    "gpt-5.6-sol",
-    "grok-4.6",
-    "k3"
-  ],
+  "enabledModels": ["claude-fable-5", "claude-opus-5", "gpt-5.6-sol", "grok-4.6", "k3"],
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-web-access",
     "npm:@gotgenes/pi-permission-system",
     "npm:@ff-labs/pi-fff",
-    "git:github.com/GoogleChrome/modern-web-guidance",
-    {
-      "source": "git:github.com/DietrichGebert/ponytail",
-      "skills": []
-    },
-    {
-      "source": "npm:chrome-devtools-mcp",
-      "skills": ["chrome-devtools-cli"]
-    }
+    { "source": "git:github.com/DietrichGebert/ponytail", "skills": [] },
+    { "source": "npm:modern-web-guidance", "skills": ["modern-web-guidance"] },
+    { "source": "npm:chrome-devtools-mcp", "skills": ["chrome-devtools-cli"] }
   ],
   "tuiMode": "fullscreen"
 }
