@@ -20,12 +20,16 @@
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-web-access",
     "npm:@gotgenes/pi-permission-system",
+    "npm:@ff-labs/pi-fff",
+    "git:github.com/GoogleChrome/modern-web-guidance",
     {
       "source": "git:github.com/DietrichGebert/ponytail",
       "skills": []
     },
-    "npm:@ff-labs/pi-fff",
-    "git:github.com/GoogleChrome/modern-web-guidance"
+    {
+      "source": "npm:chrome-devtools-mcp",
+      "skills": ["chrome-devtools-cli"]
+    }
   ],
   "tuiMode": "fullscreen"
 }

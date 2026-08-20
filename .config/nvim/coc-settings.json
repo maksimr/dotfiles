@@ -14,5 +14,9 @@
         "cljfmt-config-path": ".cljfmt.clj"
       }
     }
+  },
+  "json.schemaDownload.trustedDomains": {
+    "https://www.schemastore.org": true,
+    "https://json.schemastore.org": true
   }
 }
