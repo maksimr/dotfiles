@@ -401,7 +401,7 @@ main() {
   # symlinks are resolved relative to their own directory, so keep paths absolute
   BASE_DIR=$(tilde_expansion "$BASE_DIR")
   HOME_DIR=$(tilde_expansion "$HOME_DIR")
-  DEFAULT_EXCLUDES_FILE="$BASE_DIR/.ignore"
+  DEFAULT_EXCLUDES_FILE="$BASE_DIR/.dotignore"
   EXCLUDES_FILE=${EXCLUDES_FILE:-$DEFAULT_EXCLUDES_FILE}
 
   case $command in
