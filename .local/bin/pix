@@ -4,8 +4,7 @@
 # starting a fresh pi session in it rather than attaching to the running one.
 #
 # Remove all containers/volumes created by this script:
-#   docker rm -f $(docker ps -aq --filter name='^pi-') 2>/dev/null
-#   docker volume rm $(docker volume ls -q --filter name='^pi-') 2>/dev/null
+#   docker rm -fv $(docker ps -aq --filter name='^pi-') 2>/dev/null
 #
 # --- Editing the sandbox from VS Code / Zed -----------------------------------
 # Container name is printed by: docker ps --filter name='^pi-'
@@ -34,24 +33,24 @@ if docker container inspect "$NAME" >/dev/null 2>&1; then
   exec docker exec -it -w /workspace "$NAME" pi "$@"
 fi
 
-# Shadow these folders in the workspace with volumes owned by agent
-# (anonymous volumes are root-owned)
+# Shadow these folders in the workspace with anonymous volumes
+# (fresh volumes are root-owned, so chown them after create)
 SHADOW_DIRS=(node_modules)
 VOL_ARGS=()
+CHOWN_DIRS=()
 while IFS= read -r dir; do
-  SLUG=$(basename "$dir")
-  SLUG=${SLUG//[^[:alnum:]_.-]/-}
-  HASH=$(echo -n "$dir" | cksum | cut -d' ' -f1)
-  VOL="$NAME-$SLUG-$HASH"
-  if ! docker volume inspect "$VOL" >/dev/null 2>&1; then
-    docker volume create "$VOL" >/dev/null
-    docker run --rm -u root --entrypoint chown -v "$VOL:/v" pi agent:agent /v
-  fi
-  VOL_ARGS+=(-v "$VOL:/workspace${dir#.}")
+  VOL_ARGS+=(-v "/workspace${dir#.}")
+  CHOWN_DIRS+=("/workspace${dir#.}")
 done < <(find . \( $(printf -- '-name %s -o ' "${SHADOW_DIRS[@]}" | sed 's/ -o $//') \) -type d -prune)
 
-exec docker run -it --name "$NAME" \
+docker create -it --name "$NAME" \
   -v "$PWD:/workspace" -w /workspace \
   -v "$HOME/.pi/agent/auth.json:/home/agent/.pi/agent/auth.json" \
   "${VOL_ARGS[@]}" \
-  pi "$@"
+  pi "$@" >/dev/null
+
+if [ ${#CHOWN_DIRS[@]} -gt 0 ]; then
+  docker run --rm -u root --volumes-from "$NAME" --entrypoint chown pi agent:agent "${CHOWN_DIRS[@]}"
+fi
+
+exec docker start -ai "$NAME"
