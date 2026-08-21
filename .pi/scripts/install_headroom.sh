@@ -161,12 +161,12 @@ if python_ok "$VENV_DIR/bin/python"; then
     printf 'Reusing Headroom virtual environment: %s\n' "$VENV_DIR"
 elif [[ -n "$SYSTEM_PYTHON" ]]; then
     rm -rf "$VENV_DIR"
-    uv venv --python "$SYSTEM_PYTHON" --no-python-downloads "$VENV_DIR"
+    uv venv --seed --python "$SYSTEM_PYTHON" --no-python-downloads "$VENV_DIR"
 else
     # --no-bin prevents uv from creating Python links in ~/.local/bin.
     uv python install 3.13 --no-bin
     rm -rf "$VENV_DIR"
-    uv venv --python 3.13 --managed-python --no-python-downloads "$VENV_DIR"
+    uv venv --seed --python 3.13 --managed-python --no-python-downloads "$VENV_DIR"
 fi
 
 printf 'Installing %s...\n' "$HEADROOM_PACKAGE"
