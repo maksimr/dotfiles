@@ -1,0 +1,1288 @@
+#!/usr/bin/env bash
+
+VERSION="1.10.1"
+SCRIPT_WARNING="# if you can read this, you didn't launch try from an alias. run try --help."
+ORIGINAL_PWD=$PWD
+
+# CLI options
+TRIES_PATH_OPT=""
+AND_TYPE=""
+AND_KEYS_RAW=""
+AND_CONFIRM=""
+AND_EXIT=0
+COLORS=1
+SHOW_HELP=0
+SHOW_VERSION=0
+ARGS=()
+
+if [[ -n ${NO_COLOR:-} || -n ${NO_COLORS:-} ]]; then
+  COLORS=0
+fi
+
+while (($#)); do
+  case $1 in
+    --help|-h) SHOW_HELP=1; shift ;;
+    --version|-v) SHOW_VERSION=1; shift ;;
+    --no-colors|--no-expand-tokens) COLORS=0; shift ;;
+    --and-exit) AND_EXIT=1; shift ;;
+    --path=*) TRIES_PATH_OPT=${1#*=}; shift ;;
+    --path)
+      if (($# < 2)); then printf 'Error: --path requires a value\n' >&2; exit 1; fi
+      TRIES_PATH_OPT=$2; shift 2
+      ;;
+    --and-type=*) AND_TYPE=${1#*=}; shift ;;
+    --and-type)
+      if (($# < 2)); then printf 'Error: --and-type requires a value\n' >&2; exit 1; fi
+      AND_TYPE=$2; shift 2
+      ;;
+    --and-keys=*) AND_KEYS_RAW=${1#*=}; shift ;;
+    --and-keys)
+      if (($# < 2)); then printf 'Error: --and-keys requires a value\n' >&2; exit 1; fi
+      AND_KEYS_RAW=$2; shift 2
+      ;;
+    --and-confirm=*) AND_CONFIRM=${1#*=}; shift ;;
+    --and-confirm)
+      if (($# < 2)); then printf 'Error: --and-confirm requires a value\n' >&2; exit 1; fi
+      AND_CONFIRM=$2; shift 2
+      ;;
+    --) shift; while (($#)); do ARGS[${#ARGS[@]}]=$1; shift; done ;;
+    *) ARGS[${#ARGS[@]}]=$1; shift ;;
+  esac
+done
+
+print_help() {
+  cat >&2 <<EOF
+try v${VERSION} - ephemeral workspace manager
+
+To use try, add to your shell config:
+
+  # bash/zsh (~/.bashrc or ~/.zshrc)
+  eval "\$(try init ~/src/tries)"
+
+  # fish (~/.config/fish/config.fish)
+  eval (try init ~/src/tries | string collect)
+
+Usage:
+  try [query]           Interactive directory selector
+  try clone <url>       Clone repo into dated directory
+  try worktree <name>   Create worktree from current git repo
+  try --help            Show this help
+
+Commands:
+  init [path]           Output shell function definition
+  install               Add shell integration to your shell config
+  clone <url> [name]    Clone git repo into date-prefixed directory
+  worktree <name>       Create worktree in dated directory
+
+Examples:
+  try                   Open interactive selector
+  try project           Selector with initial filter
+  try clone https://github.com/user/repo
+  try https://github.com/user/repo/pull/123
+  try worktree feature-branch
+
+Manual mode (without shell integration):
+  try exec [query]      Output shell script to eval
+
+Environment:
+  TRY_PATH          Tries directory (default: ~/src/tries)
+  TRY_PROJECTS      Graduate destination (default: parent of TRY_PATH)
+
+Keyboard:
+  ↑/↓, Ctrl-P/N     Navigate
+  Enter              Select / Create new
+  Ctrl-R             Rename
+  Ctrl-G             Graduate (promote try to project)
+  Ctrl-D             Mark for deletion
+  Ctrl-T             Create new try
+  Esc                Cancel
+EOF
+}
+
+if ((SHOW_HELP)); then print_help; exit 0; fi
+if ((SHOW_VERSION)); then printf 'try %s\n' "$VERSION" >&2; exit 0; fi
+
+q() {
+  local value=$1
+  value=${value//\'/\'"\'"\'}
+  printf "'%s'" "$value"
+}
+
+ps_q() {
+  local value=$1
+  value=${value//\'/\'\'}
+  printf "'%s'" "$value"
+}
+
+trim() {
+  local value=$1
+  value="${value#"${value%%[![:space:]]*}"}"
+  value="${value%"${value##*[![:space:]]}"}"
+  printf '%s' "$value"
+}
+
+absolute_path() {
+  local path=$1 parent base
+  case $path in
+    '~') path=${HOME:-/} ;;
+    '~/'*) path=${HOME:-}${path:1} ;;
+    /*) ;;
+    *) path=$PWD/$path ;;
+  esac
+
+  if [[ -d $path ]]; then
+    (cd -- "$path" 2>/dev/null && pwd -P) || printf '%s' "$path"
+    return
+  fi
+
+  parent=${path%/*}
+  base=${path##*/}
+  if [[ -d $parent ]]; then
+    parent=$(cd -- "$parent" 2>/dev/null && pwd -P) || parent=${path%/*}
+    printf '%s/%s' "${parent%/}" "$base"
+  else
+    printf '%s' "$path"
+  fi
+}
+
+physical_dir() {
+  (cd -P -- "$1" 2>/dev/null && pwd -P)
+}
+
+self_path() {
+  local source=${TRY_EXECUTABLE:-${BASH_SOURCE[0]}} dir
+  case $source in
+    /*) ;;
+    *) source=$PWD/$source ;;
+  esac
+  dir=${source%/*}
+  printf '%s/%s' "$(cd -P -- "$dir" && pwd -P)" "${source##*/}"
+}
+
+normalize_spaces() {
+  local value
+  value=$(trim "$1")
+  printf '%s' "$value" | tr -s '[:space:]' '-'
+}
+
+valid_name() {
+  [[ -n $1 && $1 != . && $1 != .. && $1 != */* ]]
+}
+
+DEFAULT_TRIES=${TRY_PATH:-${HOME:-}/src/tries}
+TRIES_PATH=${TRIES_PATH_OPT:-$DEFAULT_TRIES}
+TRIES_PATH=$(absolute_path "$TRIES_PATH")
+SELF=$(self_path)
+
+# Styling stays local to the one runtime file.
+RESET=$'\e[0m'
+RESET_FG=$'\e[39m'
+RESET_INTENSITY=$'\e[22m'
+CLEAR_EOL=$'\e[K'
+if ((COLORS)); then
+  ACCENT=$'\e[1m\e[38;5;214m'
+  HIGHLIGHT=$'\e[1;33m'
+  MUTED=$'\e[38;5;245m'
+  SELECTED_BG=$'\e[48;5;238m'
+  SELECTED_FG=$'\e[38;5;255m'
+  DANGER_BG=$'\e[48;5;52m'
+  REVERSE_ON=$'\e[7m'
+  REVERSE_OFF=$'\e[27m'
+else
+  ACCENT="" HIGHLIGHT="" MUTED="" SELECTED_BG="" SELECTED_FG=""
+  DANGER_BG="" REVERSE_ON="" REVERSE_OFF=""
+fi
+
+CMDS=()
+add_cmd() { CMDS[${#CMDS[@]}]=$1; }
+
+emit_script() {
+  local i
+  printf '%s\n' "$SCRIPT_WARNING"
+  for ((i=0; i<${#CMDS[@]}; i++)); do
+    if ((i)); then printf '  '; fi
+    printf '%s' "${CMDS[i]}"
+    if ((i < ${#CMDS[@]} - 1)); then
+      printf ' && \\\n'
+    else
+      printf '\n'
+    fi
+  done
+}
+
+terminal_rename_commands() {
+  local path=$1 name label
+  name=${path##*/}
+  if [[ $name =~ ^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-(.*)$ ]]; then
+    name=${BASH_REMATCH[1]}
+  fi
+  label="try: $name"
+
+  if [[ ${HERDR_ENV:-} == 1 && -n ${HERDR_PANE_ID:-} ]]; then
+    add_cmd "command -v herdr >/dev/null 2>&1 && herdr pane report-metadata $(q "$HERDR_PANE_ID") --source try --title $(q "$label") >/dev/null 2>&1 || true"
+    if [[ $HERDR_PANE_ID == *:p1 && -n ${HERDR_WORKSPACE_ID:-} ]]; then
+      add_cmd "command -v herdr >/dev/null 2>&1 && herdr workspace rename $(q "$HERDR_WORKSPACE_ID") $(q "$label") >/dev/null 2>&1 || true"
+    fi
+  elif [[ -n ${CMUX_SOCKET_PATH:-} || -n ${CMUX_BUNDLE_ID:-} ]]; then
+    add_cmd "command -v cmux >/dev/null 2>&1 && cmux rename-tab $(q "$label") >/dev/null 2>&1 || true"
+  fi
+}
+
+script_cd() {
+  local path=$1
+  add_cmd "touch $(q "$path")"
+  add_cmd "echo $(q "$path")"
+  add_cmd "cd $(q "$path")"
+  terminal_rename_commands "$path"
+}
+
+script_mkdir_cd() {
+  add_cmd "mkdir -p $(q "$1")"
+  script_cd "$1"
+}
+
+script_clone() {
+  local path=$1 uri=$2
+  add_cmd "mkdir -p $(q "$path")"
+  add_cmd "echo $(q "Using git clone to create this trial from $uri.")"
+  add_cmd "git clone $(q "$uri") $(q "$path")"
+  script_cd "$path"
+}
+
+script_clone_pr() {
+  local path=$1 uri=$2 pr_id=$3
+  add_cmd "mkdir -p $(q "$path")"
+  add_cmd "echo $(q "Using git clone to create this trial from $uri PR #$pr_id.")"
+  add_cmd "git clone $(q "$uri") $(q "$path")"
+  add_cmd "git -C $(q "$path") fetch origin $(q "pull/$pr_id/head")"
+  add_cmd "git -C $(q "$path") checkout --detach FETCH_HEAD"
+  script_cd "$path"
+}
+
+script_worktree() {
+  local path=$1 repo=${2:-$PWD} shell_cmd
+  add_cmd "mkdir -p $(q "$path")"
+  add_cmd "echo $(q "Using git worktree to create this trial from $repo.")"
+  shell_cmd='repo=$1; target=$2; if git -C "$repo" rev-parse --is-inside-work-tree >/dev/null 2>&1; then top=$(git -C "$repo" rev-parse --show-toplevel); git -C "$top" worktree add --detach "$target" >/dev/null 2>&1 || true; fi; exit 0'
+  add_cmd "/usr/bin/env sh -c $(q "$shell_cmd") sh $(q "$repo") $(q "$path")"
+  script_cd "$path"
+}
+
+script_rename() {
+  local base=$1 old=$2 new=$3 new_path=$1/$3
+  add_cmd "cd $(q "$base")"
+  add_cmd "mv $(q "$old") $(q "$new")"
+  add_cmd "echo $(q "$new_path")"
+  add_cmd "cd $(q "$new_path")"
+  terminal_rename_commands "$new_path"
+}
+
+script_ascend() {
+  local source=$1 dest=$2 basename=$3 base=$4
+  if [[ -f $source/.git ]]; then
+    add_cmd "git worktree move $(q "$source") $(q "$dest")"
+  else
+    add_cmd "mv $(q "$source") $(q "$dest")"
+  fi
+  add_cmd "ln -s $(q "$dest") $(q "$base/$basename")"
+  add_cmd "echo $(q "Graduated: $basename → $dest")"
+  script_cd "$dest"
+}
+
+unique_worktree_base() {
+  local root=$1 date_prefix=$2 base=$3 candidate n stem
+  if [[ ! -d $root/$date_prefix-$base ]]; then
+    printf '%s' "$base"
+    return
+  fi
+
+  if [[ $base =~ ^(.*[^0-9])?([0-9]+)$ ]]; then
+    stem=${BASH_REMATCH[1]}
+    n=$((10#${BASH_REMATCH[2]} + 1))
+    while [[ -d $root/$date_prefix-$stem$n ]]; do ((n++)); done
+    printf '%s%s' "$stem" "$n"
+  else
+    n=2
+    candidate=$base-$n
+    while [[ -d $root/$date_prefix-$candidate ]]; do ((n++)); candidate=$base-$n; done
+    printf '%s' "$candidate"
+  fi
+}
+
+parse_git_uri() {
+  local uri=${1%.git} host user path repo
+  PARSED_USER="" PARSED_REPO=""
+  if [[ $uri =~ ^https?://github\.com/([^/]+)/([^/]+) ]]; then
+    PARSED_USER=${BASH_REMATCH[1]}; PARSED_REPO=${BASH_REMATCH[2]}
+  elif [[ $uri =~ ^git@github\.com:([^/]+)/([^/]+) ]]; then
+    PARSED_USER=${BASH_REMATCH[1]}; PARSED_REPO=${BASH_REMATCH[2]}
+  elif [[ $uri =~ ^https?://([^/]+)/([^/]+)/([^/]+) ]]; then
+    PARSED_USER=${BASH_REMATCH[2]}; PARSED_REPO=${BASH_REMATCH[3]}
+  elif [[ $uri =~ ^git@([^:]+):([^/]+)/(.+) ]]; then
+    PARSED_USER=${BASH_REMATCH[2]}; path=${BASH_REMATCH[3]}; PARSED_REPO=${path##*/}
+  elif [[ $uri =~ ^ssh://[^@/]+@([^/]+)/([^/]+)/(.+) ]]; then
+    PARSED_USER=${BASH_REMATCH[2]}; path=${BASH_REMATCH[3]}; PARSED_REPO=${path##*/}
+  elif [[ $uri =~ ^([^@/:]+)@([^:]+):(.+) ]]; then
+    PARSED_USER=${BASH_REMATCH[1]}; path=${BASH_REMATCH[3]}; PARSED_REPO=${path##*/}
+  else
+    return 1
+  fi
+  PARSED_REPO=${PARSED_REPO%.git}
+}
+
+github_pr_details() {
+  local uri=$1
+  PR_USER="" PR_REPO="" PR_ID="" PR_GIT_URI=""
+  if [[ $uri =~ ^https?://(www\.)?github\.com/([^/]+)/([^/]+)/pull/([0-9]+)/?$ ]]; then
+    PR_USER=${BASH_REMATCH[2]}
+    PR_REPO=${BASH_REMATCH[3]%.git}
+    PR_ID=${BASH_REMATCH[4]}
+    PR_GIT_URI="https://github.com/$PR_USER/$PR_REPO.git"
+    return 0
+  fi
+  return 1
+}
+
+generate_clone_name() {
+  local uri=$1 custom=${2:-}
+  if [[ -n $custom ]]; then CLONE_NAME=$custom; return 0; fi
+  if github_pr_details "$uri"; then
+    CLONE_NAME="$(date +%Y-%m-%d)-$PR_USER-$PR_REPO"
+  elif parse_git_uri "$uri"; then
+    CLONE_NAME="$(date +%Y-%m-%d)-$PARSED_USER-$PARSED_REPO"
+  else
+    return 1
+  fi
+}
+
+is_git_uri() {
+  local arg=${1:-}
+  [[ $arg == http://* || $arg == https://* || $arg == git@* || $arg == *github.com* || $arg == *gitlab.com* || $arg == *.git ]]
+}
+
+cmd_clone() {
+  local uri=${1:-} custom=${2:-} path
+  if [[ -z $uri ]]; then
+    printf 'Error: git URI required for clone command\nUsage: try clone <git-uri> [name]\n' >&2
+    return 1
+  fi
+  if [[ -n $custom ]] && ! valid_name "$custom"; then
+    printf 'Error: invalid clone directory name: %s\n' "$custom" >&2
+    return 1
+  fi
+  if ! generate_clone_name "$uri" "$custom"; then
+    printf 'Error: Unable to parse git URI: %s\n' "$uri" >&2
+    return 1
+  fi
+  path=$TRIES_PATH/$CLONE_NAME
+  if github_pr_details "$uri"; then
+    script_clone_pr "$path" "$PR_GIT_URI" "$PR_ID"
+  else
+    script_clone "$path" "$uri"
+  fi
+}
+
+detect_shell() {
+  local shell=${SHELL:-} parent
+  case $shell in
+    *fish*) printf fish; return ;;
+    *zsh*) printf zsh; return ;;
+    *bash*) printf bash; return ;;
+  esac
+  if [[ -n ${PSModulePath:-} ]]; then printf pwsh; return; fi
+  parent=$(ps -p "$PPID" -o comm= 2>/dev/null)
+  case $parent in
+    *fish*) printf fish ;;
+    *zsh*) printf zsh ;;
+    *bash*) printf bash ;;
+    *pwsh*|*powershell*) printf pwsh ;;
+  esac
+}
+
+init_snippet() {
+  local shell=$1 explicit=${2:-} default=$3 fish_path ps_path
+  case $shell in
+    fish)
+      if [[ -n $explicit ]]; then
+        fish_path=" --path $(q "$explicit")"
+      else
+        fish_path=" --path (if set -q TRY_PATH; echo \"\$TRY_PATH\"; else; echo $(q "$default"); end)"
+      fi
+      cat <<EOF
+function try
+  set -l out ($(q "$SELF") exec${fish_path} \$argv 2>/dev/tty | string collect)
+  if test \$pipestatus[1] -eq 0
+    eval \$out
+  else
+    echo \$out
+  end
+end
+EOF
+      ;;
+    pwsh)
+      if [[ -n $explicit ]]; then ps_path=$(ps_q "$explicit"); else ps_path="\$(if (\$env:TRY_PATH) { \$env:TRY_PATH } else { $(ps_q "$default") })"; fi
+      cat <<EOF
+function try {
+  \$tryPath = $ps_path
+  \$tempErr = [System.IO.Path]::GetTempFileName()
+  \$out = & $(ps_q "$SELF") exec --path \$tryPath @args 2>\$tempErr
+  if (\$LASTEXITCODE -eq 0) { \$out | Invoke-Expression } else { Get-Content \$tempErr | Write-Host; \$out | Write-Output }
+  Remove-Item \$tempErr -ErrorAction SilentlyContinue
+}
+EOF
+      ;;
+    *)
+      if [[ -n $explicit ]]; then
+        cat <<EOF
+try() {
+  local out
+  out=\$($(q "$SELF") exec --path $(q "$explicit") "\$@" 2>/dev/tty)
+  if [ \$? -eq 0 ]; then
+    eval "\$out"
+  else
+    echo "\$out"
+  fi
+}
+EOF
+      else
+        cat <<EOF
+try() {
+  local out try_path
+  if [ -n "\${TRY_PATH:-}" ]; then
+    try_path=\$TRY_PATH
+  else
+    try_path=$(q "$default")
+  fi
+  out=\$($(q "$SELF") exec --path "\$try_path" "\$@" 2>/dev/tty)
+  if [ \$? -eq 0 ]; then
+    eval "\$out"
+  else
+    echo "\$out"
+  fi
+}
+EOF
+      fi
+      ;;
+  esac
+}
+
+cmd_init() {
+  local first=${1:-} explicit="" shell default=$TRIES_PATH
+  if [[ $first == /* ]]; then explicit=$(absolute_path "$first"); fi
+  shell=$(detect_shell)
+  [[ -n $shell ]] || shell=bash
+  init_snippet "$shell" "$explicit" "$default"
+}
+
+shell_rc_file() {
+  case $1 in
+    fish) printf '%s/.config/fish/config.fish' "${HOME:-}" ;;
+    zsh) printf '%s/.zshrc' "${HOME:-}" ;;
+    bash)
+      if [[ -e ${HOME:-}/.bashrc ]]; then printf '%s/.bashrc' "${HOME:-}"; else printf '%s/.bash_profile' "${HOME:-}"; fi
+      ;;
+    pwsh) printf '%s' "${PROFILE:-${HOME:-}/.config/powershell/Microsoft.PowerShell_profile.ps1}" ;;
+  esac
+}
+
+cmd_install() {
+  local first=${1:-} explicit="" shell rc snippet
+  if [[ $first == /* ]]; then explicit=$(absolute_path "$first"); fi
+  shell=$(detect_shell)
+  rc=$(shell_rc_file "$shell")
+  if [[ -z $rc ]]; then
+    printf 'Error: could not determine shell config file\nRun '\''try init'\'' and manually add the output to your shell config.\n' >&2
+    return 1
+  fi
+  if [[ -f $rc ]] && grep -qF '# try shell integration' "$rc"; then
+    printf 'try is already installed in %s\n' "$rc" >&2
+    return 0
+  fi
+  mkdir -p -- "${rc%/*}" || return 1
+  snippet=$(init_snippet "$shell" "$explicit" "$TRIES_PATH")
+  printf '\n# try shell integration\n%s\n' "$snippet" >> "$rc" || return 1
+  printf 'Added try shell integration to %s\n' "$rc" >&2
+}
+
+# Test key parser. Unknown symbolic fields are literal text, as documented.
+KEYS=()
+append_text_keys() {
+  local text=$1 i
+  for ((i=0; i<${#text}; i++)); do KEYS[${#KEYS[@]}]=${text:i:1}; done
+}
+
+parse_test_keys() {
+  local spec=$1 token upper i ch seq j final
+  KEYS=()
+  if [[ $spec == *,* || $spec =~ ^[A-Z-]+$ ]]; then
+    local old_ifs=$IFS
+    IFS=',' read -r -a TOKENS <<< "$spec"
+    IFS=$old_ifs
+    for token in "${TOKENS[@]}"; do
+      if [[ $token != ' ' ]]; then token="${token#"${token%%[![:space:]]*}"}"; token="${token%"${token##*[![:space:]]}"}"; fi
+      upper=$(printf '%s' "$token" | tr '[:lower:]' '[:upper:]')
+      case $upper in
+        UP) KEYS[${#KEYS[@]}]=$'\e[A' ;;
+        DOWN) KEYS[${#KEYS[@]}]=$'\e[B' ;;
+        LEFT) KEYS[${#KEYS[@]}]=$'\e[D' ;;
+        RIGHT) KEYS[${#KEYS[@]}]=$'\e[C' ;;
+        HOME) KEYS[${#KEYS[@]}]=$'\e[H' ;;
+        END) KEYS[${#KEYS[@]}]=$'\e[F' ;;
+        DELETE) KEYS[${#KEYS[@]}]=$'\e[3~' ;;
+        ENTER|RETURN) KEYS[${#KEYS[@]}]=$'\r' ;;
+        ESC|ESCAPE) KEYS[${#KEYS[@]}]=$'\e' ;;
+        BACKSPACE|BS) KEYS[${#KEYS[@]}]=$'\x7f' ;;
+        TAB) KEYS[${#KEYS[@]}]=$'\t' ;;
+        SPACE|' ') KEYS[${#KEYS[@]}]=' ' ;;
+        CTRL-A|CTRLA) KEYS[${#KEYS[@]}]=$'\x01' ;;
+        CTRL-B|CTRLB) KEYS[${#KEYS[@]}]=$'\x02' ;;
+        CTRL-C|CTRLC) KEYS[${#KEYS[@]}]=$'\x03' ;;
+        CTRL-D|CTRLD) KEYS[${#KEYS[@]}]=$'\x04' ;;
+        CTRL-E|CTRLE) KEYS[${#KEYS[@]}]=$'\x05' ;;
+        CTRL-F|CTRLF) KEYS[${#KEYS[@]}]=$'\x06' ;;
+        CTRL-G|CTRLG) KEYS[${#KEYS[@]}]=$'\x07' ;;
+        CTRL-H|CTRLH) KEYS[${#KEYS[@]}]=$'\x08' ;;
+        CTRL-J|CTRLJ) KEYS[${#KEYS[@]}]=$'\x0a' ;;
+        CTRL-K|CTRLK) KEYS[${#KEYS[@]}]=$'\x0b' ;;
+        CTRL-N|CTRLN) KEYS[${#KEYS[@]}]=$'\x0e' ;;
+        CTRL-P|CTRLP) KEYS[${#KEYS[@]}]=$'\x10' ;;
+        CTRL-R|CTRLR) KEYS[${#KEYS[@]}]=$'\x12' ;;
+        CTRL-T|CTRLT) KEYS[${#KEYS[@]}]=$'\x14' ;;
+        CTRL-U|CTRLU) KEYS[${#KEYS[@]}]=$'\x15' ;;
+        CTRL-W|CTRLW) KEYS[${#KEYS[@]}]=$'\x17' ;;
+        TYPE=*) append_text_keys "${token#*=}" ;;
+        PAGEDOWN|PAGEUP|SHIFT-TAB) ;;
+        *) append_text_keys "$token" ;;
+      esac
+    done
+  else
+    for ((i=0; i<${#spec}; i++)); do
+      ch=${spec:i:1}
+      if [[ $ch == $'\e' && ${spec:i+1:1} == '[' ]]; then
+        seq=$'\e['
+        j=$((i + 2))
+        while ((j < ${#spec})); do
+          final=${spec:j:1}; seq+=$final; ((j++))
+          [[ $final == [@-~] ]] && break
+        done
+        KEYS[${#KEYS[@]}]=$seq
+        i=$((j - 1))
+      else
+        KEYS[${#KEYS[@]}]=$ch
+      fi
+    done
+  fi
+}
+
+# Cached directory data and current fuzzy result view.
+NAMES=() PATHS=() MTIMES=() IS_LINK=()
+RESULT_NAMES=() RESULT_PATHS=() RESULT_MTIMES=() RESULT_LINKS=()
+RESULT_SCORES=() RESULT_POSITIONS=()
+
+add_scanned_entry() {
+  local path=$1 mtime=$2 name real index
+  [[ $mtime =~ ^[0-9]+$ && -d $path ]] || return
+  name=${path##*/}; index=${#NAMES[@]}
+  if [[ -L $path ]]; then
+    real=$(physical_dir "$path") || return
+    IS_LINK[index]=1; PATHS[index]=$real
+  else
+    IS_LINK[index]=0; PATHS[index]=$path
+  fi
+  NAMES[index]=$name; MTIMES[index]=$mtime
+}
+
+scan_entries() {
+  local path record mtime candidates=()
+  mkdir -p -- "$TRIES_PATH" 2>/dev/null || {
+    printf 'Error: cannot create tries directory: %s\n' "$TRIES_PATH" >&2
+    return 1
+  }
+  TRIES_PATH=$(physical_dir "$TRIES_PATH") || return 1
+  if stat -c %Y -- "$TRIES_PATH" >/dev/null 2>&1; then STAT_STYLE=gnu; else STAT_STYLE=bsd; fi
+  shopt -s nullglob
+  for path in "$TRIES_PATH"/*; do
+    [[ -d $path && ${path##*/} != .* ]] && candidates[${#candidates[@]}]=$path
+  done
+  ((${#candidates[@]})) || return 0
+
+  # ponytail: one stat batch is fastest at workspace scale; chunk if ARG_MAX becomes a real limit.
+  if [[ $STAT_STYLE == gnu ]]; then
+    while IFS= read -r -d '' record; do
+      mtime=${record%%$'\t'*}; path=${record#*$'\t'}
+      add_scanned_entry "$path" "$mtime"
+    done < <(stat -L --printf='%Y\t%n\0' -- "${candidates[@]}" 2>/dev/null)
+  else
+    while IFS=$'\t' read -r mtime path; do
+      add_scanned_entry "$path" "$mtime"
+    done < <(stat -L -f $'%m\t%N' "${candidates[@]}" 2>/dev/null)
+  fi
+}
+
+refresh_size() {
+  local size rows cols
+  rows=${TRY_HEIGHT:-0}; cols=${TRY_WIDTH:-0}
+  if [[ ! $rows =~ ^[1-9][0-9]*$ || ! $cols =~ ^[1-9][0-9]*$ ]]; then
+    size=$(stty size 2>/dev/null || true)
+    if [[ $size =~ ^([0-9]+)[[:space:]]+([0-9]+)$ ]]; then
+      [[ $rows =~ ^[1-9][0-9]*$ ]] || rows=${BASH_REMATCH[1]}
+      [[ $cols =~ ^[1-9][0-9]*$ ]] || cols=${BASH_REMATCH[2]}
+    fi
+  fi
+  [[ $rows =~ ^[1-9][0-9]*$ ]] || rows=24
+  [[ $cols =~ ^[1-9][0-9]*$ ]] || cols=80
+  HEIGHT=$rows WIDTH=$cols
+}
+
+build_results() {
+  local i score index positions max
+  RESULT_NAMES=() RESULT_PATHS=() RESULT_MTIMES=() RESULT_LINKS=()
+  RESULT_SCORES=() RESULT_POSITIONS=()
+  refresh_size
+  max=$((HEIGHT - 6)); ((max < 3)) && max=3
+
+  while IFS=$'\t' read -r score index positions; do
+    [[ -n $index ]] || continue
+    RESULT_NAMES[${#RESULT_NAMES[@]}]=${NAMES[index]}
+    RESULT_PATHS[${#RESULT_PATHS[@]}]=${PATHS[index]}
+    RESULT_MTIMES[${#RESULT_MTIMES[@]}]=${MTIMES[index]}
+    RESULT_LINKS[${#RESULT_LINKS[@]}]=${IS_LINK[index]}
+    RESULT_SCORES[${#RESULT_SCORES[@]}]=$score
+    RESULT_POSITIONS[${#RESULT_POSITIONS[@]}]=$positions
+    ((${#RESULT_NAMES[@]} >= max)) && break
+  done < <(
+    for ((i=0; i<${#NAMES[@]}; i++)); do
+      printf '%d\t%s\t%s\n' "$i" "${NAMES[i]}" "${MTIMES[i]}"
+    done | TRY_QUERY=$SEARCH awk -F '\t' -v now="$(date +%s)" '
+      BEGIN { query=tolower(ENVIRON["TRY_QUERY"]); qlen=length(query) }
+      {
+        idx=$1; name=$2; mtime=$3+0
+        hours=(now-mtime)/3600; if (hours < 0) hours=0
+        score=3/sqrt(hours+1)
+        if (name ~ /^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-/) score+=2
+        positions=""
+        if (qlen > 0) {
+          text=tolower(name); start=1; last=-1; matched=1
+          for (qi=1; qi<=qlen; qi++) {
+            qc=substr(query,qi,1); found=0
+            for (p=start; p<=length(text); p++) if (substr(text,p,1)==qc) { found=p; break }
+            if (!found) { matched=0; break }
+            zero=found-1
+            positions=positions (positions=="" ? "" : ",") zero
+            score+=1
+            if (zero==0 || substr(text,found-1,1) !~ /[a-z0-9]/) score+=1
+            if (last>=0) { gap=zero-last-1; score+=2/sqrt(gap+1) }
+            last=zero; start=found+1
+          }
+          if (!matched) next
+          score*=qlen/(last+1)
+          score*=10/(length(name)+10)
+        }
+        printf "%.12f\t%d\t%s\n", score, idx, positions
+      }
+    ' | LC_ALL=C sort -t $'\t' -k1,1nr -k2,2n
+  )
+}
+
+relative_time() {
+  local diff=$((RENDER_NOW - $1))
+  ((diff < 0)) && diff=0
+  if ((diff < 60)); then RELATIVE='just now'
+  elif ((diff < 3600)); then RELATIVE="$((diff / 60))m ago"
+  elif ((diff < 86400)); then RELATIVE="$((diff / 3600))h ago"
+  elif ((diff < 604800)); then RELATIVE="$((diff / 86400))d ago"
+  else RELATIVE="$((diff / 604800))w ago"
+  fi
+}
+
+FRAME="" ROW=0
+frame_start() { FRAME=$'\e[H'; ROW=0; }
+
+append_line() {
+  local styled=$1 left_width=$2 right=${3:-} right_prefix=${4:-} background=${5:-}
+  local max_content=$((WIDTH - 1)) available spaces right_width
+  ((max_content < 1)) && max_content=1
+  if ((left_width > max_content)); then left_width=$max_content; fi
+  right_width=${#right}
+  available=$((max_content - left_width - 1))
+  if [[ -n $right && $available -gt 0 ]]; then
+    if ((right_width > available)); then right=${right:right_width-available}; right_width=$available; fi
+    spaces=$((max_content - left_width - right_width))
+  else
+    right="" right_width=0 spaces=$((max_content - left_width))
+  fi
+  ((spaces < 0)) && spaces=0
+  printf -v PAD '%*s' "$spaces" ''
+  FRAME+=$'\r'
+  FRAME+="$CLEAR_EOL$background$styled$PAD"
+  if [[ -n $right ]]; then FRAME+="$right_prefix$right$RESET_FG"; fi
+  FRAME+="$RESET"$'\n'
+  ((ROW++))
+}
+
+append_plain() {
+  local plain=$1 prefix=${2:-} width=${#1} max=$((WIDTH - 1))
+  ((max < 1)) && max=1
+  if ((width > max)); then plain=${plain:0:max-1}…; width=$max; fi
+  append_line "$prefix$plain" "$width"
+}
+
+append_separator() {
+  local count=$((WIDTH - 1)) sep
+  ((count < 1)) && count=1
+  printf -v sep '%*s' "$count" ''
+  sep=${sep// /─}
+  append_line "$MUTED$sep" "$count"
+}
+
+append_center() {
+  local plain=$1 prefix=${2:-} max=$((WIDTH - 1)) width left styled
+  ((max < 1)) && max=1
+  width=${#plain}
+  if ((width > max)); then plain=${plain:0:max-1}…; width=$max; fi
+  left=$(((max - width) / 2))
+  printf -v PAD '%*s' "$left" ''
+  styled="$PAD$prefix$plain"
+  append_line "$styled" "$((left + width))"
+}
+
+append_center_styled() {
+  local styled=$1 width=$2 max=$((WIDTH - 1)) left
+  ((width > max)) && width=$max
+  left=$(((max - width) / 2)); ((left < 0)) && left=0
+  printf -v PAD '%*s' "$left" ''
+  append_line "$PAD$styled" "$((left + width))"
+}
+
+append_blank() { append_line '' 0; }
+
+finish_frame() {
+  FRAME=${FRAME%$'\n'}
+  FRAME+="$RESET"
+  printf '%s' "$FRAME" >&2
+}
+
+input_render() {
+  local value=$1 cursor=$2 max=$3 before char after
+  ((max < 1)) && max=1
+  if ((${#value} > max)); then value=${value:0:max-1}…; fi
+  ((cursor > ${#value})) && cursor=${#value}
+  before=${value:0:cursor}
+  char=${value:cursor:1}
+  [[ -n $char ]] || char=' '
+  after=""
+  ((cursor < ${#value})) && after=${value:cursor+1}
+  INPUT_RENDERED="$before$REVERSE_ON$char$REVERSE_OFF$after"
+  INPUT_VISIBLE=$((${#value} > cursor ? ${#value} : cursor + 1))
+}
+
+style_entry_name() {
+  local name=$1 positions=$2 selected=$3 max=$4 display i ch suffix date_prefixed=0
+  if ((${#name} > max && max > 2)); then display=${name:0:max-1}…
+  elif ((max <= 2)); then display=${name:0:max}
+  else display=$name
+  fi
+  [[ $name =~ ^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]- ]] && date_prefixed=1
+  STYLED_NAME=""
+  for ((i=0; i<${#display}; i++)); do
+    ch=${display:i:1}
+    if [[ $ch == '…' ]]; then STYLED_NAME+=$ch; continue; fi
+    if [[ ,$positions, == *,$i,* && ! ($date_prefixed -eq 1 && $i -lt 10) ]]; then
+      if ((selected)); then suffix="$RESET_FG$RESET_INTENSITY$SELECTED_FG"; else suffix="$RESET_FG$RESET_INTENSITY"; fi
+      STYLED_NAME+="$HIGHLIGHT$ch$suffix"
+    elif ((date_prefixed && i <= 10 && !selected)); then
+      STYLED_NAME+="$MUTED$ch$RESET_FG"
+    else
+      STYLED_NAME+=$ch
+    fi
+  done
+  DISPLAY_NAME=$display
+}
+
+MARKED_PATHS=() MARKED_NAMES=()
+is_marked() {
+  local path=$1 i
+  for ((i=0; i<${#MARKED_PATHS[@]}; i++)); do [[ ${MARKED_PATHS[i]} == "$path" ]] && return 0; done
+  return 1
+}
+
+render_main() {
+  local body_space total start end i selected marked icon arrow background max_name meta prefix
+  refresh_size
+  RENDER_NOW=$(date +%s)
+  RENDER_DATE=$(date +%Y-%m-%d)
+  body_space=$((HEIGHT - 6)); ((body_space < 0)) && body_space=0
+  total=${#RESULT_NAMES[@]}; [[ -n $SEARCH ]] && ((total++))
+  ((CURSOR < 0)) && CURSOR=0
+  ((total > 0 && CURSOR >= total)) && CURSOR=$((total - 1))
+  ((total == 0)) && CURSOR=0
+  if ((CURSOR < SCROLL)); then SCROLL=$CURSOR
+  elif ((body_space > 0 && CURSOR >= SCROLL + body_space)); then SCROLL=$((CURSOR - body_space + 1))
+  fi
+
+  frame_start
+  append_plain '🏠 Try Directory Selection' "$ACCENT"
+  append_separator
+  input_render "$SEARCH" "$INPUT_CURSOR" "$((WIDTH - 9))"
+  append_line "$MUTED"'Search: '"$INPUT_RENDERED" "$((8 + INPUT_VISIBLE))"
+  append_separator
+
+  start=$SCROLL; end=$((SCROLL + body_space)); ((end > total)) && end=$total
+  for ((i=start; i<end; i++)); do
+    selected=0; ((i == CURSOR)) && selected=1
+    if ((i < ${#RESULT_NAMES[@]})); then
+      marked=0; is_marked "${RESULT_PATHS[i]}" && marked=1
+      if ((marked)); then icon='🗑️'; elif ((RESULT_LINKS[i])); then icon='🔗'; else icon='📁'; fi
+      if ((selected)); then arrow="$HIGHLIGHT→ $RESET_FG$RESET_INTENSITY$SELECTED_FG"; else arrow='  '; fi
+      if ((marked)); then background=$DANGER_BG; ((selected)) && background+=$SELECTED_FG
+      elif ((selected)); then background="$SELECTED_BG$SELECTED_FG"
+      else background=""
+      fi
+      max_name=$((WIDTH - 6)); ((max_name < 0)) && max_name=0
+      style_entry_name "${RESULT_NAMES[i]}" "${RESULT_POSITIONS[i]}" "$selected" "$max_name"
+      relative_time "${RESULT_MTIMES[i]}"
+      printf -v meta '%s, %.1f' "$RELATIVE" "${RESULT_SCORES[i]}"
+      if ((selected)); then prefix=''; else prefix=$MUTED; fi
+      append_line "$arrow$icon $STYLED_NAME" "$((5 + ${#DISPLAY_NAME}))" "$meta" "$prefix" "$background"
+    else
+      if ((selected)); then arrow="$HIGHLIGHT→ $RESET_FG$RESET_INTENSITY$SELECTED_FG"; background="$SELECTED_BG$SELECTED_FG"; else arrow='  '; background=''; fi
+      local label="📂 Create new: $RENDER_DATE-$SEARCH"
+      if ((${#label} > WIDTH - 3)); then label=${label:0:WIDTH-4}…; fi
+      append_line "$arrow$label" "$((2 + ${#label} + 1))" '' '' "$background"
+    fi
+  done
+  while ((ROW < HEIGHT - 2)); do append_blank; done
+  append_separator
+  if ((${#MARKED_PATHS[@]})); then
+    append_center " DELETE MODE  ${#MARKED_PATHS[@]} marked  |  Ctrl-D: Toggle  Enter: Confirm  Esc: Cancel" "$DANGER_BG"
+  else
+    append_center '↑/↓: Navigate  Enter: Select  ^R: Rename  ^G: Graduate  ^D: Delete  Esc: Cancel' "$MUTED"
+  fi
+  finish_frame
+}
+
+render_rename() {
+  local current=$1 error=${2:-}
+  refresh_size; frame_start
+  append_center '📝 Rename directory' "$ACCENT"
+  append_separator
+  append_plain "📁 $current"
+  append_blank; append_blank
+  input_render "$INPUT" "$INPUT_CURSOR" "$((WIDTH - 12))"
+  append_center_styled "${MUTED}New name: ${RESET_FG}$INPUT_RENDERED" "$((10 + INPUT_VISIBLE))"
+  if [[ -n $error ]]; then append_blank; append_center "$error" "$ACCENT"; fi
+  while ((ROW < HEIGHT - 2)); do append_blank; done
+  append_separator; append_center 'Enter: Confirm  Esc: Cancel' "$MUTED"
+  finish_frame
+}
+
+render_ascend() {
+  local current=$1 projects=$2 error=${3:-} hint
+  refresh_size; frame_start
+  append_center '🚀 Graduate try to project' "$ACCENT"
+  append_separator
+  append_plain "📁 $current"
+  append_blank
+  if [[ -n ${TRY_PROJECTS:-} ]]; then hint='$TRY_PROJECTS'; else hint='parent of $TRY_PATH'; fi
+  append_center "Destination ($hint: $projects)" "$MUTED"
+  input_render "$INPUT" "$INPUT_CURSOR" "$((WIDTH - 12))"
+  append_center_styled "${MUTED}Move to: ${RESET_FG}$INPUT_RENDERED" "$((9 + INPUT_VISIBLE))"
+  append_blank; append_center 'A symlink will be left in the tries directory' "$MUTED"
+  if [[ -n $error ]]; then append_blank; append_center "$error" "$ACCENT"; fi
+  while ((ROW < HEIGHT - 2)); do append_blank; done
+  append_separator; append_center 'Enter: Confirm  Esc: Cancel' "$MUTED"
+  finish_frame
+}
+
+render_delete() {
+  local i count=${#MARKED_PATHS[@]}
+  refresh_size; frame_start
+  if ((count == 1)); then append_center '🗑️ Delete 1 directory?' "$ACCENT"; else append_center "🗑️ Delete $count directories?" "$ACCENT"; fi
+  append_separator
+  for ((i=0; i<count && ROW<HEIGHT-5; i++)); do append_plain "🗑️ ${MARKED_NAMES[i]}" "$DANGER_BG"; done
+  append_blank; append_blank
+  input_render "$INPUT" "$INPUT_CURSOR" "$((WIDTH - 23))"
+  append_center_styled "${MUTED}Type YES to confirm: ${RESET_FG}$INPUT_RENDERED" "$((21 + INPUT_VISIBLE))"
+  while ((ROW < HEIGHT - 2)); do append_blank; done
+  append_separator; append_center 'Enter: Confirm  Esc: Cancel' "$MUTED"
+  finish_frame
+}
+
+INPUT="" INPUT_CURSOR=0
+handle_input_key() {
+  local key=$1 before after pos ch
+  case $key in
+    $'\x7f'|$'\x08')
+      if ((INPUT_CURSOR > 0)); then INPUT=${INPUT:0:INPUT_CURSOR-1}${INPUT:INPUT_CURSOR}; ((INPUT_CURSOR--)); fi
+      ;;
+    $'\e[3~')
+      if ((INPUT_CURSOR < ${#INPUT})); then INPUT=${INPUT:0:INPUT_CURSOR}${INPUT:INPUT_CURSOR+1}; fi
+      ;;
+    $'\x01'|$'\e[H'|$'\e[1~'|$'\e[7~'|$'\eOH') INPUT_CURSOR=0 ;;
+    $'\x05'|$'\e[F'|$'\e[4~'|$'\e[8~'|$'\eOF') INPUT_CURSOR=${#INPUT} ;;
+    $'\x02'|$'\e[D'|$'\eOD') ((INPUT_CURSOR > 0)) && ((INPUT_CURSOR--)) ;;
+    $'\x06'|$'\e[C'|$'\eOC') ((INPUT_CURSOR < ${#INPUT})) && ((INPUT_CURSOR++)) ;;
+    $'\x0b') INPUT=${INPUT:0:INPUT_CURSOR} ;;
+    $'\x15') INPUT=${INPUT:INPUT_CURSOR}; INPUT_CURSOR=0 ;;
+    $'\x17')
+      pos=$((INPUT_CURSOR - 1))
+      while ((pos >= 0)); do ch=${INPUT:pos:1}; [[ $ch =~ [[:alnum:]] ]] && break; ((pos--)); done
+      while ((pos >= 0)); do ch=${INPUT:pos:1}; [[ $ch =~ [[:alnum:]] ]] || break; ((pos--)); done
+      ((pos++))
+      INPUT=${INPUT:0:pos}${INPUT:INPUT_CURSOR}; INPUT_CURSOR=$pos
+      ;;
+    *)
+      if [[ ${#key} -eq 1 && $key != [[:cntrl:]] ]]; then
+        INPUT=${INPUT:0:INPUT_CURSOR}$key${INPUT:INPUT_CURSOR}
+        ((INPUT_CURSOR++))
+      else
+        return 1
+      fi
+      ;;
+  esac
+  return 0
+}
+
+KEY_INDEX=0 TEST_KEYS=0 KEY="" RESIZED=0
+read_interactive_key() {
+  local key next status
+  while true; do
+    if ((RESIZED)); then RESIZED=0; KEY='__REDRAW__'; return 0; fi
+    if IFS= read -rsn1 -t 0.1 key; then
+      break
+    else
+      status=$?
+      ((status == 1)) && return 1
+    fi
+  done
+  [[ -n $key ]] || key=$'\r'
+  if [[ $key == $'\e' ]]; then
+    if IFS= read -rsn1 -t 0.02 next; then
+      key+=$next
+      if [[ $next == '[' ]]; then
+        while IFS= read -rsn1 -t 0.02 next; do
+          key+=$next
+          [[ $next == [@-~] ]] && break
+        done
+      elif [[ $next == O ]] && IFS= read -rsn1 -t 0.02 next; then
+        key+=$next
+      fi
+    fi
+  fi
+  KEY=$key
+}
+
+next_key() {
+  if ((TEST_KEYS)); then
+    if ((KEY_INDEX >= ${#KEYS[@]})); then return 1; fi
+    KEY=${KEYS[KEY_INDEX]}; ((KEY_INDEX++)); return 0
+  fi
+  read_interactive_key
+}
+
+TTY_ACTIVE=0 TTY_STATE=""
+setup_terminal() {
+  if ((AND_EXIT || TEST_KEYS)); then return 0; fi
+  if [[ ! -t 0 || ! -t 2 ]]; then
+    printf 'Error: try requires an interactive terminal\n' >&2
+    return 1
+  fi
+  TTY_STATE=$(stty -g 2>/dev/null)
+  stty raw -echo 2>/dev/null
+  printf '\e[?1049h\e]2;try\a\e[1 q' >&2
+  TTY_ACTIVE=1
+  trap 'RESIZED=1' WINCH
+  trap 'restore_terminal' EXIT
+  trap 'restore_terminal; exit 129' HUP
+  trap 'restore_terminal; exit 143' TERM
+}
+
+restore_terminal() {
+  if ((TTY_ACTIVE)); then
+    printf '%s' "$RESET"$'\e[0 q\e[?25h\e[?1049l' >&2
+    [[ -n $TTY_STATE ]] && stty "$TTY_STATE" 2>/dev/null
+    TTY_ACTIVE=0
+  fi
+}
+
+normalize_rename() { NORMALIZED=$(normalize_spaces "$1"); }
+
+run_rename_dialog() {
+  local index=$1 current=${RESULT_NAMES[index]} error="" key
+  INPUT=$current; INPUT_CURSOR=${#INPUT}
+  while true; do
+    render_rename "$current" "$error"
+    next_key || return 1
+    key=$KEY
+    [[ $key == __REDRAW__ ]] && continue
+    if handle_input_key "$key"; then error=""; continue; fi
+    case $key in
+      $'\r')
+        normalize_rename "$INPUT"
+        if [[ -z $NORMALIZED ]]; then error='Name cannot be empty'
+        elif [[ $NORMALIZED == */* ]]; then error='Name cannot contain /'
+        elif [[ $NORMALIZED == "$current" ]]; then return 1
+        elif [[ -d $TRIES_PATH/$NORMALIZED ]]; then error="Directory exists: $NORMALIZED"
+        else ACTION_TYPE=rename; ACTION_OLD=$current; ACTION_NEW=$NORMALIZED; return 0
+        fi
+        ;;
+      $'\e'|$'\x03') return 1 ;;
+    esac
+  done
+}
+
+run_ascend_dialog() {
+  local index=$1 current=${RESULT_NAMES[index]} project projects error="" key dest parent
+  project=$current
+  if [[ $project =~ ^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-(.*)$ ]]; then project=${BASH_REMATCH[1]}; fi
+  if [[ -n ${TRY_PROJECTS:-} ]]; then projects=$(absolute_path "$TRY_PROJECTS"); else projects=${TRIES_PATH%/*}; fi
+  INPUT=$projects/$project; INPUT_CURSOR=${#INPUT}
+  while true; do
+    render_ascend "$current" "$projects" "$error"
+    next_key || return 1
+    key=$KEY
+    [[ $key == __REDRAW__ ]] && continue
+    if handle_input_key "$key"; then error=""; continue; fi
+    case $key in
+      $'\r')
+        dest=$(trim "$INPUT")
+        if [[ -z $dest ]]; then error='Destination cannot be empty'; continue; fi
+        dest=$(absolute_path "$dest")
+        parent=${dest%/*}
+        if [[ -e $dest || -L $dest ]]; then error="Destination already exists: $dest"
+        elif [[ ! -d $parent ]]; then error="Parent directory does not exist: $parent"
+        else
+          ACTION_TYPE=ascend; ACTION_SOURCE=${RESULT_PATHS[index]}; ACTION_DEST=$dest
+          ACTION_BASENAME=$current; return 0
+        fi
+        ;;
+      $'\e'|$'\x03') return 1 ;;
+    esac
+  done
+}
+
+remove_mark() {
+  local target=$1 i j
+  for ((i=0; i<${#MARKED_PATHS[@]}; i++)); do
+    if [[ ${MARKED_PATHS[i]} == "$target" ]]; then
+      for ((j=i; j<${#MARKED_PATHS[@]}-1; j++)); do MARKED_PATHS[j]=${MARKED_PATHS[j+1]}; MARKED_NAMES[j]=${MARKED_NAMES[j+1]}; done
+      unset 'MARKED_PATHS[${#MARKED_PATHS[@]}-1]' 'MARKED_NAMES[${#MARKED_NAMES[@]}-1]'
+      return
+    fi
+  done
+}
+
+confirm_delete() {
+  local key confirmation base_real target_real i
+  INPUT=""; INPUT_CURSOR=0
+  if [[ -n $AND_CONFIRM ]]; then INPUT=$AND_CONFIRM; INPUT_CURSOR=${#INPUT}; fi
+  while true; do
+    render_delete
+    if [[ -n $AND_CONFIRM ]]; then key=$'\r'; AND_CONFIRM=""
+    else next_key || return 1; key=$KEY
+    fi
+    [[ $key == __REDRAW__ ]] && continue
+    if handle_input_key "$key"; then continue; fi
+    case $key in
+      $'\r')
+        [[ $INPUT == YES ]] || return 1
+        base_real=$(physical_dir "$TRIES_PATH") || return 1
+        DELETE_REAL=()
+        for ((i=0; i<${#MARKED_PATHS[@]}; i++)); do
+          target_real=$(physical_dir "${MARKED_PATHS[i]}") || return 1
+          case $target_real in "$base_real"/*) ;; *) printf 'Error: Safety check failed: %s is not inside %s\n' "$target_real" "$base_real" >&2; return 1;; esac
+          DELETE_REAL[${#DELETE_REAL[@]}]=$target_real
+        done
+        ACTION_TYPE=delete; ACTION_BASE=$base_real; return 0
+        ;;
+      $'\e'|$'\x03') return 1 ;;
+    esac
+  done
+}
+
+prompt_create_name() {
+  local date_prefix entry
+  date_prefix=$(date +%Y-%m-%d)
+  if [[ -n $SEARCH ]]; then
+    entry=$(normalize_spaces "$SEARCH")
+    if ! valid_name "$entry"; then printf 'Error: invalid try name: %s\n' "$entry" >&2; return 1; fi
+    ACTION_TYPE=mkdir; ACTION_PATH=$TRIES_PATH/$date_prefix-$entry; return 0
+  fi
+  if ((TEST_KEYS)); then return 1; fi
+  restore_terminal
+  printf '\e[2J\e[H\e[?25hEnter new try name\n\n> %s-' "$date_prefix" >&2
+  IFS= read -r entry || entry=""
+  [[ -n $entry ]] || return 1
+  entry=$(normalize_spaces "$entry")
+  if ! valid_name "$entry"; then printf 'Error: invalid try name: %s\n' "$entry" >&2; return 1; fi
+  ACTION_TYPE=mkdir; ACTION_PATH=$TRIES_PATH/$date_prefix-$entry
+}
+
+SEARCH="" INPUT_CURSOR=0 CURSOR=0 SCROLL=0 ACTION_TYPE=""
+run_selector() {
+  local total key before index
+  scan_entries || return 1
+  SEARCH=$(normalize_spaces "$*")
+  [[ -n $AND_TYPE ]] && SEARCH=$(normalize_spaces "$AND_TYPE")
+  INPUT_CURSOR=${#SEARCH}
+  build_results
+
+  if ((AND_EXIT && !TEST_KEYS)); then render_main; return 1; fi
+  setup_terminal || return 1
+
+  while true; do
+    render_main
+    next_key || return 1
+    key=$KEY
+    [[ $key == __REDRAW__ ]] && continue
+
+    INPUT=$SEARCH
+    before=$INPUT
+    if handle_input_key "$key"; then
+      SEARCH=$INPUT; INPUT_CURSOR=$INPUT_CURSOR
+      if [[ $SEARCH != "$before" ]]; then CURSOR=0; SCROLL=0; build_results; fi
+      continue
+    fi
+
+    total=${#RESULT_NAMES[@]}; [[ -n $SEARCH ]] && ((total++))
+    case $key in
+      $'\r')
+        if ((${#MARKED_PATHS[@]})); then
+          if confirm_delete; then return 0; else MARKED_PATHS=(); MARKED_NAMES=(); fi
+        elif ((CURSOR < ${#RESULT_NAMES[@]})); then ACTION_TYPE=cd; ACTION_PATH=${RESULT_PATHS[CURSOR]}; return 0
+        elif [[ -n $SEARCH ]]; then prompt_create_name && return 0
+        fi
+        ;;
+      $'\e[A'|$'\x10') ((CURSOR > 0)) && ((CURSOR--)) ;;
+      $'\e[B'|$'\x0e'|$'\x0a') ((CURSOR < total - 1)) && ((CURSOR++)) ;;
+      $'\x04')
+        if ((CURSOR < ${#RESULT_NAMES[@]})); then
+          if is_marked "${RESULT_PATHS[CURSOR]}"; then remove_mark "${RESULT_PATHS[CURSOR]}"
+          else MARKED_PATHS[${#MARKED_PATHS[@]}]=${RESULT_PATHS[CURSOR]}; MARKED_NAMES[${#MARKED_NAMES[@]}]=${RESULT_NAMES[CURSOR]}
+          fi
+        fi
+        ;;
+      $'\x14') prompt_create_name && return 0 ;;
+      $'\x12')
+        if ((CURSOR < ${#RESULT_NAMES[@]})); then run_rename_dialog "$CURSOR" && return 0; fi
+        ;;
+      $'\x07')
+        if ((CURSOR < ${#RESULT_NAMES[@]})); then run_ascend_dialog "$CURSOR" && return 0; fi
+        ;;
+      $'\x03'|$'\e')
+        if ((${#MARKED_PATHS[@]})); then MARKED_PATHS=(); MARKED_NAMES=(); else return 1; fi
+        ;;
+    esac
+  done
+}
+
+script_delete_action() {
+  local i operand
+  add_cmd "cd $(q "$ACTION_BASE")"
+  for ((i=0; i<${#MARKED_NAMES[@]}; i++)); do
+    operand=${MARKED_NAMES[i]}; [[ $operand == -* ]] && operand=./$operand
+    add_cmd "test -d $(q "${MARKED_NAMES[i]}") && rm -rf $(q "$operand")"
+  done
+  add_cmd "cd $(q "$ORIGINAL_PWD") 2>/dev/null || cd $(q "$ACTION_BASE")"
+}
+
+cmd_selector() {
+  if [[ -n $AND_KEYS_RAW ]]; then
+    parse_test_keys "$AND_KEYS_RAW"
+    TEST_KEYS=1
+  fi
+  if run_selector "$@"; then
+    restore_terminal
+    case $ACTION_TYPE in
+      cd) script_cd "$ACTION_PATH" ;;
+      mkdir) script_mkdir_cd "$ACTION_PATH" ;;
+      rename) script_rename "$TRIES_PATH" "$ACTION_OLD" "$ACTION_NEW" ;;
+      ascend) script_ascend "$ACTION_SOURCE" "$ACTION_DEST" "$ACTION_BASENAME" "$TRIES_PATH" ;;
+      delete) script_delete_action ;;
+      *) printf 'Cancelled.\n'; return 1 ;;
+    esac
+    emit_script
+    return 0
+  fi
+  restore_terminal
+  printf 'Cancelled.\n'
+  return 1
+}
+
+cmd_dot() {
+  local path_arg=$1; shift
+  local custom="$*" repo base date_prefix full
+  repo=$(absolute_path "$path_arg")
+  if [[ $path_arg == . && -z $(trim "$custom") ]]; then
+    printf "Error: 'try .' requires a name argument\nUsage: try . <name>\n" >&2
+    return 1
+  fi
+  if [[ -n $(trim "$custom") ]]; then base=$(normalize_spaces "$custom"); else base=${repo##*/}; fi
+  if ! valid_name "$base"; then printf 'Error: invalid worktree name: %s\n' "$base" >&2; return 1; fi
+  date_prefix=$(date +%Y-%m-%d)
+  base=$(unique_worktree_base "$TRIES_PATH" "$date_prefix" "$base")
+  full=$TRIES_PATH/$date_prefix-$base
+  if [[ -e $repo/.git ]]; then script_worktree "$full" "$repo"; else script_mkdir_cd "$full"; fi
+  emit_script
+}
+
+cmd_worktree() {
+  local repo_arg=${1:-} repo custom date_prefix base full
+  shift 2>/dev/null || true
+  if [[ -n $repo_arg && $repo_arg != dir ]]; then repo=$(absolute_path "$repo_arg"); else repo=$PWD; fi
+  custom="$*"
+  if [[ -n $(trim "$custom") ]]; then base=$(normalize_spaces "$custom"); else base=${repo##*/}; fi
+  if ! valid_name "$base"; then printf 'Error: invalid worktree name: %s\n' "$base" >&2; return 1; fi
+  date_prefix=$(date +%Y-%m-%d)
+  base=$(unique_worktree_base "$TRIES_PATH" "$date_prefix" "$base")
+  full=$TRIES_PATH/$date_prefix-$base
+  script_worktree "$full" "$repo"
+  emit_script
+}
+
+# Route commands after all global options have been removed.
+COMMAND=${ARGS[0]:-}
+REST=("${ARGS[@]:1}")
+
+case $COMMAND in
+  '') print_help; exit 2 ;;
+  init) cmd_init "${REST[@]}" ;;
+  install) cmd_install "${REST[@]}" ;;
+  clone)
+    cmd_clone "${REST[@]}" || exit 1
+    emit_script
+    ;;
+  worktree) cmd_worktree "${REST[@]}" ;;
+  cd)
+    if [[ ${REST[0]:-} == .* ]]; then cmd_dot "${REST[@]}"
+    elif is_git_uri "${REST[0]:-}"; then cmd_clone "${REST[@]}" || exit 1; emit_script
+    else cmd_selector "${REST[@]}"
+    fi
+    ;;
+  exec)
+    SUB=${REST[0]:-}
+    SUBREST=("${REST[@]:1}")
+    case $SUB in
+      clone) cmd_clone "${SUBREST[@]}" || exit 1; emit_script ;;
+      worktree) cmd_worktree "${SUBREST[@]}" ;;
+      cd)
+        if [[ ${SUBREST[0]:-} == .* ]]; then cmd_dot "${SUBREST[@]}"
+        elif is_git_uri "${SUBREST[0]:-}"; then cmd_clone "${SUBREST[@]}" || exit 1; emit_script
+        else cmd_selector "${SUBREST[@]}"
+        fi
+        ;;
+      .*) cmd_dot "${REST[@]}" ;;
+      *)
+        if is_git_uri "$SUB"; then cmd_clone "${REST[@]}" || exit 1; emit_script
+        else cmd_selector "${REST[@]}"
+        fi
+        ;;
+    esac
+    ;;
+  .*) cmd_dot "${ARGS[@]}" ;;
+  *)
+    if is_git_uri "$COMMAND"; then cmd_clone "${ARGS[@]}" || exit 1; emit_script
+    else cmd_selector "${ARGS[@]}"
+    fi
+    ;;
+esac
