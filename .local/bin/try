@@ -82,13 +82,11 @@ Manual mode (without shell integration):
 
 Environment:
   TRY_PATH          Tries directory (default: ~/.local/share/tries)
-  TRY_PROJECTS      Graduate destination (default: parent of TRY_PATH)
 
 Keyboard:
   ↑/↓, Ctrl-P/N     Navigate
   Enter              Select / Create new
   Ctrl-R             Rename
-  Ctrl-G             Graduate (promote try to project)
   Ctrl-D             Mark for deletion
   Ctrl-T             Create new try
   Esc                Cancel
@@ -280,18 +278,6 @@ script_rename() {
   add_cmd "echo $(q "$new_path")"
   add_cmd "cd $(q "$new_path")"
   terminal_rename_commands "$new_path"
-}
-
-script_ascend() {
-  local source=$1 dest=$2 basename=$3 base=$4
-  if [[ -f $source/.git ]]; then
-    add_cmd "git worktree move $(q "$source") $(q "$dest")"
-  else
-    add_cmd "mv $(q "$source") $(q "$dest")"
-  fi
-  add_cmd "ln -s $(q "$dest") $(q "$base/$basename")"
-  add_cmd "echo $(q "Graduated: $basename → $dest")"
-  script_cd "$dest"
 }
 
 unique_worktree_base() {
@@ -545,7 +531,6 @@ parse_test_keys() {
         CTRL-D|CTRLD) KEYS[${#KEYS[@]}]=$'\x04' ;;
         CTRL-E|CTRLE) KEYS[${#KEYS[@]}]=$'\x05' ;;
         CTRL-F|CTRLF) KEYS[${#KEYS[@]}]=$'\x06' ;;
-        CTRL-G|CTRLG) KEYS[${#KEYS[@]}]=$'\x07' ;;
         CTRL-H|CTRLH) KEYS[${#KEYS[@]}]=$'\x08' ;;
         CTRL-J|CTRLJ) KEYS[${#KEYS[@]}]=$'\x0a' ;;
         CTRL-K|CTRLK) KEYS[${#KEYS[@]}]=$'\x0b' ;;
@@ -863,7 +848,7 @@ render_main() {
   if ((${#MARKED_PATHS[@]})); then
     append_center " DELETE MODE  ${#MARKED_PATHS[@]} marked  |  Ctrl-D: Toggle  Enter: Delete  Esc: Cancel" "$DANGER_BG"
   else
-    append_center '↑/↓: Navigate  Enter: Select  ^R: Rename  ^G: Graduate  ^D: Delete  Esc: Cancel' "$MUTED"
+    append_center '↑/↓: Navigate  Enter: Select  ^R: Rename  ^D: Delete  Esc: Cancel' "$MUTED"
   fi
   finish_frame
 }
@@ -877,24 +862,6 @@ render_rename() {
   append_blank; append_blank
   input_render "$INPUT" "$INPUT_CURSOR" "$((WIDTH - 12))"
   append_center_styled "${MUTED}New name: ${RESET_FG}$INPUT_RENDERED" "$((10 + INPUT_VISIBLE))"
-  if [[ -n $error ]]; then append_blank; append_center "$error" "$ACCENT"; fi
-  while ((ROW < HEIGHT - 2)); do append_blank; done
-  append_separator; append_center 'Enter: Confirm  Esc: Cancel' "$MUTED"
-  finish_frame
-}
-
-render_ascend() {
-  local current=$1 projects=$2 error=${3:-} hint
-  refresh_size; frame_start
-  append_center 'Graduate try to project' "$ACCENT"
-  append_separator
-  append_plain "$current"
-  append_blank
-  if [[ -n ${TRY_PROJECTS:-} ]]; then hint='$TRY_PROJECTS'; else hint='parent of $TRY_PATH'; fi
-  append_center "Destination ($hint: $projects)" "$MUTED"
-  input_render "$INPUT" "$INPUT_CURSOR" "$((WIDTH - 12))"
-  append_center_styled "${MUTED}Move to: ${RESET_FG}$INPUT_RENDERED" "$((9 + INPUT_VISIBLE))"
-  append_blank; append_center 'A symlink will be left in the tries directory' "$MUTED"
   if [[ -n $error ]]; then append_blank; append_center "$error" "$ACCENT"; fi
   while ((ROW < HEIGHT - 2)); do append_blank; done
   append_separator; append_center 'Enter: Confirm  Esc: Cancel' "$MUTED"
@@ -1042,36 +1009,6 @@ run_rename_dialog() {
   done
 }
 
-run_ascend_dialog() {
-  local index=$1 current=${RESULT_NAMES[index]} project projects error="" key dest parent
-  project=$current
-  if [[ $project =~ ^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-(.*)$ ]]; then project=${BASH_REMATCH[1]}; fi
-  if [[ -n ${TRY_PROJECTS:-} ]]; then projects=$(absolute_path "$TRY_PROJECTS"); else projects=${TRIES_PATH%/*}; fi
-  INPUT=$projects/$project; INPUT_CURSOR=${#INPUT}
-  while true; do
-    render_ascend "$current" "$projects" "$error"
-    next_key || return 1
-    key=$KEY
-    [[ $key == __REDRAW__ ]] && continue
-    if handle_input_key "$key"; then error=""; continue; fi
-    case $key in
-      $'\r')
-        dest=$(trim "$INPUT")
-        if [[ -z $dest ]]; then error='Destination cannot be empty'; continue; fi
-        dest=$(absolute_path "$dest")
-        parent=${dest%/*}
-        if [[ -e $dest || -L $dest ]]; then error="Destination already exists: $dest"
-        elif [[ ! -d $parent ]]; then error="Parent directory does not exist: $parent"
-        else
-          ACTION_TYPE=ascend; ACTION_SOURCE=${RESULT_PATHS[index]}; ACTION_DEST=$dest
-          ACTION_BASENAME=$current; return 0
-        fi
-        ;;
-      $'\e'|$'\x03') return 1 ;;
-    esac
-  done
-}
-
 remove_mark() {
   local target=$1 i j
   for ((i=0; i<${#MARKED_PATHS[@]}; i++)); do
@@ -1166,9 +1103,6 @@ run_selector() {
       $'\x12')
         if ((CURSOR < ${#RESULT_NAMES[@]})); then run_rename_dialog "$CURSOR" && return 0; fi
         ;;
-      $'\x07')
-        if ((CURSOR < ${#RESULT_NAMES[@]})); then run_ascend_dialog "$CURSOR" && return 0; fi
-        ;;
       $'\x03'|$'\e')
         if ((${#MARKED_PATHS[@]})); then MARKED_PATHS=(); MARKED_NAMES=(); else return 1; fi
         ;;
@@ -1197,7 +1131,6 @@ cmd_selector() {
       cd) script_cd "$ACTION_PATH" ;;
       mkdir) script_mkdir_cd "$ACTION_PATH" ;;
       rename) script_rename "$TRIES_PATH" "$ACTION_OLD" "$ACTION_NEW" ;;
-      ascend) script_ascend "$ACTION_SOURCE" "$ACTION_DEST" "$ACTION_BASENAME" "$TRIES_PATH" ;;
       delete) script_delete_action ;;
       *) return 1 ;;
     esac
