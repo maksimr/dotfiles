@@ -584,6 +584,7 @@ add_scanned_entry() {
 
 scan_entries() {
   local path record mtime candidates=()
+  NAMES=() PATHS=() MTIMES=() IS_LINK=()
   mkdir -p -- "$TRIES_PATH" 2>/dev/null || {
     printf 'Error: cannot create tries directory: %s\n' "$TRIES_PATH" >&2
     return 1
@@ -1020,14 +1021,27 @@ remove_mark() {
   done
 }
 
-prepare_delete() {
-  local base_real target_real i
+delete_marked() {
+  local base_real target_real i operand status
   base_real=$(physical_dir "$TRIES_PATH") || return 1
   for ((i=0; i<${#MARKED_PATHS[@]}; i++)); do
     target_real=$(physical_dir "${MARKED_PATHS[i]}") || return 1
     case $target_real in "$base_real"/*) ;; *) printf 'Error: Safety check failed: %s is not inside %s\n' "$target_real" "$base_real" >&2; return 1;; esac
   done
-  ACTION_TYPE=delete; ACTION_BASE=$base_real
+
+  (
+    cd -- "$base_real" || exit 1
+    for ((i=0; i<${#MARKED_NAMES[@]}; i++)); do
+      operand=${MARKED_NAMES[i]}; [[ $operand == -* ]] && operand=./$operand
+      if [[ -d ${MARKED_NAMES[i]} || -L ${MARKED_NAMES[i]} ]]; then rm -rf "$operand" || exit 1; fi
+    done
+  )
+  status=$?
+  [[ -d $ORIGINAL_PWD ]] || CWD_RECOVERY_BASE=$base_real
+  MARKED_PATHS=(); MARKED_NAMES=()
+  scan_entries || return 1
+  build_results
+  return "$status"
 }
 
 prompt_create_name() {
@@ -1048,7 +1062,12 @@ prompt_create_name() {
   ACTION_TYPE=mkdir; ACTION_PATH=$TRIES_PATH/$date_prefix-$entry
 }
 
-SEARCH="" INPUT_CURSOR=0 CURSOR=0 SCROLL=0 ACTION_TYPE=""
+SEARCH="" INPUT_CURSOR=0 CURSOR=0 SCROLL=0 ACTION_TYPE="" CWD_RECOVERY_BASE=""
+finish_selector_cancel() {
+  [[ -n $CWD_RECOVERY_BASE ]] || return 1
+  ACTION_TYPE=recover; ACTION_BASE=$CWD_RECOVERY_BASE
+}
+
 run_selector() {
   local total key before index needs_rebuild=0
   scan_entries || return 1
@@ -1068,7 +1087,7 @@ run_selector() {
       if ((needs_rebuild)); then build_results; needs_rebuild=0; fi
       render_main
     fi
-    next_key || return 1
+    next_key || { finish_selector_cancel; return; }
     key=$KEY
     [[ $key == __REDRAW__ ]] && continue
 
@@ -1085,7 +1104,7 @@ run_selector() {
     case $key in
       $'\r')
         if ((${#MARKED_PATHS[@]})); then
-          if prepare_delete; then return 0; else MARKED_PATHS=(); MARKED_NAMES=(); fi
+          delete_marked || { MARKED_PATHS=(); MARKED_NAMES=(); }
         elif ((CURSOR < ${#RESULT_NAMES[@]})); then ACTION_TYPE=cd; ACTION_PATH=${RESULT_PATHS[CURSOR]}; return 0
         elif [[ -n $SEARCH ]]; then prompt_create_name && return 0
         fi
@@ -1104,19 +1123,17 @@ run_selector() {
         if ((CURSOR < ${#RESULT_NAMES[@]})); then run_rename_dialog "$CURSOR" && return 0; fi
         ;;
       $'\x03'|$'\e')
-        if ((${#MARKED_PATHS[@]})); then MARKED_PATHS=(); MARKED_NAMES=(); else return 1; fi
+        if ((${#MARKED_PATHS[@]})); then
+          MARKED_PATHS=(); MARKED_NAMES=()
+        else
+          finish_selector_cancel; return
+        fi
         ;;
     esac
   done
 }
 
-script_delete_action() {
-  local i operand
-  add_cmd "cd $(q "$ACTION_BASE")"
-  for ((i=0; i<${#MARKED_NAMES[@]}; i++)); do
-    operand=${MARKED_NAMES[i]}; [[ $operand == -* ]] && operand=./$operand
-    add_cmd "test -d $(q "${MARKED_NAMES[i]}") && rm -rf $(q "$operand")"
-  done
+script_cwd_recovery() {
   add_cmd "cd $(q "$ORIGINAL_PWD") 2>/dev/null || cd $(q "$ACTION_BASE")"
 }
 
@@ -1131,7 +1148,7 @@ cmd_selector() {
       cd) script_cd "$ACTION_PATH" ;;
       mkdir) script_mkdir_cd "$ACTION_PATH" ;;
       rename) script_rename "$TRIES_PATH" "$ACTION_OLD" "$ACTION_NEW" ;;
-      delete) script_delete_action ;;
+      recover) script_cwd_recovery ;;
       *) return 1 ;;
     esac
     emit_script
