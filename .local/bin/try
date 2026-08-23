@@ -7,7 +7,6 @@ ORIGINAL_PWD=$PWD
 TRIES_PATH_OPT=""
 AND_TYPE=""
 AND_KEYS_RAW=""
-AND_CONFIRM=""
 AND_EXIT=0
 OUTPUT_SCRIPT=0
 COLORS=1
@@ -39,11 +38,6 @@ while (($#)); do
     --and-keys)
       if (($# < 2)); then printf 'Error: --and-keys requires a value\n' >&2; exit 1; fi
       AND_KEYS_RAW=$2; shift 2
-      ;;
-    --and-confirm=*) AND_CONFIRM=${1#*=}; shift ;;
-    --and-confirm)
-      if (($# < 2)); then printf 'Error: --and-confirm requires a value\n' >&2; exit 1; fi
-      AND_CONFIRM=$2; shift 2
       ;;
     --) shift; while (($#)); do ARGS[${#ARGS[@]}]=$1; shift; done ;;
     *) ARGS[${#ARGS[@]}]=$1; shift ;;
@@ -630,8 +624,10 @@ scan_entries() {
   fi
 }
 
+SIZE_VALID=0
 refresh_size() {
   local size rows cols tty_rows tty_cols
+  ((SIZE_VALID)) && return
   rows=${TRY_HEIGHT:-0}; cols=${TRY_WIDTH:-0}
   if [[ ! $rows =~ ^[1-9][0-9]*$ || ! $cols =~ ^[1-9][0-9]*$ ]]; then
     size=$(stty size 2>/dev/null || true)
@@ -644,6 +640,7 @@ refresh_size() {
   [[ $rows =~ ^[1-9][0-9]*$ ]] || rows=24
   [[ $cols =~ ^[1-9][0-9]*$ ]] || cols=80
   HEIGHT=$rows WIDTH=$cols
+  SIZE_VALID=1
 }
 
 build_results() {
@@ -665,7 +662,7 @@ build_results() {
   done < <(
     for ((i=0; i<${#NAMES[@]}; i++)); do
       printf '%d\t%s\t%s\n' "$i" "${NAMES[i]}" "${MTIMES[i]}"
-    done | TRY_QUERY=$SEARCH awk -F '\t' -v now="$(date +%s)" '
+    done | TRY_QUERY=$SEARCH awk -F '\t' -v now="$((EPOCH_BASE + SECONDS))" '
       BEGIN { query=tolower(ENVIRON["TRY_QUERY"]); qlen=length(query) }
       {
         idx=$1; name=$2; mtime=$3+0
@@ -821,8 +818,7 @@ is_marked() {
 render_main() {
   local body_space total start end i selected marked icon arrow background max_name meta prefix
   refresh_size
-  RENDER_NOW=$(date +%s)
-  RENDER_DATE=$(date +%Y-%m-%d)
+  RENDER_NOW=$((EPOCH_BASE + SECONDS))
   body_space=$((HEIGHT - 6)); ((body_space < 0)) && body_space=0
   total=${#RESULT_NAMES[@]}; [[ -n $SEARCH ]] && ((total++))
   ((CURSOR < 0)) && CURSOR=0
@@ -865,7 +861,7 @@ render_main() {
   while ((ROW < HEIGHT - 2)); do append_blank; done
   append_separator
   if ((${#MARKED_PATHS[@]})); then
-    append_center " DELETE MODE  ${#MARKED_PATHS[@]} marked  |  Ctrl-D: Toggle  Enter: Confirm  Esc: Cancel" "$DANGER_BG"
+    append_center " DELETE MODE  ${#MARKED_PATHS[@]} marked  |  Ctrl-D: Toggle  Enter: Delete  Esc: Cancel" "$DANGER_BG"
   else
     append_center '↑/↓: Navigate  Enter: Select  ^R: Rename  ^G: Graduate  ^D: Delete  Esc: Cancel' "$MUTED"
   fi
@@ -900,20 +896,6 @@ render_ascend() {
   append_center_styled "${MUTED}Move to: ${RESET_FG}$INPUT_RENDERED" "$((9 + INPUT_VISIBLE))"
   append_blank; append_center 'A symlink will be left in the tries directory' "$MUTED"
   if [[ -n $error ]]; then append_blank; append_center "$error" "$ACCENT"; fi
-  while ((ROW < HEIGHT - 2)); do append_blank; done
-  append_separator; append_center 'Enter: Confirm  Esc: Cancel' "$MUTED"
-  finish_frame
-}
-
-render_delete() {
-  local i count=${#MARKED_PATHS[@]}
-  refresh_size; frame_start
-  if ((count == 1)); then append_center 'Delete 1 directory?' "$ACCENT"; else append_center "Delete $count directories?" "$ACCENT"; fi
-  append_separator
-  for ((i=0; i<count && ROW<HEIGHT-5; i++)); do append_plain "${MARKED_NAMES[i]}" "$DANGER_BG"; done
-  append_blank; append_blank
-  input_render "$INPUT" "$INPUT_CURSOR" "$((WIDTH - 23))"
-  append_center_styled "${MUTED}Type YES to confirm: ${RESET_FG}$INPUT_RENDERED" "$((21 + INPUT_VISIBLE))"
   while ((ROW < HEIGHT - 2)); do append_blank; done
   append_separator; append_center 'Enter: Confirm  Esc: Cancel' "$MUTED"
   finish_frame
@@ -1016,7 +998,7 @@ setup_terminal() {
   stty raw -echo min 0 time 1 2>/dev/null
   printf '\e[?1049h\e]2;try\a\e[1 q' >&2
   TTY_ACTIVE=1
-  trap 'RESIZED=1' WINCH
+  trap 'RESIZED=1; SIZE_VALID=0' WINCH
   trap 'restore_terminal' EXIT
   trap 'restore_terminal; exit 129' HUP
   trap 'restore_terminal; exit 143' TERM
@@ -1097,32 +1079,14 @@ remove_mark() {
   done
 }
 
-confirm_delete() {
-  local key confirmation base_real target_real i
-  INPUT=""; INPUT_CURSOR=0
-  if [[ -n $AND_CONFIRM ]]; then INPUT=$AND_CONFIRM; INPUT_CURSOR=${#INPUT}; fi
-  while true; do
-    render_delete
-    if [[ -n $AND_CONFIRM ]]; then key=$'\r'; AND_CONFIRM=""
-    else next_key || return 1; key=$KEY
-    fi
-    [[ $key == __REDRAW__ ]] && continue
-    if handle_input_key "$key"; then continue; fi
-    case $key in
-      $'\r')
-        [[ $INPUT == YES ]] || return 1
-        base_real=$(physical_dir "$TRIES_PATH") || return 1
-        DELETE_REAL=()
-        for ((i=0; i<${#MARKED_PATHS[@]}; i++)); do
-          target_real=$(physical_dir "${MARKED_PATHS[i]}") || return 1
-          case $target_real in "$base_real"/*) ;; *) printf 'Error: Safety check failed: %s is not inside %s\n' "$target_real" "$base_real" >&2; return 1;; esac
-          DELETE_REAL[${#DELETE_REAL[@]}]=$target_real
-        done
-        ACTION_TYPE=delete; ACTION_BASE=$base_real; return 0
-        ;;
-      $'\e'|$'\x03') return 1 ;;
-    esac
+prepare_delete() {
+  local base_real target_real i
+  base_real=$(physical_dir "$TRIES_PATH") || return 1
+  for ((i=0; i<${#MARKED_PATHS[@]}; i++)); do
+    target_real=$(physical_dir "${MARKED_PATHS[i]}") || return 1
+    case $target_real in "$base_real"/*) ;; *) printf 'Error: Safety check failed: %s is not inside %s\n' "$target_real" "$base_real" >&2; return 1;; esac
   done
+  ACTION_TYPE=delete; ACTION_BASE=$base_real
 }
 
 prompt_create_name() {
@@ -1145,8 +1109,10 @@ prompt_create_name() {
 
 SEARCH="" INPUT_CURSOR=0 CURSOR=0 SCROLL=0 ACTION_TYPE=""
 run_selector() {
-  local total key before index
+  local total key before index needs_rebuild=0
   scan_entries || return 1
+  EPOCH_BASE=$(( $(date +%s) - SECONDS ))
+  RENDER_DATE=$(date +%Y-%m-%d)
   SEARCH=$(normalize_spaces "$*")
   [[ -n $AND_TYPE ]] && SEARCH=$(normalize_spaces "$AND_TYPE")
   INPUT_CURSOR=${#SEARCH}
@@ -1156,7 +1122,11 @@ run_selector() {
   setup_terminal || return 1
 
   while true; do
-    render_main
+    # Coalesce bursts: skip rebuild/render while more typed keys are buffered.
+    if [[ -z $TTY_BUFFER ]]; then
+      if ((needs_rebuild)); then build_results; needs_rebuild=0; fi
+      render_main
+    fi
     next_key || return 1
     key=$KEY
     [[ $key == __REDRAW__ ]] && continue
@@ -1165,15 +1135,16 @@ run_selector() {
     before=$INPUT
     if handle_input_key "$key"; then
       SEARCH=$INPUT; INPUT_CURSOR=$INPUT_CURSOR
-      if [[ $SEARCH != "$before" ]]; then CURSOR=0; SCROLL=0; build_results; fi
+      if [[ $SEARCH != "$before" ]]; then CURSOR=0; SCROLL=0; needs_rebuild=1; fi
       continue
     fi
 
+    if ((needs_rebuild)); then build_results; needs_rebuild=0; fi
     total=${#RESULT_NAMES[@]}; [[ -n $SEARCH ]] && ((total++))
     case $key in
       $'\r')
         if ((${#MARKED_PATHS[@]})); then
-          if confirm_delete; then return 0; else MARKED_PATHS=(); MARKED_NAMES=(); fi
+          if prepare_delete; then return 0; else MARKED_PATHS=(); MARKED_NAMES=(); fi
         elif ((CURSOR < ${#RESULT_NAMES[@]})); then ACTION_TYPE=cd; ACTION_PATH=${RESULT_PATHS[CURSOR]}; return 0
         elif [[ -n $SEARCH ]]; then prompt_create_name && return 0
         fi
