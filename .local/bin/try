@@ -833,7 +833,6 @@ render_main() {
   fi
 
   frame_start
-  append_plain '🏠 Try Directory Selection' "$ACCENT"
   append_separator
   input_render "$SEARCH" "$INPUT_CURSOR" "$((WIDTH - 9))"
   append_line "$MUTED"'Search: '"$INPUT_RENDERED" "$((8 + INPUT_VISIBLE))"
@@ -844,8 +843,8 @@ render_main() {
     selected=0; ((i == CURSOR)) && selected=1
     if ((i < ${#RESULT_NAMES[@]})); then
       marked=0; is_marked "${RESULT_PATHS[i]}" && marked=1
-      if ((marked)); then icon='🗑️'; elif ((RESULT_LINKS[i])); then icon='🔗'; else icon='📁'; fi
-      if ((selected)); then arrow="$HIGHLIGHT→ $RESET_FG$RESET_INTENSITY$SELECTED_FG"; else arrow='  '; fi
+      if ((marked)); then icon=''; elif ((RESULT_LINKS[i])); then icon=''; else icon=''; fi
+      if ((selected)); then arrow="${HIGHLIGHT}→ $RESET_FG$RESET_INTENSITY$SELECTED_FG"; else arrow='  '; fi
       if ((marked)); then background=$DANGER_BG; ((selected)) && background+=$SELECTED_FG
       elif ((selected)); then background="$SELECTED_BG$SELECTED_FG"
       else background=""
@@ -857,8 +856,8 @@ render_main() {
       if ((selected)); then prefix=''; else prefix=$MUTED; fi
       append_line "$arrow$icon $STYLED_NAME" "$((5 + ${#DISPLAY_NAME}))" "$meta" "$prefix" "$background"
     else
-      if ((selected)); then arrow="$HIGHLIGHT→ $RESET_FG$RESET_INTENSITY$SELECTED_FG"; background="$SELECTED_BG$SELECTED_FG"; else arrow='  '; background=''; fi
-      local label="📂 Create new: $RENDER_DATE-$SEARCH"
+      if ((selected)); then arrow="${HIGHLIGHT}→ $RESET_FG$RESET_INTENSITY$SELECTED_FG"; background="$SELECTED_BG$SELECTED_FG"; else arrow='  '; background=''; fi
+      local label="Create new: $RENDER_DATE-$SEARCH"
       if ((${#label} > WIDTH - 3)); then label=${label:0:WIDTH-4}…; fi
       append_line "$arrow$label" "$((2 + ${#label} + 1))" '' '' "$background"
     fi
@@ -876,9 +875,9 @@ render_main() {
 render_rename() {
   local current=$1 error=${2:-}
   refresh_size; frame_start
-  append_center '📝 Rename directory' "$ACCENT"
+  append_center 'Rename directory' "$ACCENT"
   append_separator
-  append_plain "📁 $current"
+  append_plain "$current"
   append_blank; append_blank
   input_render "$INPUT" "$INPUT_CURSOR" "$((WIDTH - 12))"
   append_center_styled "${MUTED}New name: ${RESET_FG}$INPUT_RENDERED" "$((10 + INPUT_VISIBLE))"
@@ -891,9 +890,9 @@ render_rename() {
 render_ascend() {
   local current=$1 projects=$2 error=${3:-} hint
   refresh_size; frame_start
-  append_center '🚀 Graduate try to project' "$ACCENT"
+  append_center 'Graduate try to project' "$ACCENT"
   append_separator
-  append_plain "📁 $current"
+  append_plain "$current"
   append_blank
   if [[ -n ${TRY_PROJECTS:-} ]]; then hint='$TRY_PROJECTS'; else hint='parent of $TRY_PATH'; fi
   append_center "Destination ($hint: $projects)" "$MUTED"
@@ -909,9 +908,9 @@ render_ascend() {
 render_delete() {
   local i count=${#MARKED_PATHS[@]}
   refresh_size; frame_start
-  if ((count == 1)); then append_center '🗑️ Delete 1 directory?' "$ACCENT"; else append_center "🗑️ Delete $count directories?" "$ACCENT"; fi
+  if ((count == 1)); then append_center 'Delete 1 directory?' "$ACCENT"; else append_center "Delete $count directories?" "$ACCENT"; fi
   append_separator
-  for ((i=0; i<count && ROW<HEIGHT-5; i++)); do append_plain "🗑️ ${MARKED_NAMES[i]}" "$DANGER_BG"; done
+  for ((i=0; i<count && ROW<HEIGHT-5; i++)); do append_plain "${MARKED_NAMES[i]}" "$DANGER_BG"; done
   append_blank; append_blank
   input_render "$INPUT" "$INPUT_CURSOR" "$((WIDTH - 23))"
   append_center_styled "${MUTED}Type YES to confirm: ${RESET_FG}$INPUT_RENDERED" "$((21 + INPUT_VISIBLE))"
