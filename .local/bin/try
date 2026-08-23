@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 VERSION="dev"
-SCRIPT_WARNING="# if you can read this, you didn't launch try from an alias. run try --help."
 ORIGINAL_PWD=$PWD
 
 # CLI options
@@ -10,6 +9,7 @@ AND_TYPE=""
 AND_KEYS_RAW=""
 AND_CONFIRM=""
 AND_EXIT=0
+OUTPUT_SCRIPT=0
 COLORS=1
 SHOW_HELP=0
 SHOW_VERSION=0
@@ -54,13 +54,15 @@ print_help() {
   cat >&2 <<EOF
 try ${VERSION} - ephemeral workspace manager
 
-To use try, add to your shell config:
+Shell integration is optional. It keeps the selected directory in your current shell:
 
   # bash/zsh (~/.bashrc or ~/.zshrc)
   eval "\$(try init ~/.local/share/tries)"
 
   # fish (~/.config/fish/config.fish)
   eval (try init ~/.local/share/tries | string collect)
+
+Without shell integration, try opens a new shell in the selected directory.
 
 Usage:
   try [query]           Interactive directory selector
@@ -198,16 +200,25 @@ add_cmd() { CMDS[${#CMDS[@]}]=$1; }
 
 emit_script() {
   local i
-  printf '%s\n' "$SCRIPT_WARNING"
+  if ((OUTPUT_SCRIPT)); then
+    for ((i=0; i<${#CMDS[@]}; i++)); do
+      if ((i)); then printf '  '; fi
+      printf '%s' "${CMDS[i]}"
+      if ((i < ${#CMDS[@]} - 1)); then
+        printf ' && \\\n'
+      else
+        printf '\n'
+      fi
+    done
+    return
+  fi
+
   for ((i=0; i<${#CMDS[@]}; i++)); do
-    if ((i)); then printf '  '; fi
-    printf '%s' "${CMDS[i]}"
-    if ((i < ${#CMDS[@]} - 1)); then
-      printf ' && \\\n'
-    else
-      printf '\n'
-    fi
+    eval "${CMDS[i]}" || return 1
   done
+  if [[ $PWD != "$ORIGINAL_PWD" ]]; then
+    exec "${SHELL:-/bin/sh}" -i
+  fi
 }
 
 terminal_rename_commands() {
@@ -1217,7 +1228,7 @@ cmd_selector() {
       *) return 1 ;;
     esac
     emit_script
-    return 0
+    return
   fi
   restore_terminal
   return 1
@@ -1259,7 +1270,7 @@ COMMAND=${ARGS[0]:-}
 REST=("${ARGS[@]:1}")
 
 case $COMMAND in
-  '') print_help; exit 2 ;;
+  '') cmd_selector ;;
   init) cmd_init "${REST[@]}" ;;
   install) cmd_install "${REST[@]}" ;;
   clone)
@@ -1274,6 +1285,7 @@ case $COMMAND in
     fi
     ;;
   exec)
+    OUTPUT_SCRIPT=1
     SUB=${REST[0]:-}
     SUBREST=("${REST[@]:1}")
     case $SUB in
