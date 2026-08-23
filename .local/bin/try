@@ -944,10 +944,14 @@ fill_tty_buffer() {
 }
 
 read_interactive_key() {
-  local next final
+  local next final first
   while [[ -z $TTY_BUFFER ]]; do
     if ((RESIZED)); then RESIZED=0; KEY='__REDRAW__'; return 0; fi
-    fill_tty_buffer
+    first=""
+    if IFS= read -rsn 1 first; then
+      [[ -n $first ]] || first=$'\n'
+      TTY_BUFFER=$first
+    fi
   done
 
   KEY=${TTY_BUFFER:0:1}
@@ -994,7 +998,7 @@ setup_terminal() {
     return 1
   fi
   TTY_STATE=$(stty -g 2>/dev/null)
-  # macOS Bash 3.2 rejects fractional read timeouts; VTIME polls every 100ms.
+  # macOS Bash 3.2 rejects fractional read timeouts; VTIME now only delays a lone Esc.
   stty raw -echo min 0 time 1 2>/dev/null
   printf '\e[?1049h\e]2;try\a\e[1 q' >&2
   TTY_ACTIVE=1
