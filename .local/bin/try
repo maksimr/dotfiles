@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="1.10.1"
+VERSION="dev"
 SCRIPT_WARNING="# if you can read this, you didn't launch try from an alias. run try --help."
 ORIGINAL_PWD=$PWD
 
@@ -52,7 +52,7 @@ done
 
 print_help() {
   cat >&2 <<EOF
-try v${VERSION} - ephemeral workspace manager
+try ${VERSION} - ephemeral workspace manager
 
 To use try, add to your shell config:
 
