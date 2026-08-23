@@ -454,5 +454,10 @@ if [ "$(command -v mise)"  ]; then
   export PATH="$HOME/.local/share/mise/shims:$PATH"
 fi
 
+# try shell integration
+if [ "$(command -v try)" ]; then
+  eval "$(try init)"
+fi
+
 [[ -s "$HOME/.sh.local" ]] && source "$HOME/.sh.local"
 [[ -s "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
