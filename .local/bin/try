@@ -782,11 +782,12 @@ style_entry_name() {
   for ((i=0; i<${#display}; i++)); do
     ch=${display:i:1}
     if [[ $ch == '…' ]]; then STYLED_NAME+=$ch; continue; fi
-    if [[ ,$positions, == *,$i,* && ! ($date_prefixed -eq 1 && $i -lt 10) ]]; then
+    if ((date_prefixed && i <= 10)); then
+      if ((selected)); then suffix=$SELECTED_FG; else suffix=$RESET_FG; fi
+      STYLED_NAME+="$MUTED$ch$suffix"
+    elif [[ ,$positions, == *,$i,* ]]; then
       if ((selected)); then suffix="$RESET_FG$RESET_INTENSITY$SELECTED_FG"; else suffix="$RESET_FG$RESET_INTENSITY"; fi
       STYLED_NAME+="$HIGHLIGHT$ch$suffix"
-    elif ((date_prefixed && i <= 10 && !selected)); then
-      STYLED_NAME+="$MUTED$ch$RESET_FG"
     else
       STYLED_NAME+=$ch
     fi
