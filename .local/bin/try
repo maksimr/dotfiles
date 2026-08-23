@@ -949,7 +949,7 @@ read_interactive_key() {
     if ((RESIZED)); then RESIZED=0; KEY='__REDRAW__'; return 0; fi
     first=""
     if IFS= read -rsn 1 first; then
-      [[ -n $first ]] || first=$'\n'
+      [[ -n $first ]] || first=$'\r'
       TTY_BUFFER=$first
     fi
   done
