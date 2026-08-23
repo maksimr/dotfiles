@@ -57,10 +57,10 @@ try v${VERSION} - ephemeral workspace manager
 To use try, add to your shell config:
 
   # bash/zsh (~/.bashrc or ~/.zshrc)
-  eval "\$(try init ~/src/tries)"
+  eval "\$(try init ~/.local/share/tries)"
 
   # fish (~/.config/fish/config.fish)
-  eval (try init ~/src/tries | string collect)
+  eval (try init ~/.local/share/tries | string collect)
 
 Usage:
   try [query]           Interactive directory selector
@@ -85,7 +85,7 @@ Manual mode (without shell integration):
   try exec [query]      Output shell script to eval
 
 Environment:
-  TRY_PATH          Tries directory (default: ~/src/tries)
+  TRY_PATH          Tries directory (default: ~/.local/share/tries)
   TRY_PROJECTS      Graduate destination (default: parent of TRY_PATH)
 
 Keyboard:
@@ -169,7 +169,7 @@ valid_name() {
   [[ -n $1 && $1 != . && $1 != .. && $1 != */* ]]
 }
 
-DEFAULT_TRIES=${TRY_PATH:-${HOME:-}/src/tries}
+DEFAULT_TRIES=${TRY_PATH:-${HOME:-}/.local/share/tries}
 TRIES_PATH=${TRIES_PATH_OPT:-$DEFAULT_TRIES}
 TRIES_PATH=$(absolute_path "$TRIES_PATH")
 SELF=$(self_path)
