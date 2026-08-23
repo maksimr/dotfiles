@@ -802,7 +802,7 @@ is_marked() {
 }
 
 render_main() {
-  local body_space total start end i selected marked icon arrow background max_name meta prefix
+  local body_space total start end i selected marked icon arrow background max_name meta prefix create_base label
   refresh_size
   RENDER_NOW=$((EPOCH_BASE + SECONDS))
   body_space=$((HEIGHT - 6)); ((body_space < 0)) && body_space=0
@@ -839,7 +839,8 @@ render_main() {
       append_line "$arrow$icon $STYLED_NAME" "$((5 + ${#DISPLAY_NAME}))" "$meta" "$prefix" "$background"
     else
       if ((selected)); then arrow="${HIGHLIGHT}→ $RESET_FG$RESET_INTENSITY$SELECTED_FG"; background="$SELECTED_BG$SELECTED_FG"; else arrow='  '; background=''; fi
-      local label="Create new: $RENDER_DATE-$SEARCH"
+      create_base=$(unique_worktree_base "$TRIES_PATH" "$RENDER_DATE" "$SEARCH")
+      label="Create new: $RENDER_DATE-$create_base"
       if ((${#label} > WIDTH - 3)); then label=${label:0:WIDTH-4}…; fi
       append_line "$arrow$label" "$((2 + ${#label} + 1))" '' '' "$background"
     fi
@@ -1050,6 +1051,7 @@ prompt_create_name() {
   if [[ -n $SEARCH ]]; then
     entry=$(normalize_spaces "$SEARCH")
     if ! valid_name "$entry"; then printf 'Error: invalid try name: %s\n' "$entry" >&2; return 1; fi
+    entry=$(unique_worktree_base "$TRIES_PATH" "$date_prefix" "$entry")
     ACTION_TYPE=mkdir; ACTION_PATH=$TRIES_PATH/$date_prefix-$entry; return 0
   fi
   if ((TEST_KEYS)); then return 1; fi
@@ -1059,6 +1061,7 @@ prompt_create_name() {
   [[ -n $entry ]] || return 1
   entry=$(normalize_spaces "$entry")
   if ! valid_name "$entry"; then printf 'Error: invalid try name: %s\n' "$entry" >&2; return 1; fi
+  entry=$(unique_worktree_base "$TRIES_PATH" "$date_prefix" "$entry")
   ACTION_TYPE=mkdir; ACTION_PATH=$TRIES_PATH/$date_prefix-$entry
 }
 
