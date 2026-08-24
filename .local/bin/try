@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Pure bash version of https://pages.tobi.lutke.com/try/
 
 VERSION="dev"
 ORIGINAL_PWD=$PWD
