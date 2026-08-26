@@ -20,7 +20,7 @@
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:@gotgenes/pi-permission-system",
     "npm:pi-web-access",
-    "npm:@ff-labs/pi-fff",
+    "npm:@ff-labs/pi-fff@nightly",
     {
       "source": "git:github.com/DietrichGebert/ponytail",
       "skills": []

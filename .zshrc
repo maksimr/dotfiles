@@ -156,11 +156,12 @@ alias co="$([ "$(command -v code-insiders)" ] && echo "code-insiders -n " || ech
 alias zshprofiling="time zsh -i -c exit"
 alias devcontainer='npx -y @devcontainers/cli'
 
-function pipilot() {
-  local prompt_str="$@"
-  pi --fff-enable-home-scan=false --no-session --exclude-tools write --model xai/grok-4.6:high "'$prompt_str'"
+function aipilot() {
+  local user_prompt="$@"
+  local system_prompt="$(cat ~/.pi/agent/agents/Ask.agent.md)"
+  pi --tui-mode regular --fff-mode tools-only --no-session --exclude-tools write --model xai/grok-4.6:high --system-prompt "'$system_prompt'" -- "'$user_prompt'"
 }
-alias '??'='pipilot'
+alias '??'='aipilot'
 
 # Grab the last command + its output from the terminal scrollback and open pi with it
 # Usage: wtf [extra context...]   (lines of scrollback: WTF_LINES, default 1000)
