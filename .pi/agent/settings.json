@@ -13,8 +13,7 @@
     "claude-fable-5",
     "claude-opus-5",
     "gpt-5.6-sol",
-    "grok-4.6",
-    "k3"
+    "grok-4.6"
   ],
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
