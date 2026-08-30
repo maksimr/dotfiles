@@ -8,11 +8,19 @@
  * - Type to filter (case-insensitive substring match)
  * - Navigation/confirm/cancel follow the tui.select.* keybindings
  *   (rebindable in keybindings.json, e.g. ctrl+n/ctrl+p for down/up)
+ * - Ctrl+D deletes the highlighted entry from history
  */
 
 import type { ExtensionAPI, ExtensionContext } from '@earendil-works/pi-coding-agent';
 import { DynamicBorder } from '@earendil-works/pi-coding-agent';
-import { fuzzyFilter, Input, type SelectItem, SelectList, Spacer } from '@earendil-works/pi-tui';
+import {
+  fuzzyFilter,
+  Input,
+  matchesKey,
+  type SelectItem,
+  SelectList,
+  Spacer
+} from '@earendil-works/pi-tui';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -116,7 +124,13 @@ export default function (pi: ExtensionAPI) {
       }
 
       // Newest first
-      const entries = [...history].reverse();
+      let entries = [...history].reverse();
+
+      const deleteEntry = (entry: HistoryEntry): void => {
+        entries = entries.filter((e) => e !== entry);
+        history = history.filter((e) => e.text !== entry.text);
+        saveHistory(history);
+      };
 
       const selected = await ctx.ui.custom<string | null>(
         (tui, theme, keybindings, done) => {
@@ -192,6 +206,19 @@ export default function (pi: ExtensionAPI) {
                 keybindings.matches(data, 'tui.select.cancel')
               ) {
                 selectList.handleInput(data);
+              } else if (matchesKey(data, 'ctrl+d')) {
+                // Ctrl+D: drop the highlighted entry
+                const item = selectList.getSelectedItem();
+                if (item) {
+                  const index = Number(item.value);
+                  const entry = filtered[index];
+                  if (entry) {
+                    deleteEntry(entry);
+                    applyFilter();
+                    selectList = makeList(makeItems(), listWidth);
+                    selectList.setSelectedIndex(Math.min(index, filtered.length - 1));
+                  }
+                }
               } else {
                 const before = input.getValue();
                 input.handleInput(data);
