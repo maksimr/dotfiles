@@ -30,7 +30,12 @@ NAME="pi-$(basename "$PWD")"
 
 if docker container inspect "$NAME" >/dev/null 2>&1; then
   docker start "$NAME" >/dev/null
-  exec docker exec -it -w /workspace "$NAME" pi "$@"
+  docker exec -it -w /workspace "$NAME" pi "$@" || status=$?
+  # Stop container only when no sessions remain
+  if [ "$(docker inspect -f '{{len .ExecIDs}}' "$NAME" 2>/dev/null || echo 99)" -eq 0 ]; then
+    docker stop "$NAME" >/dev/null
+  fi
+  exit "${status:-0}"
 fi
 
 # Shadow these folders in the workspace with anonymous volumes
