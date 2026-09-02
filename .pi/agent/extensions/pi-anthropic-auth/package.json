@@ -1,0 +1,15 @@
+{
+  "name": "pi-anthropic-auth",
+  "version": "2.0.6",
+  "description": "Pi extension package for Anthropic OAuth compatibility",
+  "type": "module",
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": ">=0.80.8",
+    "@earendil-works/pi-coding-agent": ">=0.80.8"
+  }
+}
