@@ -162,6 +162,7 @@ function aipilot() {
   pi --tui-mode regular --fff-mode tools-only --no-session --exclude-tools write --model xai/grok-4.6:high --system-prompt "'$system_prompt'" -- "'$user_prompt'"
 }
 alias '??'='aipilot'
+alias '?'='aipilot'
 
 # Grab the last command + its output from the terminal scrollback and open pi with it
 # Usage: wtf [extra context...]   (lines of scrollback: WTF_LINES, default 1000)
