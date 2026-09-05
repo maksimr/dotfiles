@@ -146,6 +146,7 @@ fi
 alias mk="mkdir -p"
 alias t="touch"
 alias q="exit"
+alias /q="exit"
 alias rm="rm -rf"
 alias pl="sudo"
 alias mimimi="git pull --rebase"
@@ -456,7 +457,7 @@ if [ "$(command -v mise)"  ]; then
 fi
 
 # try shell integration
-if [ "$(command -v try)" ]; then
+if (( ! $+functions[try] )) && [ "$(command -v try)" ]; then
   eval "$(try init)"
 fi
 
