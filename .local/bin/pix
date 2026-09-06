@@ -28,9 +28,10 @@ set -e
 
 NAME="pi-$(basename "$PWD")"
 
-# Pass $PWD/.env into the container
+# Pass $PWD/.env and NPM_TOKEN into the container
 ENV_ARGS=()
 [ -f .env ] && ENV_ARGS=(--env-file .env)
+[ -n "${NPM_TOKEN:-}" ] && ENV_ARGS+=(-e NPM_TOKEN)
 
 if docker container inspect "$NAME" >/dev/null 2>&1; then
   docker start "$NAME" >/dev/null
