@@ -458,7 +458,7 @@ fi
 
 # try shell integration
 if [ "$(command -v try)" ]; then
-  eval "$(try init)"
+  _eval_and_cache 'try' 'try init'
 fi
 
 [[ -s "$HOME/.sh.local" ]] && source "$HOME/.sh.local"
