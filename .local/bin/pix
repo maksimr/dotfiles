@@ -28,9 +28,13 @@ set -e
 
 NAME="pi-$(basename "$PWD")"
 
+# Pass $PWD/.env into the container
+ENV_ARGS=()
+[ -f .env ] && ENV_ARGS=(--env-file .env)
+
 if docker container inspect "$NAME" >/dev/null 2>&1; then
   docker start "$NAME" >/dev/null
-  docker exec -it -w /workspace "$NAME" pi "$@" || status=$?
+  docker exec -it -w /workspace "${ENV_ARGS[@]}" "$NAME" pi "$@" || status=$?
   # Stop container only when no sessions remain
   if [ "$(docker inspect -f '{{len .ExecIDs}}' "$NAME" 2>/dev/null || echo 99)" -eq 0 ]; then
     docker stop "$NAME" >/dev/null
@@ -50,6 +54,7 @@ done < <(find . \( $(printf -- '-name %s -o ' "${SHADOW_DIRS[@]}" | sed 's/ -o $
 
 docker create -it --name "$NAME" \
   -v "$PWD:/workspace" -w /workspace \
+  "${ENV_ARGS[@]}" \
   -v "$HOME/.pi/agent/auth.json:/home/agent/.pi/agent/auth.json" \
   "${VOL_ARGS[@]}" \
   pi "$@" >/dev/null
