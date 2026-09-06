@@ -457,7 +457,7 @@ if [ "$(command -v mise)"  ]; then
 fi
 
 # try shell integration
-if (( ! $+functions[try] )) && [ "$(command -v try)" ]; then
+if [ "$(command -v try)" ]; then
   eval "$(try init)"
 fi
 

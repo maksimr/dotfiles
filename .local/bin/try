@@ -1218,6 +1218,8 @@ case $COMMAND in
     SUB=${REST[0]:-}
     SUBREST=("${REST[@]:1}")
     case $SUB in
+      init) cmd_init "${SUBREST[@]}" ;;
+      install) cmd_install "${SUBREST[@]}" ;;
       clone) cmd_clone "${SUBREST[@]}" || exit 1; emit_script ;;
       worktree) cmd_worktree "${SUBREST[@]}" ;;
       cd)
