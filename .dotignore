@@ -2,6 +2,7 @@
 .gitignore
 .DS_Store
 .vscode
+.delta
 .dotignore
 node_modules
 package-lock.json
