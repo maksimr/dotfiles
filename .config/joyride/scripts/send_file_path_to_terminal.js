@@ -9,7 +9,7 @@ async function main() {
   const selection = editor.selection;
   const start = selection.start.line + 1;
   const end = selection.end.line + 1;
-  const range = (selection.isEmpty) ? '' : (start === end ? `:${start}` : `:${start}-${end}`);
+  const range = start === end ? `:${start}` : `:${start}-${end}`;
   terminal.sendText(filePath + range + ' ', false);
   terminal.show();
 }
