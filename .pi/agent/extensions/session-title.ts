@@ -17,6 +17,7 @@ export default function (pi: ExtensionAPI) {
   let frame = 0;
   let timer: NodeJS.Timeout | undefined;
   let lastCtx: ExtensionContext | undefined;
+  let lastTitle = '';
 
   const render = (ctx: ExtensionContext) => {
     lastCtx = ctx;
@@ -29,7 +30,8 @@ export default function (pi: ExtensionAPI) {
     const dots = DOTS[Math.floor(frame / DOTS_FRAMES_PER_STEP) % DOTS.length];
     const status = waiting ? 'waiting' : running ? `working${dots}` : 'idle';
     const parts = [icon, basename(ctx.cwd), status, pi.getSessionName()];
-    ctx.ui.setTitle(parts.filter(Boolean).join(SEPARATOR));
+    lastTitle = parts.filter(Boolean).join(SEPARATOR);
+    ctx.ui.setTitle(lastTitle);
   };
 
   const stopTimer = () => {
@@ -58,6 +60,8 @@ export default function (pi: ExtensionAPI) {
 
   function ringBell() {
     process.stdout.write('\x07');
+    // OSC 99 desktop notification (VS Code: terminal.integrated.enableNotifications)
+    process.stdout.write(`\x1b]99;;${lastTitle}\x1b\\`);
   }
 
   pi.events.on(PERMISSION_PROMPT_CHANNEL, () => {
