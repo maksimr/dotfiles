@@ -306,7 +306,7 @@ git_push() {
 
 git_pull() {
   local output
-  if ! output=$(git -C "$BASE_DIR" pull --progress 2>&1); then
+  if ! output=$(git -C "$BASE_DIR" pull --rebase --progress 2>&1); then
     echo "$output" >&2
     exit 1
   fi
