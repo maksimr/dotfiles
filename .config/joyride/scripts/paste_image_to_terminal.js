@@ -23,15 +23,21 @@ async function main() {
     return;
   }
 
+  const terminal = vscode.window.activeTerminal;
   let target = local;
   const ws = vscode.workspace.workspaceFolders?.[0]?.uri;
   if (vscode.env.remoteName && ws) {
     target = `/tmp/${name}`;
     await vscode.workspace.fs.writeFile(ws.with({ path: target }), fs.readFileSync(local));
     fs.rmSync(local, { force: true });
+  } else if (terminal) {
+    const container = await containerOf(terminal);
+    if (container) {
+      target = `/tmp/${name}`;
+      await promisify(execFile)('docker', ['cp', local, `${container}:${target}`]).catch(() => { target = local; });
+    }
   }
 
-  const terminal = vscode.window.activeTerminal;
   if (terminal) {
     terminal.sendText(target + ' ', false);
     terminal.show();
@@ -41,3 +47,28 @@ async function main() {
 exports.main = main;
 
 main();
+
+// Walk the terminal shell's process tree looking for a `docker exec/attach pi-...`.
+/** @param {import('vscode').Terminal} terminal */
+async function containerOf(terminal) {
+  const pid = await terminal.processId;
+  if (!pid) return null;
+  try {
+    const { stdout } = await promisify(execFile)('ps', ['-ax', '-o', 'pid=,ppid=,command=']);
+    const procs = stdout.split('\n').flatMap((l) => {
+      const m = l.trim().match(/^(\d+)\s+(\d+)\s+(.*)$/);
+      return m ? [{ pid: +m[1], ppid: +m[2], cmd: m[3] }] : [];
+    });
+    const queue = [pid];
+    while (queue.length) {
+      const cur = queue.shift();
+      for (const p of procs) {
+        if (p.ppid !== cur) continue;
+        const m = p.cmd.match(/docker\s+(?:exec|attach)\b.*?\b(pi-[\w.-]+)/);
+        if (m) return m[1];
+        queue.push(p.pid);
+      }
+    }
+  } catch { }
+  return null;
+}
