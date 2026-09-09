@@ -27,6 +27,7 @@
 set -e
 
 NAME="pi-$(basename "$PWD")"
+PI_CMD=(pi --yolo $@)
 
 # Pass $PWD/.env and NPM_TOKEN into the container
 ENV_ARGS=()
@@ -35,7 +36,7 @@ ENV_ARGS=()
 
 if docker container inspect "$NAME" >/dev/null 2>&1; then
   docker start "$NAME" >/dev/null
-  docker exec -it -w /workspace "${ENV_ARGS[@]}" "$NAME" pi "$@" || status=$?
+  docker exec -it -w /workspace "${ENV_ARGS[@]}" "$NAME" "${PI_CMD[@]}" || status=$?
   # Stop container only when no sessions remain
   if [ "$(docker inspect -f '{{len .ExecIDs}}' "$NAME" 2>/dev/null || echo 99)" -eq 0 ]; then
     docker stop "$NAME" >/dev/null
@@ -58,7 +59,7 @@ docker create -it --name "$NAME" \
   "${ENV_ARGS[@]}" \
   -v "$HOME/.pi/agent/auth.json:/home/agent/.pi/agent/auth.json" \
   "${VOL_ARGS[@]}" \
-  pi "$@" >/dev/null
+  "${PI_CMD[@]}" >/dev/null
 
 if [ ${#CHOWN_DIRS[@]} -gt 0 ]; then
   docker run --rm -u root --volumes-from "$NAME" --entrypoint chown pi agent:agent "${CHOWN_DIRS[@]}"
