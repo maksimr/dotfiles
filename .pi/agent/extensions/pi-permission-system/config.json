@@ -1,4 +1,5 @@
 {
+  "authorizerChain": ["yolo"],
   "permission": {
     "*": "allow",
     "bash": {
