@@ -59,7 +59,7 @@ docker create -it --name "$NAME" \
   "${ENV_ARGS[@]}" \
   -v "$HOME/.pi/agent/auth.json:/home/agent/.pi/agent/auth.json" \
   "${VOL_ARGS[@]}" \
-  "${PI_CMD[@]}" >/dev/null
+  pi "${PI_CMD[@]}" >/dev/null
 
 if [ ${#CHOWN_DIRS[@]} -gt 0 ]; then
   docker run --rm -u root --volumes-from "$NAME" --entrypoint chown pi agent:agent "${CHOWN_DIRS[@]}"
