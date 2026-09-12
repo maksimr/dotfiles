@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
-# Run udot/pi updates in every container created by .local/bin/pix (name pi-*).
-# Stopped containers are started, updated, then stopped again.
-failed=0
-for name in $(docker ps -a --filter name='^pi-' --format '{{.Names}}'); do
-  echo "==> $name"
-  was_running=$(docker inspect -f '{{.State.Running}}' "$name")
-  [ "$was_running" = true ] || docker start "$name" >/dev/null
-  docker exec "$name" udot update &&
-    docker exec "$name" pi update &&
-    docker exec "$name" pi update --extensions ||
-    { echo "!! $name update failed" >&2; failed=1; }
-  [ "$was_running" = true ] || docker stop "$name" >/dev/null
-done
-exit $failed
+# Update pi and dotfiles shared by all pix sandboxes, using a throwaway
+# updater container:
+#   - pi-bin volume:   pi itself (npm install into /opt/pi)
+#   - pi-agent volume: pi packages/extensions (~/.pi)
+#   - ~/.dotfiles:     git pull on the host clone (mounted rw here, ro in sandboxes)
+# Sandboxes pick the updates up on their next pi session; no recreation needed.
+set -e
+
+docker run --rm --entrypoint bash \
+  -v pi-bin:/opt/pi \
+  -v pi-agent:/home/agent/.pi \
+  -v "$HOME/.dotfiles:/home/agent/.dotfiles:ro" \
+  pi -c '
+    set -e
+    udot apply --only=.pi --only=.local/bin
+    pi update
+    pi update --extensions
+    curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+    rtk init -g --agent pi
+  '
