@@ -1,5 +1,6 @@
 // @ts-check
 const vscode = require('vscode');
+const terminalNotify = require('./terminal_notify.js');
 
 const globalObj = /** @type {globalThis & { joyrideDisposables?: vscode.Disposable[] }} */ (globalThis);
 globalObj.joyrideDisposables = globalObj.joyrideDisposables ?? [];
@@ -13,6 +14,7 @@ exports.main = function() {
   }
 
   preventJoyrideOutputTerminal(joyrideDisposables);
+  terminalNotify.main(joyrideDisposables);
 }
 
 function preventJoyrideOutputTerminal(/**@type {vscode.Disposable[]}*/ disposables) {

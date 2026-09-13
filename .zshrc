@@ -461,5 +461,14 @@ if [ "$(command -v try)" ]; then
   _eval_and_cache 'try' 'try init'
 fi
 
+# VS Code terminal profiles with custom `args` get no shell-integration
+# injection, and `exec pi` leaves no shell to emit markers -> extensions see
+# no terminal output (Joyride scripts/terminal_notify.js gets nothing).
+# Emit the markers by hand for `zsh -c` launches: prompt start/end, command
+# line, command start. No 633;D, so everything after counts as output.
+if [[ "$TERM_PROGRAM" == "vscode" && -n "$ZSH_EXECUTION_STRING" ]]; then
+  printf '\e]633;A\a\e]633;B\a\e]633;E;%s\a\e]633;C\a' "$ZSH_EXECUTION_STRING"
+fi
+
 [[ -s "$HOME/.sh.local" ]] && source "$HOME/.sh.local"
 [[ -s "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
