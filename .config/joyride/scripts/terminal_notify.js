@@ -202,12 +202,16 @@ function makeScanner(terminal) {
 
 // Terminals revived after a VS Code restart never get shell integration
 // re-attached (microsoft/vscode#208645), so shell execution events never fire
-// and OSC 99 is invisible in them. Relaunch any terminal that still lacks
-// shell integration shortly after startup - the revived shells are freshly
-// spawned and idle at that point, so nothing of value is killed.
+// and OSC 99 is invisible in them. Only relaunch command profiles running
+// exec pi or exec pix; leave ordinary interactive shells alone.
 async function fixRevivedTerminals() {
   const dead = vscode.window.terminals.filter((t) => {
-    return !t.shellIntegration && !t.exitStatus;
+    if (t.shellIntegration || t.exitStatus || !("shellArgs" in t.creationOptions)) return false;
+    const args = t.creationOptions.shellArgs;
+    // ponytail: only array-form, direct exec profiles; extend for other launch forms.
+    if (!Array.isArray(args)) return false;
+    const commandFlag = args.findIndex((arg) => /^-[il]*c[il]*$/.test(arg));
+    return commandFlag !== -1 && /^\s*exec\s+pix?(?:\s|$)/.test(args[commandFlag + 1] ?? "");
   });
   if (!dead.length) return;
   const active = vscode.window.activeTerminal;
