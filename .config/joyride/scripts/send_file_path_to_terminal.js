@@ -5,7 +5,7 @@ async function main() {
   const editor = vscode.window.activeTextEditor;
   const terminal = vscode.window.activeTerminal;
   if (!editor || !terminal) return;
-  const filePath = editor.document.uri.fsPath;
+  const filePath = vscode.workspace.asRelativePath(editor.document.uri, false);
   const selection = editor.selection;
   const start = selection.start.line + 1;
   const end = selection.end.line + 1;
