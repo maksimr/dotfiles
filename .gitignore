@@ -7,3 +7,4 @@
 .tern-project
 .tokensave/
 .claude/.headroom_wrap_marker.json
+.delta
