@@ -1,0 +1,60 @@
+import { spawn } from 'node:child_process';
+import { readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import type { ExtensionAPI, ExtensionContext } from '@earendil-works/pi-coding-agent';
+
+// Lock content: running | ok | failed. mtime = last change.
+const LOCK = join(tmpdir(), 'pi-auto-update.lock');
+const INTERVAL_MS = 6 * 60 * 60 * 1000;
+
+function tryLock(): boolean {
+  try {
+    writeFileSync(LOCK, 'running', { flag: 'wx' });
+    return true;
+  } catch {
+    try {
+      if (Date.now() - statSync(LOCK).mtimeMs < INTERVAL_MS) return false;
+    } catch {}
+    rmSync(LOCK, { force: true });
+    try {
+      writeFileSync(LOCK, 'running', { flag: 'wx' });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}
+
+const fmt = (ms: number) =>
+  new Date(ms).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+export default function (pi: ExtensionAPI) {
+  let current: ExtensionContext | undefined;
+  const render = () => {
+    try {
+      const state = readFileSync(LOCK, 'utf8').trim();
+      const time = fmt(statSync(LOCK).mtimeMs);
+      const text =
+        state === 'running' ? 'updating…' : state === 'failed' ? `update: failed` : `updated: ${time}`;
+      current?.ui.setStatus('auto-update', current.ui.theme.fg('dim', text));
+    } catch {} // no lock yet, or ctx stale after reload
+  };
+
+  pi.on('session_start', (event, ctx) => {
+    // Interactive only: skip print mode, subagents.
+    if (!ctx.hasUI) return;
+    current = ctx;
+    if (event.reason === 'startup' && tryLock()) {
+      // `--all` = `pi update` + `pi update --extensions`. Child writes the result, so it survives pi exiting first.
+      const script = '"$0" "$1" update --all && echo ok > "$2" || echo failed > "$2"';
+      const child = spawn('/bin/sh', ['-c', script, process.execPath, process.argv[1], LOCK], {
+        detached: true,
+        stdio: 'ignore'
+      });
+      child.on('exit', render);
+      child.unref();
+    }
+    render();
+  });
+}
