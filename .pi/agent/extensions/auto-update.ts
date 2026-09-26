@@ -26,11 +26,17 @@ function tryLock(): boolean {
   }
 }
 
-const fmt = (ms: number) =>
-  new Date(ms).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+const rtf = new Intl.RelativeTimeFormat('en', { style: 'narrow', numeric: 'auto' });
+const fmt = (ms: number) => {
+  const min = Math.round((ms - Date.now()) / 60_000);
+  if (min > -60) return rtf.format(min, 'minute');
+  if (min > -1440) return rtf.format(Math.round(min / 60), 'hour');
+  return rtf.format(Math.round(min / 1440), 'day');
+};
 
 export default function (pi: ExtensionAPI) {
   let current: ExtensionContext | undefined;
+  let timer: NodeJS.Timeout | undefined;
   const render = () => {
     try {
       const state = readFileSync(LOCK, 'utf8').trim();
@@ -56,5 +62,10 @@ export default function (pi: ExtensionAPI) {
       child.unref();
     }
     render();
+    clearInterval(timer);
+    timer = setInterval(render, 60_000); // keep relative time fresh
+    timer.unref();
   });
+
+  pi.on('session_shutdown', () => clearInterval(timer));
 }
