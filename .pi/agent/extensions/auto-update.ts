@@ -6,7 +6,7 @@ import type { ExtensionAPI, ExtensionContext } from '@earendil-works/pi-coding-a
 
 // Lock content: running | ok | failed. mtime = last change.
 const LOCK = join(tmpdir(), 'pi-auto-update.lock');
-const INTERVAL_MS = 6 * 60 * 60 * 1000;
+const INTERVAL_MS = 3 * 60 * 60 * 1000;
 
 function tryLock(): boolean {
   try {
