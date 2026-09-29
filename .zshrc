@@ -160,7 +160,7 @@ alias devcontainer='npx -y @devcontainers/cli'
 function aipilot() {
   local user_prompt="$@"
   local system_prompt="$(cat ~/.pi/agent/agents/Ask.agent.md)"
-  pi --auto-exit --tui-mode regular --fff-mode tools-only --no-session --exclude-tools write --model openai-codex/gpt-6.1-sol:high --system-prompt "'$system_prompt'" -- "'$user_prompt'"
+  pi --auto-exit --offline --tui-mode regular --fff-mode tools-only --no-session --exclude-tools write --model openai-codex/gpt-6.1-sol:high --system-prompt "'$system_prompt'" -- "'$user_prompt'"
 }
 alias '??'='aipilot'
 alias '?'='aipilot'
