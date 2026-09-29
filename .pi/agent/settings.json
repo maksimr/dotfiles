@@ -5,6 +5,7 @@
   "defaultModel": "claude-opus-5-5",
   "defaultThinkingLevel": "high",
   "enableSkillCommands": true,
+  "defaultTools": ["+codemode"],
   "quietStartup": false,
   "warnings": {
     "anthropicExtraUsage": false
