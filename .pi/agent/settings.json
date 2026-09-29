@@ -6,7 +6,7 @@
   "defaultThinkingLevel": "high",
   "enableSkillCommands": true,
   "defaultTools": ["+codemode"],
-  "quietStartup": false,
+  "quietStartup": true,
   "warnings": {
     "anthropicExtraUsage": false
   },
