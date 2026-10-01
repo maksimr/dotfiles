@@ -14,8 +14,7 @@ docker run --rm --entrypoint bash \
   pi -c '
     set -e
     udot apply --only=.pi --only=.local/bin
-    pi update
-    pi update --extensions
+    pi update --all
     curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
     rtk init -g --agent pi
   '
