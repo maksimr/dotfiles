@@ -1,13 +1,38 @@
 font-family = "JetBrains Mono Thin"
 font-size = 32
+# Thin has no bold face; Terminal draws bold with the regular font ("Use bold fonts" off)
+font-synthetic-style = no-bold,no-bold-italic
 background = "#333333"
 background-opacity = 0.9
+
+# colors from Terminal.app profile "Maksim Ryzhikov" (unset slots = Terminal defaults)
+foreground = #c7c7c7
+cursor-color = #d1d1d1
+selection-background = #cce4ff
+# white default bold + bright palette for colored bold (Terminal "Use bright colors for bold text")
+bold-color = #ffffff
+palette = 0=#000000
+palette = 3=#adad27
+palette = 4=#492ee1
+palette = 5=#d338d3
+palette = 6=#33bbc8
+palette = 7=#b3b3b3
+palette = 8=#818383
+palette = 9=#ff6d67
+palette = 10=#7ebe81
+palette = 11=#fefb67
+palette = 12=#6871ff
+palette = 13=#ff76e6
+palette = 14=#81d4e6
+palette = 15=#fffee6
 window-decoration = none
 macos-titlebar-style = hidden
 title = " "
 bell-features = no-title
 quit-after-last-window-closed = true
 maximize = true
+
+keybind = cmd+shift+o=toggle_background_opacity
 
 # requires Accessibility permission
 #keybind = global:cmd+grave_accent=toggle_quick_terminal
