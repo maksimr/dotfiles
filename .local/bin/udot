@@ -8,6 +8,7 @@ shopt -s dotglob nullglob
 
 DRY_RUN=''
 FORCE=''
+FORCE_PULL=''
 MODULE_PATH=''
 MODULE_URL=''
 EXCLUDES_FILE=''
@@ -308,6 +309,10 @@ git_pull() {
   local output
   if ! output=$(git -C "$BASE_DIR" pull --rebase --progress 2>&1); then
     echo "$output" >&2
+    # rebase --abort succeeds only on a rebase conflict, so other failures (e.g. network) never drop local commits
+    if [[ -n $FORCE_PULL ]] && git -C "$BASE_DIR" rebase --abort > /dev/null 2>&1; then
+      mut git -C "$BASE_DIR" reset --hard '@{u}' && return 0
+    fi
     exit 1
   fi
   echo "$output"
@@ -339,7 +344,7 @@ Usage: $cmd <command> [options]
   $cmd ls             --base-dir=<path> --home-dir=<path>
   $cmd restore        --base-dir=<path> --home-dir=<path>
   $cmd restore <path> --base-dir=<path> --home-dir=<path>
-  $cmd update         --base-dir=<path> --home-dir=<path>
+  $cmd update         --base-dir=<path> --home-dir=<path> [--force-pull]
   $cmd use <url>      --base-dir=<path> --home-dir=<path> [--exclude=<path1>] [--only=<path1> --only=<path2>]
   $cmd install        --module-path=<path> --module-url=<url>
 
@@ -361,6 +366,7 @@ Options
   --excludes-file  Path to file with exclude patterns. By default "$DEFAULT_EXCLUDES_FILE"
   --only           Process only matched files or directories. Remembered for future "update"/"apply" runs
   --force          Force to overwrite existing files
+  --force-pull     On "update" conflict replace local commits with remote ones
 
 $BASH $BASH_VERSION $OSTYPE $SHELL
 EOF
@@ -384,6 +390,7 @@ main() {
       --module-url=*) MODULE_URL=${arg#*=} ;;
       --dry-run) DRY_RUN=1 ;;
       --force) FORCE=1 ;;
+      --force-pull) FORCE_PULL=1 ;;
       -*) ;;
       *) POSITIONAL+=("$arg") ;;
     esac
