@@ -3655,7 +3655,7 @@ Write the file using the write tool. Only write the file, nothing else.`;
       );
 
       const container = new Container();
-      container.addChild(new Text("⚙  Subagent Settings", 0, 0));
+      container.addChild(new Text("Subagent Settings", 0, 0));
       container.addChild(new Spacer(1));
       container.addChild(list);
 
