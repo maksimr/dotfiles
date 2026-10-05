@@ -1,0 +1,8 @@
+{
+  "name": "pi-subagents",
+  "private": true,
+  "license": "MIT",
+  "pi": {
+    "extensions": ["./src/index.ts"]
+  }
+}
