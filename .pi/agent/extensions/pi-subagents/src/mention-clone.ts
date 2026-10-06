@@ -170,15 +170,10 @@ export async function runMentionClone(opts: MentionCloneOptions): Promise<Mentio
     );
     session = created.session;
 
-    // The clone rebuilds a system prompt from cwd and agentDir, which is close
-    // but not the live one — extensions contribute to it per turn. Copy the
-    // real thing, so the copy reasons under the instructions the user's model
-    // is actually working under.
-    const systemPrompt = ctx.getSystemPrompt?.();
-    if (systemPrompt) session.agent.state.systemPrompt = systemPrompt;
-
     // The conversation itself. Pushed rather than assigned so the array the
-    // session was built around stays the one it goes on using.
+    // session was built around stays the one it goes on using. Its system
+    // messages carry the live system prompt (pi >= 0.86 keeps the prompt in the
+    // transcript; `state.systemPrompt` is a read-only replay of it).
     session.agent.state.messages.push(...conversation.messages);
 
     // User text first, reminder after — the order Claude Code's attachment
