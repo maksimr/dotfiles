@@ -5,8 +5,9 @@
  * routes the message to that agent instead of the main model. Its grammar is
  * reproduced here so the two behave identically:
  *
- *   - suggestions fire on `@` at the start of the input or after whitespace,
- *     followed by `[\w-]*` (so `@src/foo.ts` is a file, never an agent);
+ *   - suggestions fire only on `@` at the very start of the input, followed by
+ *     `[\w-]*` (so `@src/foo.ts` is a file, never an agent) — the same place a
+ *     send is recognized, so an `@` mid-prompt is always a file;
  *   - a send is recognized only at the START of the input, and only with a
  *     non-empty message after the handle. That is why a bare `@code-review`
  *     goes to the main model rather than anywhere near the agent.
@@ -20,11 +21,10 @@
  */
 
 /**
- * Suggestion trigger: `@` at a token boundary plus the partial handle typed so
- * far. Ported from Claude Code, including the CJK sentence-ending punctuation
- * it accepts as a boundary.
+ * Suggestion trigger: `@` at the start of the first line plus the partial
+ * handle typed so far. Tested against the text before the cursor on line 0.
  */
-export const MENTION_TRIGGER = /(^|[\s。、？！])@([\w-]*)$/;
+export const MENTION_TRIGGER = /^@([\w-]*)$/;
 
 /** Send grammar: leading `@handle`, then a non-empty message. */
 const MENTION_SEND = /^@([\w-]+)\s+([\s\S]+)$/;

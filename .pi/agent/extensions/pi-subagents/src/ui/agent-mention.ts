@@ -30,12 +30,12 @@
  * Both halves ship under ONE `prefix`, which is sound because wherever BOTH sides
  * produce rows they measured the same span. pi's `extractAtPrefix` takes the
  * token after the last of `{space, tab, ", ', =}` and keeps it only if it starts
- * with `@`; `MENTION_TRIGGER` matches `@[\w-]*` at the cursor, after start-of-line
- * or `[\s。、？！]`. Where those two disagree, exactly one side answers and there
- * is nothing to merge: `@src/index.ts` and `@"my file` are pi's alone (no handle
- * matches), `=@ex` is pi's alone (`=` is a delimiter to pi, not a boundary to us),
- * and `。@ex` is ours alone (the reverse). A merged response therefore never
- * carries a prefix from one side and an item from the other.
+ * with `@`; `MENTION_TRIGGER` matches `@[\w-]*` only when it is everything
+ * before the cursor on the first line — the prompt starts with it. Where those
+ * two disagree, only pi answers: `@src/index.ts` and `@"my file` (no handle
+ * matches), and any `@` after other text (agents are offered only where a send
+ * is recognized). A merged response therefore never carries a prefix from one
+ * side and an item from the other.
  *
  * Offering never-started types is a deliberate step beyond Claude Code, whose
  * registry holds only live tasks, so an agent you had not launched yet was
@@ -131,7 +131,8 @@ export function createMentionProvider(
     triggerCharacters: ["@"],
 
     async getSuggestions(lines, cursorLine, cursorCol, options): Promise<AutocompleteSuggestions | null> {
-      const mine = isEnabled() ? mentionItems(roster(), lines[cursorLine] ?? "", cursorCol) : null;
+      // Only at the very start of the prompt — the one place a send is recognized.
+      const mine = isEnabled() && cursorLine === 0 ? mentionItems(roster(), lines[0] ?? "", cursorCol) : null;
       // Asked unconditionally: pi owns `@` and must keep answering for it even
       // when a handle matches too. That is the same work vanilla pi does on any
       // `@` keystroke — a capped `fd` search, or nothing at all when the host
@@ -183,13 +184,13 @@ function mentionItems(roster: MentionTarget[], line: string, cursorCol: number):
   const match = MENTION_TRIGGER.exec(line.slice(0, cursorCol));
   if (!match) return null;
 
-  const typed = match[2].toLowerCase();
+  const typed = match[1].toLowerCase();
   const items: AutocompleteItem[] = [];
   for (const target of roster) {
     if (!target.handle.toLowerCase().startsWith(typed)) continue;
     items.push({ value: `@${target.handle}`, label: `@${target.handle}`, description: describeTarget(target) });
   }
-  return items.length > 0 ? { items, prefix: `@${match[2]}` } : null;
+  return items.length > 0 ? { items, prefix: `@${match[1]}` } : null;
 }
 
 /** Name the action that will actually happen, so the list never mispromises. */

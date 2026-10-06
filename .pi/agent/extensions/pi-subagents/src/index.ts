@@ -801,27 +801,33 @@ export default function (pi: ExtensionAPI) {
       // also avoids the race where a consumer loaded after us misses the event.
       pi.events.emit("subagents:ready", {});
     }
-    // Stack `@handle` suggestions on pi's built-in autocomplete. Registered at
-    // most once per activation: pi appends wrappers to a list it never prunes,
-    // so a second call would layer a duplicate provider on the first. TUI only
-    // — print mode has no such method, and RPC mode's is a no-op.
-    if (ctx.mode === "tui" && !mentionProviderRegistered) {
-      mentionProviderRegistered = true;
-      ctx.ui.addAutocompleteProvider(current =>
-        createMentionProvider(
-          current,
-          // Plain text, not renderAgentName: the same label FleetView and the
-          // widget show, but the autocomplete description cannot carry ANSI.
-          () => mentionRoster(manager, mentionTypes(), type => getConfig(type).displayName),
-          isAgentMentionsEnabled,
-        ),
-      );
-    }
     // Last, and only here: CLI flag values are applied by the host AFTER every
     // extension factory has run, so this is the earliest point the real value
     // exists. Detached inside — a workflow must not hold up session startup.
     resolveWorkflowCollisions(ctx);
     runWorkflowFlag(ctx);
+  });
+
+  // Stack `@handle` suggestions on pi's autocomplete. Not in session_start: pi
+  // runs session_start handlers in load order (user extensions before
+  // packages), and wrappers registered later sit OUTSIDE us. A package like
+  // pi-fff answers `@` itself without delegating inward, so agents never
+  // showed. resources_discover fires after every session_start handler, which
+  // makes us the outermost wrapper — and we always delegate inward.
+  // Registered at most once per activation: pi appends wrappers to a list it
+  // never prunes. TUI only — print mode has no such method, RPC's is a no-op.
+  pi.on("resources_discover", (_event, ctx) => {
+    if (ctx.mode !== "tui" || mentionProviderRegistered) return;
+    mentionProviderRegistered = true;
+    ctx.ui.addAutocompleteProvider(current =>
+      createMentionProvider(
+        current,
+        // Plain text, not renderAgentName: the same label FleetView and the
+        // widget show, but the autocomplete description cannot carry ANSI.
+        () => mentionRoster(manager, mentionTypes(), type => getConfig(type).displayName),
+        isAgentMentionsEnabled,
+      ),
+    );
   });
 
   /** Agent types `@` can start, in the shape the roster wants. */
