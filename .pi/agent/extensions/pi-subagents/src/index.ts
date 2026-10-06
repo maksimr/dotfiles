@@ -3747,6 +3747,32 @@ Write the file using the write tool. Only write the file, nothing else.`;
     handler: async (_args, ctx) => { await showAgentsMenu(ctx); },
   });
 
+  // `/delegate <prompt>` — a background general-purpose agent pinned to the main
+  // session's live model and thinking level. Passed explicitly: left unset,
+  // the child resolves thinking from settings, not from a mid-session `/think`.
+  pi.registerCommand("delegate", {
+    description: "Start a background agent with this session's model and thinking level",
+    handler: async (args, ctx) => {
+      const prompt = args.trim();
+      if (!prompt) {
+        ctx.ui.notify("Usage: /delegate <prompt>", "warning");
+        return;
+      }
+      try {
+        const id = spawnTopLevel(pi, ctx, "general-purpose", prompt, {
+          description: describeMention(prompt),
+          model: ctx.model,
+          thinkingLevel: pi.getThinkingLevel(),
+          isBackground: true,
+        });
+        await manager.awaitStartup(id);
+        ctx.ui.notify(`Started agent ${id}`, "info");
+      } catch (err) {
+        ctx.ui.notify(`Could not start agent: ${err instanceof Error ? err.message : String(err)}`, "error");
+      }
+    },
+  });
+
   /**
    * What `/agents → Workflows` and the fleet list's `workflow` rows need from
    * here. One object, built once: both entry points open the same inspector,
