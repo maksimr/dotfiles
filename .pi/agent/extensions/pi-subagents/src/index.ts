@@ -3766,15 +3766,15 @@ Write the file using the write tool. Only write the file, nothing else.`;
     handler: async (_args, ctx) => { await showAgentsMenu(ctx); },
   });
 
-  // `/delegate <prompt>` — a background general-purpose agent pinned to the main
+  // `/subtask <prompt>` — a background general-purpose agent pinned to the main
   // session's live model and thinking level. Passed explicitly: left unset,
   // the child resolves thinking from settings, not from a mid-session `/think`.
-  pi.registerCommand("delegate", {
+  pi.registerCommand("subtask", {
     description: "Start a background agent with this session's model and thinking level",
     handler: async (args, ctx) => {
       const prompt = args.trim();
       if (!prompt) {
-        ctx.ui.notify("Usage: /delegate <prompt>", "warning");
+        ctx.ui.notify("Usage: /subtask <prompt>", "warning");
         return;
       }
       try {
