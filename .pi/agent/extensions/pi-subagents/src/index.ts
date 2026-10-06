@@ -1108,7 +1108,8 @@ export default function (pi: ExtensionAPI) {
   // The last two arguments keep a conversation overlay opened here identical to
   // one opened from `/agents`: same setting on the way in, same persist out.
   const fleet = new FleetList(manager, agentActivity, isShowCostEnabled, getViewerMarkdown,
-    (mode) => chooseViewerMarkdown(mode, currentCtx as unknown as ExtensionCommandContext | undefined));
+    (mode) => chooseViewerMarkdown(mode, currentCtx as unknown as ExtensionCommandContext | undefined),
+    (record, message) => { if (currentCtx) messageAgent(currentCtx, record, message); });
   let fleetViewEnabled = true;
   function isFleetViewEnabled(): boolean { return fleetViewEnabled; }
   function setFleetViewEnabled(b: boolean): void { fleetViewEnabled = b; fleet.setEnabled(b); }
@@ -1225,6 +1226,25 @@ export default function (pi: ExtensionAPI) {
    *
    * Callers must have already established that the record has a session.
    */
+  /**
+   * The conversation viewer's composer: steer a live run, resume a finished one
+   * in the background with the same settings as an `@handle` mention resume.
+   */
+  function messageAgent(ctx: ExtensionContext, record: AgentRecord, message: string): void {
+    if (record.status === "running" || record.status === "queued") {
+      manager.steer(record.id, message);
+      return;
+    }
+    const config = getAgentConfig(record.type);
+    startBackgroundResume(ctx, record, message, {
+      outputTranscript: config?.outputTranscript ?? getOutputTranscriptDefault(),
+      maxTurns: normalizeMaxTurns(config?.maxTurns ?? getDefaultMaxTurns()),
+    }).then(
+      (resumed) => { if (!resumed) ctx.ui.notify(`Could not resume "${record.description}".`, "warning"); },
+      (err) => ctx.ui.notify(`Could not resume "${record.description}": ${err instanceof Error ? err.message : String(err)}`, "error"),
+    );
+  }
+
   async function startBackgroundResume(
     ctx: ExtensionContext,
     existing: AgentRecord,
@@ -2932,15 +2952,14 @@ Terse command-style prompts produce shallow, generic work.
 
     const { ConversationViewer, VIEWPORT_HEIGHT_PCT } = await import("./ui/conversation-viewer.js");
     const session = record.session;
-    const activity = agentActivity.get(record.id);
 
     await ctx.ui.custom<undefined>(
       (tui, theme, keybindings, done) => {
-        return new ConversationViewer(tui, session, record, activity, theme, done, () => {
+        return new ConversationViewer(tui, session, record, () => agentActivity.get(record.id), theme, done, () => {
           if (manager.abort(record.id)) {
             ctx.ui.notify(`Stopped "${record.description}".`, "info");
           }
-        }, keybindings, (message: string) => manager.steer(record.id, message), showCost, getViewerMarkdown, (mode) => chooseViewerMarkdown(mode, ctx));
+        }, keybindings, (message: string) => messageAgent(ctx, record, message), showCost, getViewerMarkdown, (mode) => chooseViewerMarkdown(mode, ctx));
       },
       {
         overlay: true,
@@ -3766,7 +3785,7 @@ Write the file using the write tool. Only write the file, nothing else.`;
           isBackground: true,
         });
         await manager.awaitStartup(id);
-        ctx.ui.notify(`Started agent ${id}`, "info");
+        ctx.ui.notify(`Started @${manager.getRecord(id)?.handle ?? id}`, "info");
       } catch (err) {
         ctx.ui.notify(`Could not start agent: ${err instanceof Error ? err.message : String(err)}`, "error");
       }

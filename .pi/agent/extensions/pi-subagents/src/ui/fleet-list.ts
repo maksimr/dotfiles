@@ -144,6 +144,8 @@ export class FleetList {
      * point. Omitted → `m` still cycles, viewer-locally.
      */
     private onViewerMarkdown?: (mode: ViewerMarkdownMode) => void,
+    /** The viewer composer's send: steer a live run, resume a finished one. */
+    private onMessage?: (record: AgentRecord, message: string) => void,
   ) {}
 
   // ---- Lifecycle ----
@@ -404,7 +406,6 @@ export class FleetList {
       return;
     }
     const session = record.session;
-    const activity = this.agentActivity.get(record.id);
     this.viewingAgentId = record.id;
 
     void this.ui.custom<undefined>(
@@ -414,14 +415,14 @@ export class FleetList {
           tui,
           session,
           record,
-          activity,
+          () => this.agentActivity.get(record.id),
           theme,
           done,
           () => {
             if (this.manager.abort(record.id)) this.ui?.notify(`Stopped "${record.description}".`, "info");
           },
           keybindings,
-          (message: string) => this.manager.steer(record.id, message),
+          this.onMessage && ((message: string) => this.onMessage?.(record, message)),
           this.showCost(),
           this.viewerMarkdown,
           this.onViewerMarkdown,

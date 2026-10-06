@@ -164,14 +164,15 @@ export class ConversationViewer implements Component {
     private tui: TUI,
     private session: AgentSession,
     private record: AgentRecord,
-    private activity: AgentActivity | undefined,
+    /** Read live: a resume from the composer replaces the agent's tracker. */
+    private getActivity: () => AgentActivity | undefined,
     private theme: Theme,
     private done: (result: undefined) => void,
     /** Abort the agent shown here. Omitted → no stop affordance (e.g. read-only history). */
     private onStop?: () => void,
     /** User keybindings from `ctx.ui.custom()`. Omitted → hardcoded defaults. */
     keybindings?: ViewerKeybindings,
-    /** Send a steering message to the agent. Omitted → no compose affordance. */
+    /** Message the agent — steers a live run, resumes a finished one. Omitted → no compose affordance. */
     private onSteer?: (message: string) => void,
     /**
      * Whether the header shows an estimated cost after the token count. Read
@@ -214,9 +215,9 @@ export class ConversationViewer implements Component {
       return;
     }
 
-    // Enter opens the steering composer (only while the agent can still be
-    // steered) — then type + Enter sends, Esc or an empty submit returns. When
-    // not steerable, fall through so the key still disarms a pending stop.
+    // Enter opens the composer — then type + Enter sends, Esc or an empty
+    // submit returns. Without a handler, fall through so the key still disarms
+    // a pending stop.
     if (matchesKey(data, "enter") && this.canSteer()) {
       this.stopArmed = false;
       this.openComposer();
@@ -307,14 +308,14 @@ export class ConversationViewer implements Component {
     const duration = formatDuration(this.record.startedAt, this.record.completedAt);
 
     const headerParts: string[] = [duration];
-    const toolUses = this.activity?.toolUses ?? this.record.toolUses;
+    const toolUses = this.getActivity()?.toolUses ?? this.record.toolUses;
     if (toolUses > 0) headerParts.unshift(`${toolUses} tool${toolUses === 1 ? "" : "s"}`);
     // Spend from the record, context from the live session: the record is the
     // only total that survives the agent finishing and the only one carrying a
     // nested child's spend.
     const tokens = getLifetimeTotal(this.record.lifetimeUsage);
     if (tokens > 0) {
-      const percent = getSessionContextPercent(this.activity?.session);
+      const percent = getSessionContextPercent(this.getActivity()?.session);
       headerParts.push(formatSessionTokens(tokens, percent, th, this.record.compactionCount));
     }
     const cost = this.showCost ? formatCost(getLifetimeCost(this.record.lifetimeUsage)) : "";
@@ -349,7 +350,7 @@ export class ConversationViewer implements Component {
       // Composer row: the Input renders its own `> ` prompt and cursor.
       lines.push(row(this.composer.render(innerW)[0] ?? ""));
       const composeHint = th.fg("dim", "Enter send · Esc cancel");
-      const composeLeft = th.fg("accent", "✎ steer");
+      const composeLeft = th.fg("accent", `✎ ${this.composeVerb()}`);
       const composeGap = Math.max(1, innerW - visibleWidth(composeLeft) - visibleWidth(composeHint));
       lines.push(row(composeLeft + " ".repeat(composeGap) + composeHint));
     } else {
@@ -358,7 +359,7 @@ export class ConversationViewer implements Component {
       // the right group so "Esc close" is the only part that truncates first.
       const sep = th.fg("dim", " · ");
       const actions: string[] = [];
-      if (this.canSteer()) actions.push(th.fg("dim", "Enter steer"));
+      if (this.canSteer()) actions.push(th.fg("dim", `Enter ${this.composeVerb()}`));
       if (this.isStoppable()) {
         actions.push(this.stopArmed ? th.fg("error", "x again to STOP") : th.fg("dim", "x stop"));
       }
@@ -448,9 +449,13 @@ export class ConversationViewer implements Component {
     }
   }
 
-  /** Steerable only when a steer handler exists and the agent is still active. */
+  /** Composer available whenever a handler exists: live agents steer, finished ones resume. */
   private canSteer(): boolean {
-    return !!this.onSteer && (this.record.status === "running" || this.record.status === "queued");
+    return !!this.onSteer;
+  }
+
+  private composeVerb(): string {
+    return this.record.status === "running" || this.record.status === "queued" ? "steer" : "resume";
   }
 
   /** Open the inline steering composer and route subsequent input to it. */
@@ -578,8 +583,9 @@ export class ConversationViewer implements Component {
     }
 
     // Streaming indicator for running agents
-    if (this.record.status === "running" && this.activity) {
-      const act = describeActivity(this.activity.activeTools, this.activity.responseText);
+    const activity = this.getActivity();
+    if (this.record.status === "running" && activity) {
+      const act = describeActivity(activity.activeTools, activity.responseText);
       lines.push("");
       lines.push(truncateToWidth(th.fg("accent", "▍ ") + th.fg("dim", act), width));
     }
