@@ -13,7 +13,7 @@
 import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { isAbsolute, join } from "node:path";
 import { defineTool, type ExtensionAPI, type ExtensionCommandContext, type ExtensionContext, getAgentDir, getSettingsListTheme } from "@earendil-works/pi-coding-agent";
-import { Container, Key, matchesKey, type SettingItem, SettingsList, Spacer, Text } from "@earendil-works/pi-tui";
+import { Container, type SettingItem, SettingsList, Spacer, Text } from "@earendil-works/pi-tui";
 import { Type } from "@sinclair/typebox";
 import { abortable } from "./abortable.js";
 import { hasAgentBadge, renderAgentName } from "./agent-color.js";
@@ -3636,22 +3636,24 @@ Write the file using the write tool. Only write the file, nothing else.`;
       }
     }
 
-    let list: SettingsList;
-    // Track current selection index directly (SettingsList doesn't expose it).
-    // Updated on arrow keys so Enter knows which field is selected immediately.
-    let currentIndex = 0;
-
     const result = await ctx.ui.custom<string | undefined>((_tui, _theme, _kb, done) => {
       const items = buildItems();
+      // Enter on a numeric field closes the list and returns its id, so the
+      // typed-input prompt below can take over. A submenu hook is the only way
+      // to learn which (possibly filtered) item was activated.
+      for (const item of items) {
+        if (NUMERIC_IDS.has(item.id)) item.submenu = () => (done(item.id), new Container());
+      }
 
-      list = new SettingsList(
+      const list = new SettingsList(
         items,
-        items.length + 2,
+        10,
         getSettingsListTheme(),
         (id, newValue) => {
           applyValue(id, newValue);
         },
         () => done(undefined as undefined),
+        { enableSearch: true },
       );
 
       const container = new Container();
@@ -3662,21 +3664,7 @@ Write the file using the write tool. Only write the file, nothing else.`;
       return {
         render: (w: number) => container.render(w),
         invalidate: () => container.invalidate(),
-        handleInput: (data: string) => {
-          // Track navigation so Enter knows the current field
-          if (matchesKey(data, "up")) {
-            currentIndex = Math.max(0, currentIndex - 1);
-          } else if (matchesKey(data, "down")) {
-            currentIndex = Math.min(items.length - 1, currentIndex + 1);
-          }
-
-          // Enter on numeric field → close and prompt for typed input
-          if (matchesKey(data, Key.enter) && NUMERIC_IDS.has(items[currentIndex].id)) {
-            done(items[currentIndex].id);
-            return;
-          }
-          list.handleInput?.(data);
-        },
+        handleInput: (data: string) => list.handleInput(data),
       };
     });
 
@@ -3710,12 +3698,13 @@ Write the file using the write tool. Only write the file, nothing else.`;
         const n = Number(trimmed);
         if (trimmed !== "" && Number.isInteger(n)) {
           applyValue(result, String(n));
-          await showSettings(ctx);
-          return;
+          break;
         }
         // Invalid — re-prompt with the user's last entry so they can edit it
         input = await ctx.ui.input(label, trimmed);
       }
+      // Back to the settings list whether the value was applied or Esc'd.
+      await showSettings(ctx);
     }
   }
 
