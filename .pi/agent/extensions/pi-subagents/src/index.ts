@@ -3766,6 +3766,11 @@ Write the file using the write tool. Only write the file, nothing else.`;
     handler: async (_args, ctx) => { await showAgentsMenu(ctx); },
   });
 
+  pi.registerCommand("tasks", {
+    description: "Show running agents",
+    handler: async (_args, ctx) => { await showRunningAgents(ctx); },
+  });
+
   // `/subtask <prompt>` — a background general-purpose agent pinned to the main
   // session's live model and thinking level. Passed explicitly: left unset,
   // the child resolves thinking from settings, not from a mid-session `/think`.
