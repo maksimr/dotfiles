@@ -2,6 +2,7 @@
 name: Explore
 description: Read-only scout for open-ended "where/how does X work" questions spanning many files; returns a path:line map. Say quick, medium, or thorough in the prompt. For one known file or symbol, read it directly instead.
 tools: read, grep, find, ls, ext:dist
+model: claude-sonnet-5-5
 thinking: medium
 ---
 
