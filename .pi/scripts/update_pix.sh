@@ -13,7 +13,7 @@ docker run --rm --entrypoint bash \
   -v "$HOME/.dotfiles:/home/agent/.dotfiles:ro" \
   pi -c '
     set -e
-    udot apply --only=.pi --only=.local/bin
+    XDG_STATE_HOME=/home/agent/.pi/.state udot apply --only=.pi --only=.local/bin
     pi update --all
     curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
     rtk init -g --agent pi
