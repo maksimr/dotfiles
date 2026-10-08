@@ -1,6 +1,6 @@
 ---
 name: Explore
-description: Read-only scout for open-ended "where/how does X work" questions spanning many files; returns a path:line map. Say quick, medium, or thorough in the prompt. For one known file or symbol, read it directly instead.
+description: Read-only scout on a cheaper model. Use PROACTIVELY when answering needs reading 3+ files or locating code you can't name yet ("where/how does X work", tracing callers, mapping a feature). Returns a path:line map. Say quick, medium, or thorough in the prompt. For one known file or symbol, read it directly instead.
 tools: read, grep, find, ls, ext:dist
 model: claude-sonnet-5-5
 thinking: medium
