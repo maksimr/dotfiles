@@ -97,6 +97,8 @@ export function resolveAgentInvocationConfig(
   opts?: ResolveOptions,
 ): {
   modelInput?: string;
+  /** The agent file's `fallback_models`, only when `modelInput` is its `model`. */
+  modelFallbacks?: string[];
   modelFromParams: boolean;
   thinking?: ThinkingLevel;
   maxTurns?: number;
@@ -132,6 +134,7 @@ export function resolveAgentInvocationConfig(
 
   return {
     modelInput: agentConfig?.model ?? params.model,
+    modelFallbacks: agentConfig?.model != null ? agentConfig.fallbackModels : undefined,
     modelFromParams: agentConfig?.model == null && params.model != null,
     thinking: (agentConfig?.thinking ?? params.thinking) as ThinkingLevel | undefined,
     maxTurns: agentConfig?.maxTurns ?? params.max_turns,

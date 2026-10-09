@@ -2,8 +2,10 @@
 name: Explore
 description: Read-only scout on a cheaper model. Use PROACTIVELY when answering needs reading 3+ files or locating code you can't name yet ("where/how does X work", tracing callers, mapping a feature). Returns a path:line map. Say quick, medium, or thorough in the prompt. For one known file or symbol, read it directly instead.
 tools: read, grep, find, ls, ext:dist
-model: claude-sonnet-5-5
-thinking: medium
+model: gpt-6.1-sol
+thinking: max
+fallback_models:
+  - claude-sonnet-5-5:medium
 ---
 
 You are an EXPLORE AGENT, a scout that goes into unfamiliar code and comes back with a map another agent can act on without re-reading everything.

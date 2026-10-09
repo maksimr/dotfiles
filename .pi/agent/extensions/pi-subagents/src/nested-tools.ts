@@ -17,7 +17,7 @@ import {
 } from "./agent-types.js";
 import { loadCustomAgents } from "./custom-agents.js";
 import { isolationParam, resolveAgentInvocationConfig } from "./invocation-config.js";
-import { resolveModel } from "./model-resolver.js";
+import { resolveModelWithFallbacks } from "./model-resolver.js";
 import { checkModelScope } from "./model-scope.js";
 import {
   createOutputFilePath,
@@ -229,12 +229,14 @@ export function createNestedSubagentTools(context: NestedToolContext): ToolDefin
         defaultRunInBackground: false,
       });
       let model = ctx.model;
+      let thinking = invocation.thinking;
       if (invocation.modelInput) {
-        const resolvedModel = resolveModel(invocation.modelInput, ctx.modelRegistry);
+        const resolvedModel = resolveModelWithFallbacks(invocation.modelInput, invocation.modelFallbacks, ctx.modelRegistry);
         if (typeof resolvedModel === "string") {
           if (invocation.modelFromParams) return textResult(resolvedModel, true);
         } else {
-          model = resolvedModel;
+          model = resolvedModel.model;
+          thinking = resolvedModel.thinking ?? thinking;
         }
       }
 
@@ -261,10 +263,10 @@ export function createNestedSubagentTools(context: NestedToolContext): ToolDefin
         maxTurns: invocation.maxTurns,
         isolated: invocation.isolated,
         inheritContext: invocation.inheritContext,
-        thinkingLevel: invocation.thinking,
+        thinkingLevel: thinking,
         isolation: invocation.isolation,
         invocation: {
-          thinking: invocation.thinking,
+          thinking,
           maxTurns: invocation.maxTurns,
           isolated: invocation.isolated,
           inheritContext: invocation.inheritContext,

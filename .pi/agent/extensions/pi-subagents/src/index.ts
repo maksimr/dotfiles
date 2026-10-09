@@ -28,7 +28,7 @@ import { GroupJoinManager } from "./group-join.js";
 import { isolationParam, resolveAgentInvocationConfig, resolveJoinMode } from "./invocation-config.js";
 import { describeMention, handleBase, isReservedHandle, parseMention, resolveHandleToType, stripAgentPrefix } from "./mention.js";
 import { runMentionClone } from "./mention-clone.js";
-import { describeModel, type ModelRegistry, resolveModel } from "./model-resolver.js";
+import { describeModel, type ModelRegistry, resolveModel, resolveModelWithFallbacks, THINKING_LEVELS } from "./model-resolver.js";
 import { checkModelScope, isScopeModelsEnabled, setScopeModelsEnabled } from "./model-scope.js";
 import { getMaxSubagentDepth, setMaxSubagentDepth } from "./nested-tools.js";
 import { createOutputFilePath, ensureOutputFile, getOutputTranscriptDefault, sessionTaskDir, setOutputTranscriptDefault, streamToOutputFile, writeInitialEntry } from "./output-file.js";
@@ -143,15 +143,6 @@ function createActivityTracker(maxTurns?: number, onStreamUpdate?: () => void) {
 
   return { state, callbacks };
 }
-
-/**
- * Advertised thinking levels, ordered to mirror pi-ai's EXTENDED_THINKING_LEVELS
- * (`off` + every `ThinkingLevel`). Single source for the Agent tool description,
- * the generated-agent template, and the `/agents` wizard so these lists can't
- * drift behind pi again (#147). Availability of any level still depends on the
- * host pi version and the selected model — pi clamps unsupported levels down.
- */
-const THINKING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh", "max"] as const;
 
 /** Human-readable status label for agent completion. */
 function getStatusLabel(status: string, error?: string): string {
@@ -1755,13 +1746,16 @@ Terse command-style prompts produce shallow, generic work.
 
       // Resolve model from agent config first; tool-call params only fill gaps.
       let model = ctx.model;
+      let thinking = resolvedConfig.thinking;
       if (resolvedConfig.modelInput) {
-        const resolved = resolveModel(resolvedConfig.modelInput, ctx.modelRegistry);
+        const resolved = resolveModelWithFallbacks(resolvedConfig.modelInput, resolvedConfig.modelFallbacks, ctx.modelRegistry);
         if (typeof resolved === "string") {
           if (resolvedConfig.modelFromParams) return textResult(resolved);
           // config-specified: silent fallback to parent
         } else {
-          model = resolved;
+          model = resolved.model;
+          // A fallback's ":<thinking>" suffix is more specific than `thinking:`.
+          thinking = resolved.thinking ?? thinking;
         }
       }
 
@@ -1779,7 +1773,6 @@ Terse command-style prompts produce shallow, generic work.
       if (scopeVerdict.kind === "error") return textResult(scopeVerdict.message);
       if (scopeVerdict.kind === "warn") ctx.ui.notify(scopeVerdict.message, "warning");
 
-      const thinking = resolvedConfig.thinking;
       const inheritContext = resolvedConfig.inheritContext;
       const runInBackground = resolvedConfig.runInBackground;
       const isolated = resolvedConfig.isolated;
@@ -2787,14 +2780,14 @@ Terse command-style prompts produce shallow, generic work.
     if (!cfg?.model) return "inherit"; // no model configured → really inherits parent
     const label = getModelLabelFromConfig(cfg.model);
     if (!registry) return label;
-    const resolved = resolveModel(cfg.model, registry);
+    const resolved = resolveModelWithFallbacks(cfg.model, cfg.fallbackModels, registry);
     // Configured but unresolvable: the runtime silently falls back to the parent
     // model, so flag it (and the fallback) rather than hiding the config.
     if (typeof resolved === "string") return `${label} (unavailable, fallback: inherit)`;
     // Surface what it actually resolved to when that differs from the config —
     // e.g. a provider fallback or a looser version pin. Cosmetic separator/date
     // differences are normalized away so an effectively-identical match stays quiet.
-    const resolvedFull = `${resolved.provider}/${resolved.id}`;
+    const resolvedFull = `${resolved.model.provider}/${resolved.model.id}`;
     const norm = (s: string) => s.toLowerCase().replace(/\./g, "-").replace(/-\d{8}$/, "");
     if (norm(cfg.model) === norm(resolvedFull)) return label;
     return `${label} (→ ${resolvedFull.replace(/-\d{8}$/, "")})`;

@@ -27,6 +27,7 @@ import { buildAgentPrompt, type PromptExtras } from "./prompts.js";
 import { preloadSkills } from "./skill-loader.js";
 import { createStructuredCapture, createStructuredOutputTool, structuredRetryPrompt } from "./structured-output.js";
 import type { SubagentType, ThinkingLevel } from "./types.js";
+import { splitThinking } from "./model-resolver.js";
 import type { LifetimeUsage } from "./usage.js";
 import type { CompiledSchema } from "./workflow/json-schema.js";
 
@@ -364,12 +365,15 @@ export function resolveDefaultModel(
   parentModel: Model<any> | undefined,
   registry: { find(provider: string, modelId: string): Model<any> | undefined; getAvailable?(): Model<any>[] },
   configModel?: string,
-): Model<any> | undefined {
-  if (configModel) {
-    const slashIdx = configModel.indexOf("/");
+  fallbackModels?: string[],
+): { model: Model<any> | undefined; thinking?: ThinkingLevel } {
+  // configModel, then each "<model>:<thinking>" fallback: first available entry wins.
+  const candidates = configModel ? [{ pattern: configModel, thinking: undefined }, ...(fallbackModels ?? []).map(splitThinking)] : [];
+  for (const { pattern: entry, thinking } of candidates) {
+    const slashIdx = entry.indexOf("/");
     if (slashIdx !== -1) {
-      const provider = configModel.slice(0, slashIdx);
-      const modelId = configModel.slice(slashIdx + 1);
+      const provider = entry.slice(0, slashIdx);
+      const modelId = entry.slice(slashIdx + 1);
 
       // Build a set of available model keys for fast lookup
       const available = registry.getAvailable?.();
@@ -380,11 +384,11 @@ export function resolveDefaultModel(
         !availableKeys || availableKeys.has(`${p}/${id}`);
 
       const found = registry.find(provider, modelId);
-      if (found && isAvailable(provider, modelId)) return found;
+      if (found && isAvailable(provider, modelId)) return { model: found, thinking };
     }
   }
 
-  return parentModel;
+  return { model: parentModel };
 }
 
 /** Info about a tool event in the subagent. */
@@ -828,12 +832,13 @@ export async function runAgent(
   }
 
   // Resolve model: explicit option > config.model > parent model
-  const model = options.model ?? resolveDefaultModel(
-    ctx.model, ctx.modelRegistry, agentConfig?.model,
+  const configured = options.model ? undefined : resolveDefaultModel(
+    ctx.model, ctx.modelRegistry, agentConfig?.model, agentConfig?.fallbackModels,
   );
+  const model = options.model ?? configured?.model;
 
-  // Resolve thinking level: explicit option > agent config > undefined (inherit)
-  const thinkingLevel = options.thinkingLevel ?? agentConfig?.thinking;
+  // Resolve thinking level: explicit option > fallback model's ":<thinking>" suffix > agent config > undefined (inherit)
+  const thinkingLevel = options.thinkingLevel ?? configured?.thinking ?? agentConfig?.thinking;
 
   const disallowedSet = agentConfig?.disallowedTools
     ? new Set(agentConfig.disallowedTools)

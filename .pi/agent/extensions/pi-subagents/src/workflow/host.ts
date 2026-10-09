@@ -36,7 +36,7 @@ import { existsSync } from "node:fs";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { AgentManager } from "../agent-manager.js";
 import { getAgentConfig, resolveSpawnType } from "../agent-types.js";
-import { resolveModel } from "../model-resolver.js";
+import { resolveModelWithFallbacks } from "../model-resolver.js";
 import { checkModelScope } from "../model-scope.js";
 import type { AgentRecord, ThinkingLevel } from "../types.js";
 import { getLifetimeTotal } from "../usage.js";
@@ -202,14 +202,18 @@ export function createWorkflowHost(deps: WorkflowHostOptions): WorkflowHost {
       // named and we cannot resolve is an error; one the definition named falls
       // back to the parent silently, because the script never asked for it.
       let model = ctx.model;
+      // Script effort > the winning fallback model's ":<thinking>" suffix.
+      let thinking = request.effort as ThinkingLevel | undefined;
       const config = getAgentConfig(dispatch.type);
       const modelInput = request.model ?? config?.model;
       if (modelInput !== undefined) {
-        const resolved = resolveModel(modelInput, ctx.modelRegistry);
+        const fallbacks = request.model === undefined ? config?.fallbackModels : undefined;
+        const resolved = resolveModelWithFallbacks(modelInput, fallbacks, ctx.modelRegistry);
         if (typeof resolved === "string") {
           if (request.model !== undefined) return { ok: false, error: resolved };
         } else {
-          model = resolved;
+          model = resolved.model;
+          thinking ??= resolved.thinking;
         }
       }
 
@@ -310,7 +314,7 @@ export function createWorkflowHost(deps: WorkflowHostOptions): WorkflowHost {
             // cast asserts what the boundary has already checked. Left unset,
             // the agent definition's `thinking` (then the parent's) still wins —
             // same precedence as `model` above.
-            ...(request.effort !== undefined ? { thinkingLevel: request.effort as ThinkingLevel } : {}),
+            ...(thinking !== undefined ? { thinkingLevel: thinking } : {}),
             // Seeded with the REQUEST, not the outcome. The manager overwrites
             // the effective half at session creation; without a seed there is
             // nothing for it to compare against, so a level pi clamped would be
@@ -322,7 +326,7 @@ export function createWorkflowHost(deps: WorkflowHostOptions): WorkflowHost {
             // therefore always got what it asked for. Seeding a `requestedModel`
             // would describe a precedence this path does not have.
             invocation: {
-              ...(request.effort !== undefined ? { thinking: request.effort as ThinkingLevel } : {}),
+              ...(thinking !== undefined ? { thinking } : {}),
             },
             // Fires once the child's session exists, which is where the model
             // and the clamped thinking level first become knowable.

@@ -2,6 +2,27 @@
  * Model resolution: exact match ("provider/modelId") with fuzzy fallback.
  */
 
+import type { ThinkingLevel } from "./types.js";
+
+/**
+ * Advertised thinking levels, ordered to mirror pi-ai's EXTENDED_THINKING_LEVELS
+ * (`off` + every `ThinkingLevel`). Single source for the Agent tool description,
+ * the generated-agent template, the `/agents` wizard and the `model:` suffix parser
+ * so these lists can't drift behind pi again (#147). Availability of any level
+ * still depends on the host pi version and the selected model — pi clamps
+ * unsupported levels down.
+ */
+export const THINKING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh", "max"] as const;
+
+/** "gpt-5:high" → { pattern: "gpt-5", thinking: "high" }. A non-level suffix ("llama3:8b") stays part of the id. */
+export function splitThinking(entry: string): { pattern: string; thinking?: ThinkingLevel } {
+  const i = entry.lastIndexOf(":");
+  const level = entry.slice(i + 1);
+  return i !== -1 && (THINKING_LEVELS as readonly string[]).includes(level)
+    ? { pattern: entry.slice(0, i), thinking: level as ThinkingLevel }
+    : { pattern: entry };
+}
+
 export interface ModelEntry {
   id: string;
   name: string;
@@ -41,6 +62,39 @@ export function resolveModel(
   input: string,
   registry: ModelRegistry,
 ): any | string {
+  const resolved = resolveModelWithFallbacks(input, undefined, registry);
+  return typeof resolved === "string" ? resolved : resolved.model;
+}
+
+/**
+ * resolveModel for `input`, then each "<model>:<thinking>" entry of `fallbacks`
+ * in order. Returns the winning fallback's thinking suffix, if any.
+ */
+export function resolveModelWithFallbacks(
+  input: string,
+  fallbacks: string[] | undefined,
+  registry: ModelRegistry,
+): { model: any; thinking?: ThinkingLevel } | string {
+  const candidates = [{ pattern: input, thinking: undefined }, ...(fallbacks ?? []).map(splitThinking)];
+  // Exact matches across all candidates first, so a loose fuzzy hit on `input`
+  // can't shadow an exact fallback. With no fallbacks this is plain resolveModel.
+  for (const minScore of [100, 20]) {
+    for (const { pattern, thinking } of candidates) {
+      const model = matchModel(pattern, registry, minScore);
+      if (model) return { model, thinking };
+    }
+  }
+
+  // No match — list available models
+  const all = (registry.getAvailable?.() ?? registry.getAll()) as ModelEntry[];
+  const modelList = all
+    .map(m => `  ${m.provider}/${m.id}`)
+    .sort()
+    .join("\n");
+  return `Model not found: "${input}".\n\nAvailable models:\n${modelList}`;
+}
+
+function matchModel(input: string, registry: ModelRegistry, minScore: number): any | undefined {
   // Available models (those with auth configured)
   const all = (registry.getAvailable?.() ?? registry.getAll()) as ModelEntry[];
   const availableSet = new Set(all.map(m => `${m.provider}/${m.id}`.toLowerCase()));
@@ -95,7 +149,7 @@ export function resolveModel(
     }
   }
 
-  if (bestMatch && bestScore >= 20) {
+  if (bestMatch && bestScore >= minScore) {
     const found = registry.find(bestMatch.provider, bestMatch.id);
     if (found) return found;
   }
@@ -104,15 +158,9 @@ export function resolveModel(
   // named provider (exact or fuzzy above) retries against all providers. The
   // named provider is preferred when present; this only kicks in when it isn't,
   // so the same model from another provider beats falling back to "inherit".
-  if (slashIdx !== -1) {
-    const bare = resolveModel(input.slice(slashIdx + 1), registry);
-    if (typeof bare !== "string") return bare;
+  // Skipped in the exact pass so a named provider still beats another one's exact id.
+  if (slashIdx !== -1 && minScore < 100) {
+    return matchModel(input.slice(slashIdx + 1), registry, minScore);
   }
-
-  // 4. No match — list available models
-  const modelList = all
-    .map(m => `  ${m.provider}/${m.id}`)
-    .sort()
-    .join("\n");
-  return `Model not found: "${input}".\n\nAvailable models:\n${modelList}`;
+  return undefined;
 }

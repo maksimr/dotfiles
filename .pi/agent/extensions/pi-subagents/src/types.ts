@@ -49,6 +49,8 @@ export interface AgentConfig {
   /** true = inherit all, string[] = only listed, false = none */
   skills: true | string[] | false;
   model?: string;
+  /** `fallback_models`: ordered "<model>:<thinking>" entries tried when `model` is unavailable. */
+  fallbackModels?: string[];
   thinking?: ThinkingLevel;
   maxTurns?: number;
   /** Persist this subagent as a normal pi session instead of keeping it in memory only. */
