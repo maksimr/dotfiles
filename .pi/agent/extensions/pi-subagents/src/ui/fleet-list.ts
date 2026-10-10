@@ -103,7 +103,7 @@ export class FleetList {
   private widgetRegistered = false;
   private timer: ReturnType<typeof setInterval> | undefined;
 
-  private enabled = true;
+  private enabled = false;
   /** Whether arrow keys currently navigate the list (vs. flow to the editor). */
   private active = false;
   /** 0 = `main`, 1..N = subagents. */

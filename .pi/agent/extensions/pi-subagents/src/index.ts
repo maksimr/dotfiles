@@ -1107,7 +1107,7 @@ export default function (pi: ExtensionAPI) {
   const fleet = new FleetList(manager, agentActivity, isShowCostEnabled, getViewerMarkdown,
     (mode) => chooseViewerMarkdown(mode, currentCtx as unknown as ExtensionCommandContext | undefined),
     (record, message) => { if (currentCtx) messageAgent(currentCtx, record, message); });
-  let fleetViewEnabled = true;
+  let fleetViewEnabled = false;
   function isFleetViewEnabled(): boolean { return fleetViewEnabled; }
   function setFleetViewEnabled(b: boolean): void { fleetViewEnabled = b; fleet.setEnabled(b); }
 
