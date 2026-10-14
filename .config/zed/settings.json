@@ -95,6 +95,7 @@
     "show": "system"
   },
   "git": {
+    "diff_base": "default_branch",
     "git_gutter": "hide"
   },
   "gutter": {
