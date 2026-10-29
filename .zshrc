@@ -28,23 +28,23 @@ if [[ $- == *i* ]]; then # only if we are in interactive mode
       if [ "$TERM_PROGRAM" != "vscode" ]; then # not inside vscode
         if [ "$TERM_PROGRAM" != "zed" ]; then # not inside zed
           if [ "$TERM" != "dumb" ]; then # not inside zed resolve env process
-          if [ -z "$VSCODE_RESOLVING_ENVIRONMENT" ]; then # not vscode resolve env process
-          if [ -z "$WARP_IS_LOCAL_SHELL_SESSION" ]; then # not inside warp terminal
-            if [ "$(command -v tmux)"  ]; then # tmux installed
-              N=$(tmux ls 2>/dev/null | grep -v attached | head -1 | cut -d: -f1)
-              if [[ -z $N ]]; then
-                # if all sessions are attached or no any session
-                # create a new one. This allow us to open several terminals
-                # with own sessions
-                # Don't use `exec tmux` because it will cause problems
-                # with editors that try to resolve env variables
-                tmux -2 &>/dev/null && exit # -2 for supporting colors (256)
-              else
-                (tmux attach || tmux -2) &>/dev/null && exit # exit from shell after exit tmux
+            if [ -z "$VSCODE_RESOLVING_ENVIRONMENT" ]; then # not vscode resolve env process
+              if [ -z "$WARP_IS_LOCAL_SHELL_SESSION" ]; then # not inside warp terminal
+                if [ "$(command -v tmux)"  ]; then # tmux installed
+                  N=$(tmux ls 2>/dev/null | grep -v attached | head -1 | cut -d: -f1)
+                  if [[ -z $N ]]; then
+                    # if all sessions are attached or no any session
+                    # create a new one. This allow us to open several terminals
+                    # with own sessions
+                    # Don't use `exec tmux` because it will cause problems
+                    # with editors that try to resolve env variables
+                    tmux -2 &>/dev/null && exit # -2 for supporting colors (256)
+                  else
+                    (tmux attach || tmux -2) &>/dev/null && exit # exit from shell after exit tmux
+                  fi
+                fi
               fi
             fi
-          fi
-          fi
           fi
         fi
       fi
@@ -66,10 +66,10 @@ get_shell_name() {
 # $2: "after" to add it at the end, otherwise it's added at the beginning
 pathmunge() {
   [ -d "$1" ] && case ":$PATH:" in
-    *:$1:*) ;;
-    *) [ "$2" = "after" ] && PATH="$PATH:$1" || PATH="$1:$PATH"
-  esac
-  export PATH
+  *:$1:*) ;;
+  *) [ "$2" = "after" ] && PATH="$PATH:$1" || PATH="$1:$PATH"
+esac
+export PATH
 }
 
 # save results of a command in a cache file and source it
@@ -101,7 +101,7 @@ ZGEN_DIR="$HOME/.zgen"
 
 if [ "$(command -v zgen)"  ]; then
   if ! zgen saved; then
-        # to reset zgen cache run `zgen reset`
+    # to reset zgen cache run `zgen reset`
 
         # Load various lib files
         zgen load robbyrussell/oh-my-zsh lib/
@@ -129,11 +129,11 @@ if [ -f "$ZGEN_INIT" ]; then
   if [ ! -f "$ZGEN_INIT.zwc" ] || [ "$ZGEN_INIT" -nt "$ZGEN_INIT.zwc" ]; then
     # Parse init.zsh to get path from  `source "<path>"` and compile it
     cat "$ZGEN_INIT" | grep 'source "' | sed 's/.*source "\(.*\).zsh".*/\1/' | while read -r source_file; do
-      if [ -f "$source_file.zsh" ]; then
-        zcompile "$source_file.zsh"
-      fi
-    done
-    zcompile "$ZGEN_INIT"
+    if [ -f "$source_file.zsh" ]; then
+      zcompile "$source_file.zsh"
+    fi
+  done
+  zcompile "$ZGEN_INIT"
   fi
 fi
 
@@ -162,7 +162,7 @@ function jinnee() {
   pi --auto-exit --offline --tui-mode regular --fff-mode tools-only --no-session \
     --exclude-tools write,edit --model openai-codex/gpt-6.1-sol:high \
     --system-prompt "$system_prompt" -- "$*"
-}
+  }
 alias '??'='jinnee'
 alias '?'='jinnee'
 
@@ -195,16 +195,16 @@ function wtf() {
   screen=${(F)buf}
 
   pi "Last command:
-\`\`\`sh
-$last_cmd
-\`\`\`
+  \`\`\`sh
+  $last_cmd
+  \`\`\`
 
-Terminal output:
-\`\`\`
-$screen
-\`\`\`
+  Terminal output:
+  \`\`\`
+  $screen
+  \`\`\`
 
-$*"
+  $*"
 }
 
 if [ "$(command -v bat)" ]
@@ -262,7 +262,7 @@ if [ "$(command -v autosuggest_start)"  ]; then
   zle-line-init() {
     autosuggest_start
   }
-  zle -N zle-line-init
+zle -N zle-line-init
 
   # use ctrl+t to toggle autosuggestions(hopefully this wont be needed as
   # zsh-autosuggestions is designed to be unobtrusive)
@@ -285,7 +285,7 @@ then
     # translate `f d/ui` -> `z d ui`
     z $(echo $@ | sed 's/\// /g')
   }
-  alias f="ff"
+alias f="ff"
 fi
 
 # prefer zoxide over fasd
@@ -333,7 +333,7 @@ then
     cd "$(fasd -a $@)"
   }
 
-  alias f="ff"
+alias f="ff"
 fi
 
 # https://github.com/junegunn/fzf
@@ -353,9 +353,9 @@ if [ -f "$HOME/.fzf.zsh"  ]; then
     zle reset-prompt
   }
 
-  zle -N insert-fzf-path-in-command-line
+zle -N insert-fzf-path-in-command-line
 
-  bindkey "^F" "insert-fzf-path-in-command-line"
+bindkey "^F" "insert-fzf-path-in-command-line"
 fi
 
 # https://minikube.sigs.k8s.io/docs/commands/completion/
@@ -386,8 +386,8 @@ elif [ -s "$NVM_DIR/nvm.sh" ]; then
   source "$NVM_DIR/nvm.sh" --no-use
   # setup default node version manually to speed up shell loading
   if [ -f "$NVM_DIR/alias/default" ]; then
-     NODE_VERSION=$(cat "$NVM_DIR/alias/default")
-     PATH="$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH"
+    NODE_VERSION=$(cat "$NVM_DIR/alias/default")
+    PATH="$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH"
   fi
 fi
 
@@ -408,7 +408,7 @@ then
     fi
   }
 
-  load-nvmrc
+load-nvmrc
 
   # This loads nvm bash_completion
   [ -s "$NVM_DIR/bash_completion" ] && \
@@ -460,6 +460,10 @@ fi
 # try shell integration
 if [ "$(command -v try)" ]; then
   _eval_and_cache 'try' 'try init'
+fi
+
+if [ "$(command -v uv)"  ]; then
+  pathmunge "$(uv tool dir --bin)"
 fi
 
 # VS Code terminal profiles with custom `args` get no shell-integration
