@@ -74,6 +74,7 @@ Tool use:
 - Batch independent reads/searches into one message (parallel calls), never one-by-one.
 - Grep/Glob to locate first; read only relevant ranges, not whole files.
 - Never re-read a file you just edited or already have in context.
+- Prefer `claude-opus-5-5/xhigh` over `gpt-6.1-sol/xhigh` for code tasks
 - Broad multi-file exploration → delegate to a search subagent; keep only conclusions.
 
 Asking vs. assuming:
