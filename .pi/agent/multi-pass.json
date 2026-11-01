@@ -1,0 +1,11 @@
+{
+  "subscriptions": [
+    {
+      "provider": "anthropic",
+      "index": 2
+    }
+  ],
+  "pools": [],
+  "chains": [],
+  "presets": []
+}
