@@ -39,7 +39,8 @@
       "skills": [
         "chrome-devtools-cli"
       ]
-    }
+    },
+    "npm:pi-multi-pass"
   ],
   "tuiMode": "fullscreen"
 }
