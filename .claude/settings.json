@@ -101,7 +101,7 @@
   },
   "effortLevel": "high",
   "tui": "fullscreen",
-  "theme": "dark-ansi",
   "autoMemoryEnabled": false,
+  "theme": "dark-ansi",
   "remoteControlAtStartup": true
 }
