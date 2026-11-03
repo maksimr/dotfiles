@@ -3,6 +3,10 @@
     {
       "provider": "anthropic",
       "index": 2
+    },
+    {
+      "provider": "anthropic",
+      "index": 3
     }
   ],
   "pools": [],
