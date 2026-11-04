@@ -1,6 +1,17 @@
 {
   "mcpServers": {
+    "serena": {
+      "enabled": false,
+      "command": "serena",
+      "args": [
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd"
+      ]
+    },
     "drawio": {
+      "enabled": false,
       "command": "npx",
       "args": [
         "-y",
