@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { delimiter, dirname, join } from 'node:path';
 import type { ExtensionAPI, ExtensionContext } from '@earendil-works/pi-coding-agent';
 
 // Lock content: running | ok | failed. mtime = last change.
@@ -53,8 +53,10 @@ export default function (pi: ExtensionAPI) {
     current = ctx;
     if (event.reason === 'startup' && tryLock()) {
       // `--all` = `pi update` + `pi update --extensions`. Child writes the result, so it survives pi exiting first.
-      const script = '"$0" "$1" update --all && echo ok > "$2" || echo failed > "$2"';
+      const script = '"$0" "$1" update --all > "$2.log" 2>&1 && echo ok > "$2" || echo failed > "$2"';
       const child = spawn('/bin/sh', ['-c', script, process.execPath, process.argv[1], LOCK], {
+        // T3 may launch pi without npm on PATH; npm lives next to node.
+        env: { ...process.env, PATH: `${dirname(process.execPath)}${delimiter}${process.env.PATH ?? ''}` },
         detached: true,
         stdio: 'ignore'
       });
