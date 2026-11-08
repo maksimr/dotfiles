@@ -1,7 +1,9 @@
 {
   "env": {
-    "DISABLE_TELEMETRY": "1"
+    "DISABLE_TELEMETRY": "1",
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8317"
   },
+  "apiKeyHelper": "security find-generic-password -s cliproxyapi-client -w",
   "permissions": {
     "allow": [
       "WebSearch",
@@ -100,6 +102,7 @@
     "autoAllowBashIfSandboxed": true
   },
   "effortLevel": "high",
+  "promptCacheTtl": "1h",
   "tui": "fullscreen",
   "autoMemoryEnabled": false,
   "theme": "dark-ansi",
