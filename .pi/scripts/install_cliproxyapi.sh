@@ -3,7 +3,8 @@
 # Requires Homebrew on macOS; curl and Python 3 on Linux; OpenSSL for new keys.
 # New installs listen on localhost:8317. Existing config, keys and logins stay intact.
 # Starts at user login via Homebrew/systemd; without a user systemd, run manually.
-# Does not import accounts or change Pi, Claude Code, T3 Code, PATH or sleep settings.
+# Does not import accounts or change Pi, Claude Code, T3 Code, PATH or sleep settings;
+# import_cliproxyapi.sh moves Pi and Claude Code logins in and routes both through it.
 #
 # Usage: bash ~/.dotfiles/.pi/scripts/install_cliproxyapi.sh
 # Sign in afterward with the printed -claude-login / -codex-device-login commands.
