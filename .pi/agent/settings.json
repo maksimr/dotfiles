@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.5.0",
+  "lastChangelogVersion": "1.5.2",
   "theme": "dark",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6-astra",
@@ -13,7 +13,7 @@
     "anthropicExtraUsage": false
   },
   "enabledModels": [
-    "claude-fable-5-1",
+    "claude-fable-5-2",
     "claude-opus-5-5",
     "claude-sonnet-5-5",
     "gpt-6.1-sol",
