@@ -6,10 +6,13 @@
 # openai-responses API; models of other owners (Antigravity, Devin, ...) under cliproxyapi.
 # Owners come from /v1/models; names, token limits and image input from the Gemini-style
 # /v1beta/models. The key must match one of access.api-keys in the proxy config and
-# is written into the output. Requires curl.
+# is written into the output. Repeat --only to print just those providers, --exclude to drop some.
+# Requires curl.
 #
 # Usage: setup_cliproxyapi.sh --adress http://127.0.0.1:8317 --key <key> > ~/.pi/agent/models.json
 #    or: CLIPROXY_API_URL=http://127.0.0.1:8317 CLIPROXY_API_KEY=<key> setup_cliproxyapi.sh
+#    or: setup_cliproxyapi.sh --adress <url> --key <key> --only openai-codex --only google
+#    or: setup_cliproxyapi.sh --adress <url> --key <key> --exclude cliproxyapi
 
 set +x
 set -Eeuo pipefail
@@ -25,14 +28,28 @@ fetch() {
         die "$URL$1 failed; check the URL and that access.api-keys contains the key"
 }
 
-USAGE="usage: ${0##*/} --adress <cliproxyapi-url> --key <api-key> (or CLIPROXY_API_URL, CLIPROXY_API_KEY)"
+# Owner, Pi provider and API path of the Pi providers whose built-in model IDs match the proxy's
+BUILTINS='anthropic anthropic
+xai xai /v1
+google google /v1beta
+meta meta /v1
+moonshot moonshotai /v1'
+PROVIDERS=" $(cut -d' ' -f2 <<<"$BUILTINS" | tr '\n' ' ')openai-codex cliproxyapi "
+
+USAGE="usage: ${0##*/} --adress <cliproxyapi-url> --key <api-key> [--only <provider>]... [--exclude <provider>]...
+(or CLIPROXY_API_URL, CLIPROXY_API_KEY); providers:$PROVIDERS"
 URL="${CLIPROXY_API_URL:-}"
 KEY="${CLIPROXY_API_KEY:-}"
+ONLY=' '
+EXCLUDE=' '
 while [[ $# -gt 0 ]]; do
     [[ $# -ge 2 ]] || die "$USAGE"
     case "$1" in
         --adress|--address) URL="$2" ;;
         --key) KEY="$2" ;;
+        --only|--exclude)
+            [[ "$PROVIDERS" == *" $2 "* ]] || die "unknown provider '$2'; use one of:$PROVIDERS"
+            if [[ "$1" == --only ]]; then ONLY+="$2 "; else EXCLUDE+="$2 "; fi ;;
         *) die "$USAGE" ;;
     esac
     shift 2
@@ -42,13 +59,6 @@ URL="${URL%/v1}"
 [[ "$URL" =~ ^https?://[^[:space:]/]+(/[^[:space:]]*)?$ ]] || die "missing or invalid URL '$URL'; $USAGE"
 [[ "$KEY" =~ ^[[:graph:]]+$ ]] || die "missing key, or it has spaces or control characters; $USAGE"
 command -v curl >/dev/null 2>&1 || die 'required command not found: curl'
-
-# Owner, Pi provider and API path of the Pi providers whose built-in model IDs match the proxy's
-BUILTINS='anthropic anthropic
-xai xai /v1
-google google /v1beta
-meta meta /v1
-moonshot moonshotai /v1'
 
 OWNERS="$(fetch /v1/models)"
 MODELS="$(fetch /v1beta/models)"
@@ -79,19 +89,18 @@ while IFS= read -r obj; do
     if [[ -n "$max_tokens" ]]; then entry+=", \"maxTokens\": $max_tokens"; fi
     if [[ "$owner" == openai ]]; then CODEX+="        $entry}"$'\n'; else OTHERS+="        $entry}"$'\n'; fi
 done <<<"$MODELS"
-[[ "$SERVED" != ' ' || -n "$CODEX$OTHERS" ]] || die 'CLIProxyAPI serves no chat models; sign in to a provider there'
 
 API_KEY="${KEY//\$/\$\$}"  # Pi expands $NAME and a leading !command in apiKey
 if [[ "$API_KEY" == \!* ]]; then API_KEY="\$$API_KEY"; fi
 API_KEY="$(json_string "$API_KEY")"
 
-SEPARATOR=''
-# print_provider <provider> <baseUrl> [<more JSON fields>]
+OUT=''  # provider JSON blocks
+# add_provider <provider> <baseUrl> [<more JSON fields>]: adds it unless --only or --exclude drops it
 # sendSessionAffinityHeaders serves the proxy's routing.session-affinity
-print_provider() {
-    printf '%s\n    "%s": {\n      "baseUrl": %s,\n      "apiKey": %s,\n      "compat": {\n        "sendSessionAffinityHeaders": true\n      }%s\n    }' \
-        "$SEPARATOR" "$1" "$(json_string "$2")" "$API_KEY" "${3:-}"
-    SEPARATOR=','
+add_provider() {
+    [[ "$EXCLUDE" != *" $1 "* && ( "$ONLY" == ' ' || "$ONLY" == *" $1 "* ) ]] || return 0
+    OUT+="$(printf '%s\n    "%s": {\n      "baseUrl": %s,\n      "apiKey": %s,\n      "compat": {\n        "sendSessionAffinityHeaders": true\n      }%s\n    }' \
+        "${OUT:+,}" "$1" "$(json_string "$2")" "$API_KEY" "${3:-}")"
 }
 # listed <name> <api> <model JSON lines>: JSON fields of a provider with listed models
 listed() {
@@ -99,14 +108,14 @@ listed() {
         "$1" "$2" "$(sed '$!s/$/,/' <<<"${3%$'\n'}")"
 }
 
-printf '{\n  "providers": {'
 while read -r owner provider path; do
-    if [[ "$SERVED" == *" $owner "* ]]; then print_provider "$provider" "$URL$path"; fi
+    if [[ "$SERVED" == *" $owner "* ]]; then add_provider "$provider" "$URL$path"; fi
 done <<<"$BUILTINS"
 if [[ -n "$CODEX" ]]; then
-    print_provider openai-codex "$URL/v1" "$(listed 'Codex via CLIProxyAPI' openai-responses "$CODEX")"
+    add_provider openai-codex "$URL/v1" "$(listed 'Codex via CLIProxyAPI' openai-responses "$CODEX")"
 fi
 if [[ -n "$OTHERS" ]]; then
-    print_provider cliproxyapi "$URL/v1" "$(listed CLIProxyAPI openai-completions "$OTHERS")"
+    add_provider cliproxyapi "$URL/v1" "$(listed CLIProxyAPI openai-completions "$OTHERS")"
 fi
-printf '\n  }\n}\n'
+[[ -n "$OUT" ]] || die 'no providers to print; sign in to a provider in CLIProxyAPI or change --only and --exclude'
+printf '{\n  "providers": {%s\n  }\n}\n' "$OUT"
