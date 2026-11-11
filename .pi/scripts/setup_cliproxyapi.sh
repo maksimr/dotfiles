@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Print a Pi models.json for a CLIProxyAPI server to stdout. Changes nothing.
-# Points the anthropic and xai providers at the proxy and keeps their built-in models. Lists the
-# OpenAI chat models the proxy serves under openai-codex, which needs them listed to use the
-# openai-responses API. Owners come from /v1/models; names, token limits and image input from the
-# Gemini-style /v1beta/models. The key must match one of access.api-keys in the proxy config and
+# For each model owner the proxy serves, Pi's built-in provider with the same model IDs (anthropic,
+# xai, google, meta, moonshotai for Kimi) is pointed at the proxy and keeps its built-in models.
+# OpenAI chat models are listed under openai-codex, which needs them listed to use the
+# openai-responses API; models of other owners (Antigravity, Devin, ...) under cliproxyapi.
+# Owners come from /v1/models; names, token limits and image input from the Gemini-style
+# /v1beta/models. The key must match one of access.api-keys in the proxy config and
 # is written into the output. Requires curl.
 #
 # Usage: setup_cliproxyapi.sh --adress http://127.0.0.1:8317 --key <key> > ~/.pi/agent/models.json
@@ -41,10 +43,19 @@ URL="${URL%/v1}"
 [[ "$KEY" =~ ^[[:graph:]]+$ ]] || die "missing key, or it has spaces or control characters; $USAGE"
 command -v curl >/dev/null 2>&1 || die 'required command not found: curl'
 
+# Owner, Pi provider and API path of the Pi providers whose built-in model IDs match the proxy's
+BUILTINS='anthropic anthropic
+xai xai /v1
+google google /v1beta
+meta meta /v1
+moonshot moonshotai /v1'
+
 OWNERS="$(fetch /v1/models)"
 MODELS="$(fetch /v1beta/models)"
 
-ENTRIES=''  # one model JSON per line
+SERVED=' '  # served owners from BUILTINS
+CODEX=''    # model JSON lines for openai-codex
+OTHERS=''   # model JSON lines for cliproxyapi
 while IFS= read -r obj; do
     context="$(field "$obj" inputTokenLimit)"
     [[ -n "$context" ]] || continue  # image, video and speech models have no token limits
@@ -52,9 +63,13 @@ while IFS= read -r obj; do
     id="${id#\"models/}"
     id="${id%\"}"
     owner="$(field "$(grep -F "\"id\":\"$id\"" <<<"$OWNERS" || true)" owned_by)"
-    [[ "$owner" == '"openai"' ]] || continue
+    owner="${owner//\"/}"
+    if [[ $'\n'"$BUILTINS" == *$'\n'"$owner "* ]]; then
+        SERVED+="$owner "
+        continue
+    fi
     name="$(field "$obj" displayName)"
-    # the proxy does not say which models think; current OpenAI chat models all do
+    # shortcut: the proxy does not say which models think, so all may; use /thinking off where one fails
     entry="{\"id\": \"$id\", \"name\": ${name:-\"$id\"}, \"reasoning\": true"
     if [[ "$(field "$obj" supportedInputModalities)" == *'"image"'* ]]; then
         entry+=', "input": ["text", "image"]'
@@ -62,43 +77,36 @@ while IFS= read -r obj; do
     entry+=", \"contextWindow\": $context"
     max_tokens="$(field "$obj" outputTokenLimit)"
     if [[ -n "$max_tokens" ]]; then entry+=", \"maxTokens\": $max_tokens"; fi
-    ENTRIES+="        $entry}"$'\n'
+    if [[ "$owner" == openai ]]; then CODEX+="        $entry}"$'\n'; else OTHERS+="        $entry}"$'\n'; fi
 done <<<"$MODELS"
-[[ -n "$ENTRIES" ]] || die 'CLIProxyAPI serves no OpenAI models; sign in to Codex there'
+[[ "$SERVED" != ' ' || -n "$CODEX$OTHERS" ]] || die 'CLIProxyAPI serves no chat models; sign in to a provider there'
 
 API_KEY="${KEY//\$/\$\$}"  # Pi expands $NAME and a leading !command in apiKey
 if [[ "$API_KEY" == \!* ]]; then API_KEY="\$$API_KEY"; fi
 API_KEY="$(json_string "$API_KEY")"
-BASE="$(json_string "$URL")"
-V1="$(json_string "$URL/v1")"
 
+SEPARATOR=''
+# print_provider <provider> <baseUrl> [<more JSON fields>]
 # sendSessionAffinityHeaders serves the proxy's routing.session-affinity
-cat <<EOF
-{
-  "providers": {
-    "anthropic": {
-      "baseUrl": $BASE,
-      "apiKey": $API_KEY,
-      "compat": {
-        "sendSessionAffinityHeaders": true
-      }
-    },
-    "openai-codex": {
-      "name": "Codex via CLIProxyAPI",
-      "baseUrl": $V1,
-      "api": "openai-responses",
-      "apiKey": $API_KEY,
-      "models": [
-$(sed '$!s/$/,/' <<<"${ENTRIES%$'\n'}")
-      ]
-    },
-    "xai": {
-      "baseUrl": $V1,
-      "apiKey": $API_KEY,
-      "compat": {
-        "sendSessionAffinityHeaders": true
-      }
-    }
-  }
+print_provider() {
+    printf '%s\n    "%s": {\n      "baseUrl": %s,\n      "apiKey": %s,\n      "compat": {\n        "sendSessionAffinityHeaders": true\n      }%s\n    }' \
+        "$SEPARATOR" "$1" "$(json_string "$2")" "$API_KEY" "${3:-}"
+    SEPARATOR=','
 }
-EOF
+# listed <name> <api> <model JSON lines>: JSON fields of a provider with listed models
+listed() {
+    printf ',\n      "name": "%s",\n      "api": "%s",\n      "models": [\n%s\n      ]' \
+        "$1" "$2" "$(sed '$!s/$/,/' <<<"${3%$'\n'}")"
+}
+
+printf '{\n  "providers": {'
+while read -r owner provider path; do
+    if [[ "$SERVED" == *" $owner "* ]]; then print_provider "$provider" "$URL$path"; fi
+done <<<"$BUILTINS"
+if [[ -n "$CODEX" ]]; then
+    print_provider openai-codex "$URL/v1" "$(listed 'Codex via CLIProxyAPI' openai-responses "$CODEX")"
+fi
+if [[ -n "$OTHERS" ]]; then
+    print_provider cliproxyapi "$URL/v1" "$(listed CLIProxyAPI openai-completions "$OTHERS")"
+fi
+printf '\n  }\n}\n'
