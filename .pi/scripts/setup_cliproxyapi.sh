@@ -87,7 +87,12 @@ while IFS= read -r obj; do
     entry+=", \"contextWindow\": $context"
     max_tokens="$(field "$obj" outputTokenLimit)"
     if [[ -n "$max_tokens" ]]; then entry+=", \"maxTokens\": $max_tokens"; fi
-    if [[ "$owner" == openai ]]; then CODEX+="        $entry}"$'\n'; else OTHERS+="        $entry}"$'\n'; fi
+    if [[ "$owner" == openai ]]; then
+        # a listed model replaces Pi's built-in one, which unlocked xhigh and max; without a map Pi stops at high
+        CODEX+="        $entry, \"thinkingLevelMap\": {\"xhigh\": \"xhigh\", \"max\": \"max\"}}"$'\n'
+    else
+        OTHERS+="        $entry}"$'\n'
+    fi
 done <<<"$MODELS"
 
 API_KEY="${KEY//\$/\$\$}"  # Pi expands $NAME and a leading !command in apiKey
