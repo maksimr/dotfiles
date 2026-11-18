@@ -2,7 +2,7 @@
   "lastChangelogVersion": "1.5.2",
   "theme": "dark",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-6-astra",
+  "defaultModel": "gpt-6.2-astra",
   "defaultThinkingLevel": "high",
   "enableSkillCommands": true,
   "defaultTools": [
@@ -17,7 +17,7 @@
     "claude-opus-5-5",
     "claude-sonnet-5-5",
     "gpt-6.1-sol",
-    "gpt-6-astra"
+    "gpt-6.2-astra"
   ],
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
