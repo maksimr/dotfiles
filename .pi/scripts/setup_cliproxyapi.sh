@@ -3,7 +3,10 @@
 # For each model owner the proxy serves, Pi's built-in provider with the same model IDs (anthropic,
 # xai, google, meta, moonshotai for Kimi) is pointed at the proxy and keeps its built-in models.
 # OpenAI chat models are listed under openai-codex, which needs them listed to use the
-# openai-responses API; models of other owners (Antigravity, Devin, ...) under cliproxyapi.
+# openai-responses API. Antigravity models are listed under antigravity with the proxy's Gemini
+# API, not under google, whose built-in models the proxy does not serve;
+# extensions/antigravity-prompt-guard.ts must rewrite Pi's system prompt for them, or Antigravity
+# answers 429. Models of other owners (Devin, ...) go under cliproxyapi.
 # Owners come from /v1/models; names, token limits and image input from the Gemini-style
 # /v1beta/models. The key must match one of access.api-keys in the proxy config and
 # is written into the output. Repeat --only to print just those providers, --exclude to drop some.
@@ -34,7 +37,7 @@ xai xai /v1
 google google /v1beta
 meta meta /v1
 moonshot moonshotai /v1'
-PROVIDERS=" $(cut -d' ' -f2 <<<"$BUILTINS" | tr '\n' ' ')openai-codex cliproxyapi "
+PROVIDERS=" $(cut -d' ' -f2 <<<"$BUILTINS" | tr '\n' ' ')openai-codex antigravity cliproxyapi "
 
 USAGE="usage: ${0##*/} --adress <cliproxyapi-url> --key <api-key> [--only <provider>]... [--exclude <provider>]...
 (or CLIPROXY_API_URL, CLIPROXY_API_KEY); providers:$PROVIDERS"
@@ -65,6 +68,7 @@ MODELS="$(fetch /v1beta/models)"
 
 SERVED=' '  # served owners from BUILTINS
 CODEX=''    # model JSON lines for openai-codex
+ANTIGRAVITY=''  # model JSON lines for antigravity
 OTHERS=''   # model JSON lines for cliproxyapi
 while IFS= read -r obj; do
     context="$(field "$obj" inputTokenLimit)"
@@ -90,6 +94,12 @@ while IFS= read -r obj; do
     if [[ "$owner" == openai ]]; then
         # a listed model replaces Pi's built-in one, which unlocked xhigh and max; without a map Pi stops at high
         CODEX+="        $entry, \"thinkingLevelMap\": {\"xhigh\": \"xhigh\", \"max\": \"max\"}}"$'\n'
+    elif [[ "$owner" == antigravity && "$id" == *-xhigh ]]; then
+        # shortcut: xhigh support is read from the -xhigh ID suffix, as the proxy does not list levels;
+        # Pi's Gemini API stops at high, so antigravity-prompt-guard.ts turns this high back into xhigh
+        ANTIGRAVITY+="        $entry, \"thinkingLevelMap\": {\"xhigh\": \"high\"}}"$'\n'
+    elif [[ "$owner" == antigravity ]]; then
+        ANTIGRAVITY+="        $entry}"$'\n'
     else
         OTHERS+="        $entry}"$'\n'
     fi
@@ -118,6 +128,9 @@ while read -r owner provider path; do
 done <<<"$BUILTINS"
 if [[ -n "$CODEX" ]]; then
     add_provider openai-codex "$URL/v1" "$(listed 'Codex via CLIProxyAPI' openai-responses "$CODEX")"
+fi
+if [[ -n "$ANTIGRAVITY" ]]; then
+    add_provider antigravity "$URL/v1beta" "$(listed Antigravity google-generative-ai "$ANTIGRAVITY")"
 fi
 if [[ -n "$OTHERS" ]]; then
     add_provider cliproxyapi "$URL/v1" "$(listed CLIProxyAPI openai-completions "$OTHERS")"
