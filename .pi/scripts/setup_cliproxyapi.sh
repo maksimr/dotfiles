@@ -1,27 +1,38 @@
 #!/usr/bin/env bash
-# Print a Pi models.json for a CLIProxyAPI server to stdout. Changes nothing.
-# For each model owner the proxy serves, Pi's built-in provider with the same model IDs (anthropic,
-# xai, google, meta, moonshotai for Kimi) is pointed at the proxy and keeps its built-in models.
-# OpenAI chat models are listed under openai-codex, which needs them listed to use the
-# openai-responses API. Antigravity models are listed under antigravity with the proxy's Gemini
-# API, not under google, whose built-in models the proxy does not serve;
-# extensions/antigravity-prompt-guard.ts must rewrite Pi's system prompt for them, or Antigravity
-# answers 429. Models of other owners (Devin, ...) go under cliproxyapi.
-# Owners come from /v1/models; names, token limits and image input from the Gemini-style
-# /v1beta/models. The key must match one of access.api-keys in the proxy config and
-# is written into the output. Repeat --only to print just those providers, --exclude to drop some.
-# Requires curl.
+# Print CLIProxyAPI client config to stdout for a harness. Changes nothing.
+# Harnesses:
+#   pi (default)  Pi models.json (queries /v1/models and /v1beta/models; requires curl).
+#                 For each served owner, Pi's built-in provider (anthropic, xai, google, meta,
+#                 moonshotai for Kimi) is pointed at the proxy and keeps its built-in models.
+#                 OpenAI chat models are listed under openai-codex (openai-responses API).
+#                 Antigravity models are listed under antigravity with the proxy's Gemini API;
+#                 extensions/antigravity-prompt-guard.ts rewrites Pi's system prompt for them.
+#                 Other owners go under cliproxyapi. Repeat --only / --exclude to filter providers.
+#   claude-code   Claude Code settings.json snippet (~/.claude/settings.json).
+#   codex         Codex CLI config.toml snippet (~/.codex/config.toml).
+#   antigravity   Shell exports for Antigravity CLI (agy).
+# The key must match one of access.api-keys in the proxy config and is written into the output.
 #
-# Usage: setup_cliproxyapi.sh --adress http://127.0.0.1:8317 --key <key> > ~/.pi/agent/models.json
-#    or: CLIPROXY_API_URL=http://127.0.0.1:8317 CLIPROXY_API_KEY=<key> setup_cliproxyapi.sh
-#    or: setup_cliproxyapi.sh --adress <url> --key <key> --only openai-codex --only google
-#    or: setup_cliproxyapi.sh --adress <url> --key <key> --exclude cliproxyapi
+# Usage: setup_cliproxyapi.sh [pi|claude-code|codex|antigravity] --adress http://127.0.0.1:8317 --key <key>
+#    or: CLIPROXY_API_URL=http://127.0.0.1:8317 CLIPROXY_API_KEY=<key> setup_cliproxyapi.sh [harness]
+#    or: setup_cliproxyapi.sh pi --adress <url> --key <key> --only openai-codex --only google
+#    or: setup_cliproxyapi.sh claude-code --adress <url> --key <key>  # merge into ~/.claude/settings.json
+#    or: setup_cliproxyapi.sh codex --adress <url> --key <key>        # merge at top of ~/.codex/config.toml
+#    or: eval "$(setup_cliproxyapi.sh antigravity --adress <url> --key <key>)"
 
 set +x
 set -Eeuo pipefail
 
 die() { printf 'Error: %s\n' "$*" >&2; exit 1; }
 json_string() { local s="${1//\\/\\\\}"; printf '"%s"' "${s//\"/\\\"}"; }
+sh_quote() {
+    local s="$1" sq="'" out="'"
+    while [[ "$s" == *"$sq"* ]]; do
+        out+="${s%%"$sq"*}'\\''"
+        s="${s#*"$sq"}"
+    done
+    printf "%s%s'" "$out" "$s"
+}
 # field <flat JSON object> <key>: raw value of a string, number or string-array field
 field() { sed -En 's/.*"'"$2"'":("([^"\\]|\\.)*"|\[[^]]*\]|[^,}]*).*/\1/p' <<<"$1"; }
 # fetch <path>: one flat JSON object per line, without the free-text descriptions
@@ -39,28 +50,69 @@ meta meta /v1
 moonshot moonshotai /v1'
 PROVIDERS=" $(cut -d' ' -f2 <<<"$BUILTINS" | tr '\n' ' ')openai-codex antigravity cliproxyapi "
 
-USAGE="usage: ${0##*/} --adress <cliproxyapi-url> --key <api-key> [--only <provider>]... [--exclude <provider>]...
-(or CLIPROXY_API_URL, CLIPROXY_API_KEY); providers:$PROVIDERS"
+HARNESSES=' pi claude-code codex antigravity '
+USAGE="usage: ${0##*/} [pi|claude-code|codex|antigravity] --adress <cliproxyapi-url> --key <api-key> [--only <provider>]... [--exclude <provider>]...
+(or CLIPROXY_API_URL, CLIPROXY_API_KEY); default harness: pi; pi providers:$PROVIDERS"
+HARNESS=''
 URL="${CLIPROXY_API_URL:-}"
 KEY="${CLIPROXY_API_KEY:-}"
 ONLY=' '
 EXCLUDE=' '
 while [[ $# -gt 0 ]]; do
-    [[ $# -ge 2 ]] || die "$USAGE"
     case "$1" in
-        --adress|--address) URL="$2" ;;
-        --key) KEY="$2" ;;
+        --adress|--address)
+            [[ $# -ge 2 && "$2" != -* ]] || die "$USAGE"
+            URL="$2"; shift 2 ;;
+        --key)
+            [[ $# -ge 2 && "$2" != -* ]] || die "$USAGE"
+            KEY="$2"; shift 2 ;;
         --only|--exclude)
-            [[ "$PROVIDERS" == *" $2 "* ]] || die "unknown provider '$2'; use one of:$PROVIDERS"
-            if [[ "$1" == --only ]]; then ONLY+="$2 "; else EXCLUDE+="$2 "; fi ;;
-        *) die "$USAGE" ;;
+            [[ $# -ge 2 ]] || die "$USAGE"
+            [[ "$2" != *[[:space:]]* && "$PROVIDERS" == *" $2 "* ]] || die "unknown provider '$2'; use one of:$PROVIDERS"
+            if [[ "$1" == --only ]]; then ONLY+="$2 "; else EXCLUDE+="$2 "; fi
+            shift 2 ;;
+        -*) die "$USAGE" ;;
+        *)
+            [[ -z "$HARNESS" ]] || die "$USAGE"
+            case "$1" in
+                pi|claude-code|codex|antigravity) HARNESS="$1" ;;
+                *) die "unknown harness '$1'; use one of:$HARNESSES" ;;
+            esac
+            shift ;;
     esac
-    shift 2
 done
-URL="${URL%/}"
-URL="${URL%/v1}"
-[[ "$URL" =~ ^https?://[^[:space:]/]+(/[^[:space:]]*)?$ ]] || die "missing or invalid URL '$URL'; $USAGE"
+HARNESS="${HARNESS:-pi}"
+if [[ "$HARNESS" != pi && ( "$ONLY" != ' ' || "$EXCLUDE" != ' ' ) ]]; then
+    die '--only and --exclude are supported only for pi'
+fi
+[[ "$URL" =~ ^https?://[^/[:cntrl:][:space:]?#]+(/[^[:cntrl:][:space:]?#]*)?$ ]] || die "missing or invalid URL '$URL'; $USAGE"
+while [[ "$URL" == */ ]]; do URL="${URL%/}"; done
+if [[ "$URL" =~ ^(https?://[^/]+)(/.*)$ ]]; then
+    url_path="${BASH_REMATCH[2]}"
+    case "$url_path" in
+        */v1) url_path="${url_path%/v1}" ;;
+        */v1beta) url_path="${url_path%/v1beta}" ;;
+    esac
+    while [[ "$url_path" == */ ]]; do url_path="${url_path%/}"; done
+    URL="${BASH_REMATCH[1]}$url_path"
+fi
 [[ "$KEY" =~ ^[[:graph:]]+$ ]] || die "missing key, or it has spaces or control characters; $USAGE"
+
+case "$HARNESS" in
+    claude-code)
+        printf '{\n  "$schema": "https://json.schemastore.org/claude-code-settings.json",\n  "env": {\n    "ANTHROPIC_BASE_URL": %s,\n    "ANTHROPIC_AUTH_TOKEN": %s,\n    "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY": "1"\n  }\n}\n' \
+            "$(json_string "$URL")" "$(json_string "$KEY")"
+        exit 0 ;;
+    codex)
+        printf 'model_provider = "cliproxyapi"\n\n[model_providers.cliproxyapi]\nname = "CLIProxyAPI"\nbase_url = %s\nwire_api = "responses"\nrequires_openai_auth = false\nsupports_websockets = true\nexperimental_bearer_token = %s\n' \
+            "$(json_string "$URL/v1")" "$(json_string "$KEY")"
+        exit 0 ;;
+    antigravity)
+        printf 'export GOOGLE_GEMINI_BASE_URL=%s\nexport GEMINI_API_KEY=%s\n# Requires {"modelProvider": "gemini"} in ~/.gemini/antigravity-cli/settings.json\n# or run: agy --settings '\''{"modelProvider":"gemini"}'\''\n' \
+            "$(sh_quote "$URL")" "$(sh_quote "$KEY")"
+        exit 0 ;;
+esac
+
 command -v curl >/dev/null 2>&1 || die 'required command not found: curl'
 
 OWNERS="$(fetch /v1/models)"
