@@ -17,7 +17,8 @@
     "claude-opus-5-5",
     "claude-sonnet-5-5",
     "gpt-6.2-sol",
-    "gpt-6.2-astra"
+    "gpt-6.2-astra",
+    "gemini-4-neon-xhigh"
   ],
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
