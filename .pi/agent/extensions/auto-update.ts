@@ -51,7 +51,8 @@ export default function (pi: ExtensionAPI) {
     // Interactive only: skip print mode, subagents.
     if (!ctx.hasUI) return;
     current = ctx;
-    if (event.reason === 'startup' && tryLock()) {
+    // Skip offline sessions (e.g. `pi --offline` sets PI_OFFLINE=1, which makes `pi update --all` fail).
+    if (event.reason === 'startup' && !process.env.PI_OFFLINE && tryLock()) {
       // `--all` = `pi update` + `pi update --extensions`. Child writes the result, so it survives pi exiting first.
       const script = '"$0" "$1" update --all > "$2.log" 2>&1 && echo ok > "$2" || echo failed > "$2"';
       const child = spawn('/bin/sh', ['-c', script, process.execPath, process.argv[1], LOCK], {
