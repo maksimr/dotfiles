@@ -135,25 +135,28 @@ while IFS= read -r obj; do
         continue
     fi
     name="$(field "$obj" displayName)"
+    name="${name:-\"$id\"}"
     # shortcut: the proxy does not say which models think, so all may; use /thinking off where one fails
-    entry="{\"id\": \"$id\", \"name\": ${name:-\"$id\"}, \"reasoning\": true"
+    entry="{\"id\": \"$id\", \"name\": $name, \"reasoning\": true"
     if [[ "$(field "$obj" supportedInputModalities)" == *'"image"'* ]]; then
         entry+=', "input": ["text", "image"]'
     fi
     entry+=", \"contextWindow\": $context"
     max_tokens="$(field "$obj" outputTokenLimit)"
     if [[ -n "$max_tokens" ]]; then entry+=", \"maxTokens\": $max_tokens"; fi
+    sort_key="${name#\"}"
+    line="${sort_key%\"}"$'\t'"        $entry"
     if [[ "$owner" == openai ]]; then
         # a listed model replaces Pi's built-in one, which unlocked xhigh and max; without a map Pi stops at high
-        CODEX+="        $entry, \"thinkingLevelMap\": {\"xhigh\": \"xhigh\", \"max\": \"max\"}}"$'\n'
+        CODEX+="$line, \"thinkingLevelMap\": {\"xhigh\": \"xhigh\", \"max\": \"max\"}}"$'\n'
     elif [[ "$owner" == antigravity && "$id" == *-xhigh ]]; then
         # shortcut: xhigh support is read from the -xhigh ID suffix, as the proxy does not list levels;
         # Pi's Gemini API stops at high, so antigravity-prompt-guard.ts turns this high back into xhigh
-        ANTIGRAVITY+="        $entry, \"thinkingLevelMap\": {\"xhigh\": \"high\"}}"$'\n'
+        ANTIGRAVITY+="$line, \"thinkingLevelMap\": {\"xhigh\": \"high\"}}"$'\n'
     elif [[ "$owner" == antigravity ]]; then
-        ANTIGRAVITY+="        $entry}"$'\n'
+        ANTIGRAVITY+="$line}"$'\n'
     else
-        OTHERS+="        $entry}"$'\n'
+        OTHERS+="$line}"$'\n'
     fi
 done <<<"$MODELS"
 
@@ -169,23 +172,28 @@ add_provider() {
     OUT+="$(printf '%s\n    "%s": {\n      "baseUrl": %s,\n      "apiKey": %s,\n      "compat": {\n        "sendSessionAffinityHeaders": true\n      }%s\n    }' \
         "${OUT:+,}" "$1" "$(json_string "$2")" "$API_KEY" "${3:-}")"
 }
-# listed <name> <api> <model JSON lines>: JSON fields of a provider with listed models
+# listed <name> <api> <sort-key TAB model JSON lines>: JSON fields of a provider with listed models
 listed() {
+    local body
+    body="$(LC_ALL=C sort -t$'\t' -k1,1f <<<"${3%$'\n'}" | cut -f2- | sed '$!s/$/,/' )" || return
     printf ',\n      "name": "%s",\n      "api": "%s",\n      "models": [\n%s\n      ]' \
-        "$1" "$2" "$(sed '$!s/$/,/' <<<"${3%$'\n'}")"
+        "$1" "$2" "$body"
 }
 
 while read -r owner provider path; do
     if [[ "$SERVED" == *" $owner "* ]]; then add_provider "$provider" "$URL$path"; fi
 done <<<"$BUILTINS"
 if [[ -n "$CODEX" ]]; then
-    add_provider openai-codex "$URL/v1" "$(listed 'Codex via CLIProxyAPI' openai-responses "$CODEX")"
+    fields="$(listed 'Codex via CLIProxyAPI' openai-responses "$CODEX")"
+    add_provider openai-codex "$URL/v1" "$fields"
 fi
 if [[ -n "$ANTIGRAVITY" ]]; then
-    add_provider antigravity "$URL/v1beta" "$(listed Antigravity google-generative-ai "$ANTIGRAVITY")"
+    fields="$(listed Antigravity google-generative-ai "$ANTIGRAVITY")"
+    add_provider antigravity "$URL/v1beta" "$fields"
 fi
 if [[ -n "$OTHERS" ]]; then
-    add_provider cliproxyapi "$URL/v1" "$(listed CLIProxyAPI openai-completions "$OTHERS")"
+    fields="$(listed CLIProxyAPI openai-completions "$OTHERS")"
+    add_provider cliproxyapi "$URL/v1" "$fields"
 fi
 [[ -n "$OUT" ]] || die 'no providers to print; sign in to a provider in CLIProxyAPI or change --only and --exclude'
 printf '{\n  "providers": {%s\n  }\n}\n' "$OUT"
