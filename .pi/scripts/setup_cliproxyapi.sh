@@ -19,6 +19,10 @@
 #    or: setup_cliproxyapi.sh claude-code --adress <url> --key <key>  # merge into ~/.claude/settings.json
 #    or: setup_cliproxyapi.sh codex --adress <url> --key <key>        # merge at top of ~/.codex/config.toml
 #    or: eval "$(setup_cliproxyapi.sh antigravity --adress <url> --key <key>)"
+#
+# Run without cloning dotfiles:
+#   curl -fsSL https://raw.githubusercontent.com/maksimr/dotfiles/main/.pi/scripts/setup_cliproxyapi.sh | bash -s -- [harness] --adress <url> --key <key>
+#   wget -qO- https://raw.githubusercontent.com/maksimr/dotfiles/main/.pi/scripts/setup_cliproxyapi.sh | bash -s -- [harness] --adress <url> --key <key>
 
 set +x
 set -Eeuo pipefail
