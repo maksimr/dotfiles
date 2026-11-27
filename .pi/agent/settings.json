@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.6.1",
+  "lastChangelogVersion": "1.7.0",
   "theme": "dark",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6.2-astra",
