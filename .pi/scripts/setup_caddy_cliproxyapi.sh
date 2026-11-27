@@ -39,7 +39,8 @@ https://$ip {
 		}
 	}
 
-	handle /v1/* {
+	@api path /v1/* /v1beta/*
+	handle @api {
 		reverse_proxy 127.0.0.1:8317
 	}
 	handle {
@@ -48,11 +49,12 @@ https://$ip {
 }
 EOF
 
-# Only replace an unmodified package default; a custom site needs a manual merge.
+# Recognize the exact previous template or package default, never a custom site.
 if [[ -L $conf ]]; then die "Refusing to replace symlink $conf."; fi
 if [[ -e $conf ]] && ! cmp -s "$conf" "$work/Caddyfile"; then
   stock=$(dpkg-query -W -f='${Conffiles}\n' caddy 2>/dev/null | awk -v p="$conf" '$1 == p {print $2}') || stock=
-  [[ -n $stock && $(md5sum < "$conf") == "$stock  -" ]] || die "Custom $conf found; nothing changed."
+  sed '/^[[:space:]]*@api path /d; s|handle @api {|handle /v1/* {|' "$work/Caddyfile" > "$work/previous"
+  cmp -s "$conf" "$work/previous" || [[ -n $stock && $(md5sum < "$conf") == "$stock  -" ]] || die "Custom $conf found; nothing changed."
 fi
 
 if ! command -v caddy >/dev/null; then
@@ -95,7 +97,9 @@ systemctl reload caddy
 for ((i=0; i<30; i++)); do
   status=$(curl -q --noproxy '*' --connect-to "$ip:443:127.0.0.1:443" -s --max-time 3 -o /dev/null -w '%{http_code}' "https://$ip/v1/models") || status=000
   if [[ $status == 401 ]]; then
-    echo "Verified https://$ip/v1/models requires an API key. Allow inbound TCP 80/443 in the provider firewall."
+    beta=$(curl -q --noproxy '*' --connect-to "$ip:443:127.0.0.1:443" -sS --max-time 3 -o /dev/null -w '%{http_code}' "https://$ip/v1beta/models")
+    [[ $beta == 401 ]] || die "Expected /v1beta/models to require authentication; got HTTP $beta."
+    echo "Verified /v1/models and /v1beta/models require an API key. Allow inbound TCP 80/443 in the provider firewall."
     exit 0
   fi
   sleep 2
