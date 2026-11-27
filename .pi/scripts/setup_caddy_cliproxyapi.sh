@@ -21,6 +21,11 @@ url=http://127.0.0.1:8317/v1/models
 status=$(curl -q --noproxy '*' -sS --max-time 5 -o /dev/null -w '%{http_code}' "$url")
 [[ $status == 401 ]] || die "Expected CLIProxyAPI to require authentication on $url; got HTTP $status."
 
+management=/v0/management/auth-files
+management_status=$(curl -q --noproxy '*' -sS --max-time 5 -o /dev/null -w '%{http_code}' "http://127.0.0.1:8317$management")
+# Older installs may have management disabled (404); never publish an unprotected API.
+[[ $management_status == 401 || $management_status == 404 ]] || die "Unexpected management HTTP $management_status; refusing to expose it."
+
 work=$(mktemp -d)
 trap 'rm -rf -- "$work"' EXIT
 conf=/etc/caddy/Caddyfile
@@ -39,7 +44,7 @@ https://$ip {
 		}
 	}
 
-	@api path /v1/* /v1beta/*
+	@api path /v1/* /v1beta/* /v0/management/*
 	handle @api {
 		reverse_proxy 127.0.0.1:8317
 	}
@@ -54,7 +59,8 @@ if [[ -L $conf ]]; then die "Refusing to replace symlink $conf."; fi
 if [[ -e $conf ]] && ! cmp -s "$conf" "$work/Caddyfile"; then
   stock=$(dpkg-query -W -f='${Conffiles}\n' caddy 2>/dev/null | awk -v p="$conf" '$1 == p {print $2}') || stock=
   sed '/^[[:space:]]*@api path /d; s|handle @api {|handle /v1/* {|' "$work/Caddyfile" > "$work/previous"
-  cmp -s "$conf" "$work/previous" || [[ -n $stock && $(md5sum < "$conf") == "$stock  -" ]] || die "Custom $conf found; nothing changed."
+  sed 's| /v0/management/\*$||' "$work/Caddyfile" > "$work/previous-beta"
+  cmp -s "$conf" "$work/previous-beta" || cmp -s "$conf" "$work/previous" || [[ -n $stock && $(md5sum < "$conf") == "$stock  -" ]] || die "Custom $conf found; nothing changed."
 fi
 
 if ! command -v caddy >/dev/null; then
@@ -99,6 +105,9 @@ for ((i=0; i<30; i++)); do
   if [[ $status == 401 ]]; then
     beta=$(curl -q --noproxy '*' --connect-to "$ip:443:127.0.0.1:443" -sS --max-time 3 -o /dev/null -w '%{http_code}' "https://$ip/v1beta/models")
     [[ $beta == 401 ]] || die "Expected /v1beta/models to require authentication; got HTTP $beta."
+    public_management=$(curl -q --noproxy '*' --connect-to "$ip:443:127.0.0.1:443" -sS --max-time 3 -o /dev/null -w '%{http_code}' "https://$ip$management")
+    [[ $public_management == "$management_status" ]] || die "Expected $management to return $management_status; got HTTP $public_management."
+    echo "Management: HTTP $public_management without credentials (401 = protected, 404 = disabled)."
     echo "Verified /v1/models and /v1beta/models require an API key. Allow inbound TCP 80/443 in the provider firewall."
     exit 0
   fi

@@ -69,6 +69,7 @@ if $updating; then
   die 'Update failed its service check; restored the previous binary and restarted.'
 fi
 key=$(openssl rand -hex 32)
+management_key=$(openssl rand -hex 32)
 read -r server_id < /proc/sys/kernel/random/uuid
 install -D -m 0755 cli-proxy-api "$bin"
 install -d -m 0700 "${conf%/*}"
@@ -79,6 +80,10 @@ server:
   commercial-mode: true
   host: "127.0.0.1"
   port: 8317
+management:
+  allow-remote: true
+  secret-key: "$management_key"
+  disable-auto-update-panel: true
 access:
   api-keys:
     - "$key"
@@ -122,7 +127,8 @@ url=http://127.0.0.1:8317/v1/models
 for ((i=0; i<20; i++)); do
   status=$(curl --noproxy '*' -s --max-time 2 -o /dev/null -w '%{http_code}' "$url") || status=000
   if [[ $status == 401 ]] && printf 'Authorization: Bearer %s\n' "$key" | curl --noproxy '*' -fsS --max-time 2 -H @- "$url" -o /dev/null && systemctl is-active --quiet cliproxyapi; then
-    echo "CLIProxyAPI $version is ready at $url. Client key: see $conf."
+    printf 'Authorization: Bearer %s\n' "$management_key" | curl -q --noproxy '*' -fsS --max-time 3 -H @- http://127.0.0.1:8317/v0/management/auth-files -o /dev/null
+    echo "CLIProxyAPI $version is ready at $url. Client and management keys: see $conf."
     exit 0
   fi
   sleep 1
