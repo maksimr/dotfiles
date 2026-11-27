@@ -19,10 +19,13 @@ p.add_argument('--host', default='192.168.1.1', help='router host or HTTPS URL (
 p.add_argument('--user', default='admin', help='router username (default: %(default)s)')
 p.add_argument('--password')
 p.add_argument('--interface', required=True, help='interface ID or exact description, e.g. PF1')
+p.add_argument('--exclusive-route', choices=('true', 'false'), help='upload only: set or clear the exclusive flag on new and matching routes')
 p.add_argument('file', nargs='?')
 a = p.parse_intermixed_args()
 if (a.command == 'routes:upload') != bool(a.file):
     p.error('only routes:upload takes a .bat file, and it requires one')
+if a.exclusive_route is not None and not a.file:
+    p.error('--exclusive-route is only valid for routes:upload')
 base = a.host.rstrip('/') if '://' in a.host else 'http://' + a.host
 url = urlsplit(base)
 if url.scheme not in ('http', 'https') or not url.hostname or url.username is not None or url.path or url.query or url.fragment:
@@ -114,7 +117,7 @@ def main():
             continue
         net = ipaddress.IPv4Network((addr, r.get('mask', '255.255.255.255')))
         gw = r.get('gateway') or '0.0.0.0'
-        existing.setdefault(net, set()).add((r.get('interface'), gw, bool(r.get('reject'))))
+        existing.setdefault(net, []).append(r)
         if not a.file and r.get('interface') == iface:
             if r.get('reject') or r.get('metric') or not r.get('auto'):
                 raise ValueError(f'{net}: .bat cannot preserve this route\'s flags')
@@ -124,12 +127,10 @@ def main():
         for line in lines:
             print(line)
         return
-    commands = []
+    batches = []
+    added = updated = 0
+    reject = a.exclusive_route == 'true'
     for net, (gw, comment) in wanted.items():
-        if net in existing:
-            if (iface, gw, False) in existing[net]:
-                continue  # Add-only: keep existing flags and comments.
-            raise ValueError(f'{net} already has a different route; nothing uploaded')
         dest = str(net.network_address)
         route = {'host': dest} if net.prefixlen == 32 else {'network': dest, 'mask': str(net.netmask)}
         route.update(interface=iface, auto=True)
@@ -137,16 +138,36 @@ def main():
             route['gateway'] = gw
         if comment:
             route['comment'] = comment
-        commands.append({'ip': {'route': route}})
-    if commands:
+        changes = []
+        if net in existing:
+            matches = [r for r in existing[net] if r.get('interface') == iface and (r.get('gateway') or '0.0.0.0') == gw]
+            if any(bool(r.get('reject')) == reject for r in matches):
+                continue
+            if a.exclusive_route is None or not matches or len(existing[net]) != 1:
+                raise ValueError(f'{net} already has a different route; nothing uploaded')
+            route = dict(matches[0])  # Keep the router's comment, metric and auto setting.
+            route.pop('index', None)
+            key = {k: route[k] for k in ('host', 'network', 'mask', 'gateway', 'interface', 'metric') if k in route}
+            changes.append({'ip': {'route': dict(key, no=True)}})
+            updated += 1
+        else:
+            added += 1
+        if a.exclusive_route is not None:
+            route['reject'] = reject
+        changes.append({'ip': {'route': route}})
+        # Do not split a delete/add pair across requests.
+        if not batches or len(batches[-1]) + len(changes) > 100:
+            batches.append([])
+        batches[-1].extend(changes)
+    if batches:
         try:
-            for start in range(0, len(commands), 100):
-                batch(commands[start:start + 100])
+            for commands in batches:
+                batch(commands)
             batch([{'system': {'configuration': {'save': {}}}}])
         except Exception:
-            print('Upload incomplete: some routes may already be active. Check running routes and save status.', file=sys.stderr)
+            print('Upload incomplete: some routes may have been removed or added. Check running routes and save status.', file=sys.stderr)
             raise
-    print(f'{iface}: added {len(commands)}, skipped {len(wanted) - len(commands)} existing.', file=sys.stderr)
+    print(f'{iface}: added {added}, updated {updated}, skipped {len(wanted) - added - updated} existing.', file=sys.stderr)
 
 try:
     main()
