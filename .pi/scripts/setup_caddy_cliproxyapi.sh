@@ -63,11 +63,15 @@ if [[ -e $conf ]] && ! cmp -s "$conf" "$work/Caddyfile"; then
   cmp -s "$conf" "$work/previous-beta" || cmp -s "$conf" "$work/previous" || [[ -n $stock && $(md5sum < "$conf") == "$stock  -" ]] || die "Custom $conf found; nothing changed."
 fi
 
-if ! command -v caddy >/dev/null; then
+installed=$(dpkg-query -W -f='${Status}\t${Version}\n' caddy 2>/dev/null | awk -F'\t' '$1 == "install ok installed" {print $2}') || installed=
+if [[ -z $installed ]]; then
+  ! command -v caddy >/dev/null || die 'Caddy is installed outside dpkg; update it manually.'
   [[ -z $(ss -Hlt 'sport = :80 or sport = :443') ]] || die 'TCP 80 or 443 already in use; nothing changed.'
-  releases=https://api.github.com/repos/caddyserver/caddy/releases/latest
-  curl -q -fsSL --retry 2 --max-time 30 "$releases" -o "$work/release.json"
-  python3 - "$work/release.json" "$(dpkg --print-architecture)" > "$work/asset" <<'PY'
+fi
+
+releases=https://api.github.com/repos/caddyserver/caddy/releases/latest
+curl -q -fsSL --retry 2 --max-time 30 "$releases" -o "$work/release.json"
+python3 - "$work/release.json" "$(dpkg --print-architecture)" > "$work/asset" <<'PY'
 import json, re, sys
 with open(sys.argv[1]) as f:
     release = json.load(f)
@@ -77,15 +81,16 @@ if not re.fullmatch(r'v\d+\.\d+\.\d+', tag):
 name = f'caddy_{tag[1:]}_linux_{sys.argv[2]}.deb'
 for asset in release['assets']:
     if asset['name'] == name and re.fullmatch(r'sha256:[0-9a-f]{64}', asset.get('digest') or ''):
-        print(f'https://github.com/caddyserver/caddy/releases/download/{tag}/{name}', asset['digest'][7:])
+        print(tag[1:], f'https://github.com/caddyserver/caddy/releases/download/{tag}/{name}', asset['digest'][7:])
         break
 else:
     sys.exit('No checksummed Caddy package for this architecture.')
 PY
-  read -r download sha < "$work/asset"
+read -r version download sha < "$work/asset"
+if [[ -z $installed ]] || dpkg --compare-versions "$installed" lt "$version"; then
   curl -q --proto '=https' --proto-redir '=https' -fsSL --retry 2 --max-time 120 "$download" -o "$work/caddy.deb"
   printf '%s  %s\n' "$sha" "$work/caddy.deb" | sha256sum -c -
-  DEBIAN_FRONTEND=noninteractive dpkg -i "$work/caddy.deb"
+  DEBIAN_FRONTEND=noninteractive dpkg -i --force-confdef --force-confold "$work/caddy.deb" </dev/null
 fi
 
 caddy validate --config "$work/Caddyfile" --adapter caddyfile
@@ -96,8 +101,8 @@ fi
 if ! cmp -s "$work/Caddyfile" "$conf"; then
   install -m 0644 "$work/Caddyfile" "$conf"
 fi
-systemctl enable --now caddy
-systemctl reload caddy
+systemctl enable caddy
+systemctl restart caddy
 
 # Verify the IP certificate locally without depending on NAT hairpin support.
 for ((i=0; i<30; i++)); do
